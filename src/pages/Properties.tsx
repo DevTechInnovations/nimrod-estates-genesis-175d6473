@@ -1,19 +1,56 @@
-import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Loader2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PropertyCard from '@/components/PropertyCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { properties } from '@/data/properties';
+import { supabase } from '@/integrations/supabase/client';
+
+interface Property {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  price: string;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  roi: string | null;
+  images: string[];
+  featured: boolean;
+  type: string;
+  video_url: string | null;
+  pdf_url: string | null;
+}
 
 const Properties = () => {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
-  const [priceFilter, setPriceFilter] = useState('All');
 
-  const propertyTypes = ['All', 'Villa', 'Penthouse', 'Apartment', 'Townhouse', 'Chalet'];
-  const priceRanges = ['All', 'Under $5M', '$5M - $10M', '$10M - $15M', 'Over $15M'];
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  const fetchProperties = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('properties')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProperties(data || []);
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const propertyTypes = ['All', ...Array.from(new Set(properties.map(p => p.type)))];
 
   const filteredProperties = properties.filter((property) => {
     const matchesSearch =
@@ -82,7 +119,11 @@ const Properties = () => {
       {/* Property Grid */}
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
-          {filteredProperties.length > 0 ? (
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            </div>
+          ) : filteredProperties.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProperties.map((property) => (
                 <PropertyCard
@@ -106,7 +147,6 @@ const Properties = () => {
                 onClick={() => {
                   setSearchTerm('');
                   setTypeFilter('All');
-                  setPriceFilter('All');
                 }}
                 className="mt-4 bg-primary hover:bg-primary-glow"
               >

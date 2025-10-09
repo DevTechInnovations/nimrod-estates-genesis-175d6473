@@ -58,9 +58,11 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <Button variant="default" size="sm" className="bg-primary hover:bg-primary-glow">
-              Member Login
-            </Button>
+            <Link to="/auth">
+              <Button variant="default" size="sm" className="bg-primary hover:bg-primary-glow">
+                Admin Login
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -87,9 +89,11 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <Button variant="default" size="sm" className="w-full mt-4 bg-primary hover:bg-primary-glow">
-              Member Login
-            </Button>
+            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button variant="default" size="sm" className="w-full mt-4 bg-primary hover:bg-primary-glow">
+                Admin Login
+              </Button>
+            </Link>
           </div>
         )}
       </div>
