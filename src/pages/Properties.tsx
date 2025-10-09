@@ -6,6 +6,7 @@ import PropertyCard from '@/components/PropertyCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+import { Link } from 'react-router-dom';
 
 interface Property {
   id: string;
@@ -126,18 +127,23 @@ const Properties = () => {
           ) : filteredProperties.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProperties.map((property) => (
-                <PropertyCard
+                <Link
                   key={property.id}
-                  id={property.id}
-                  image={property.images[0]}
-                  title={property.title}
-                  location={property.location}
-                  price={property.price}
-                  bedrooms={property.bedrooms}
-                  bathrooms={property.bathrooms}
-                  area={property.area}
-                  roi={property.roi}
-                />
+                  to={`/properties/${property.id}`}
+                  className="block"
+                >
+                  <PropertyCard
+                    id={property.id}
+                    image={property.images?.[0]}
+                    title={property.title}
+                    location={property.location}
+                    price={property.price}
+                    bedrooms={property.bedrooms}
+                    bathrooms={property.bathrooms}
+                    area={property.area}
+                    roi={property.roi}
+                  />
+                </Link>
               ))}
             </div>
           ) : (

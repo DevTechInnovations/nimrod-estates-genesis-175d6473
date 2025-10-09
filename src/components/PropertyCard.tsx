@@ -25,6 +25,17 @@ const PropertyCard = ({
   area,
   roi,
 }: PropertyCardProps) => {
+  const formatPrice = (p?: string) => {
+    if (!p) return 'N/A';
+    const num = Number(String(p).replace(/[^0-9.-]+/g, ''));
+    if (!Number.isFinite(num)) return p;
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(num);
+  };
+
   return (
     <div className="group bg-card rounded-lg overflow-hidden shadow-lg hover-lift border border-border">
       <div className="relative overflow-hidden h-64">
@@ -66,7 +77,9 @@ const PropertyCard = ({
 
         <div className="flex items-center justify-between pt-4 border-t border-border">
           <div>
-            <p className="text-2xl font-heading font-bold text-primary">{price}</p>
+            <p className="text-2xl font-heading font-bold text-primary">
+              {formatPrice(price)}
+            </p>
           </div>
           <Link to={`/properties/${id}`}>
             <Button variant="outline" size="sm" className="hover-gold">

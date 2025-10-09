@@ -1,175 +1,235 @@
-import { useParams, Link } from 'react-router-dom';
-import { MapPin, Bed, Bath, Square, TrendingUp, ArrowLeft } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Loader2, MapPin, Bed, Bath, Square, TrendingUp, ArrowLeft } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { properties } from '@/data/properties';
+import { supabase } from '@/integrations/supabase/client';
+
+interface Property {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  price: string;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  roi: string | null;
+  images: string[] | null;
+  featured: boolean;
+  type: string;
+  video_url: string | null;
+  pdf_url: string | null;
+}
 
 const PropertyDetails = () => {
-  const { id } = useParams();
-  const property = properties.find((p) => p.id === id);
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [property, setProperty] = useState<Property | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentImage, setCurrentImage] = useState<number>(0);
 
-  if (!property) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Property not found</h1>
-          <Link to="/properties">
-            <Button className="bg-primary hover:bg-primary-glow">
-              Back to Properties
-            </Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!id) return;
+    const fetchProperty = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from<Property>('properties')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+        setProperty(data || null);
+        setCurrentImage(0);
+      } catch (err: any) {
+        console.error('Error fetching property:', err);
+        setError(err.message || 'Failed to load property');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperty();
+  }, [id]);
+
+  const formatPrice = (p?: string) => {
+    if (!p) return 'N/A';
+    const num = Number(p.replace(/[^0-9.-]+/g, ''));
+    if (Number.isFinite(num)) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+    }
+    return p;
+  };
+
+  const renderDescription = (text: string) => {
+    if (!text) return null;
+    // split paragraphs on double line breaks, fallback to single line breaks
+    const paragraphs = text.split(/\r?\n\r?\n/).map(p => p.trim()).filter(Boolean);
+    return paragraphs.map((p, i) => <p key={i} className="mb-4 leading-relaxed text-base text-muted-foreground">{p}</p>);
+  };
 
   return (
     <div className="min-h-screen">
       <Navbar />
-
-      <div className="pt-24 pb-12">
+      <section className="pt-24 pb-16 bg-background">
         <div className="container mx-auto px-4">
-          {/* Back Button */}
-          <Link to="/properties">
-            <Button variant="outline" className="mb-6 hover-gold">
-              <ArrowLeft className="mr-2" size={20} />
-              Back to Properties
-            </Button>
-          </Link>
-
-          {/* Property Title */}
-          <div className="mb-8">
-            <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4">{property.title}</h1>
-            <div className="flex items-center text-muted-foreground text-lg mb-4">
-              <MapPin className="mr-2" size={20} />
-              {property.location}
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate(-1)}
+                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+                aria-label="Back"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back
+              </button>
+              <nav className="text-sm text-muted-foreground">
+                <Link to="/" className="hover:underline">Home</Link>
+                <span className="mx-2">/</span>
+                <Link to="/properties" className="hover:underline">Properties</Link>
+                {property && (
+                  <>
+                    <span className="mx-2">/</span>
+                    <span className="text-foreground">{property.title}</span>
+                  </>
+                )}
+              </nav>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-4xl font-heading font-bold text-primary">{property.price}</span>
-              {property.roi && (
-                <span className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold flex items-center">
-                  <TrendingUp className="mr-1" size={16} />
-                  {property.roi} ROI
-                </span>
-              )}
-            </div>
-          </div>
 
-          {/* Image Gallery */}
-          <div className="mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="col-span-1 md:col-span-2">
-                <img
-                  src={property.images[0]}
-                  alt={property.title}
-                  className="w-full h-[500px] object-cover rounded-lg"
-                />
-              </div>
+            <div className="text-right">
+              <div className="text-sm text-muted-foreground">Listed</div>
+              <div className="text-base font-medium">{property?.featured ? 'Featured' : 'Standard'}</div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Property Details */}
-            <div className="lg:col-span-2">
-              {/* Key Features */}
-              <div className="bg-card p-6 rounded-lg border border-border mb-8">
-                <h2 className="font-heading text-2xl font-bold mb-6">Key Features</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <Bed className="mx-auto mb-2 text-primary" size={32} />
-                    <div className="font-bold text-xl">{property.bedrooms}</div>
-                    <div className="text-sm text-muted-foreground">Bedrooms</div>
-                  </div>
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <Bath className="mx-auto mb-2 text-primary" size={32} />
-                    <div className="font-bold text-xl">{property.bathrooms}</div>
-                    <div className="text-sm text-muted-foreground">Bathrooms</div>
-                  </div>
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <Square className="mx-auto mb-2 text-primary" size={32} />
-                    <div className="font-bold text-xl">{property.area}</div>
-                    <div className="text-sm text-muted-foreground">m² Area</div>
-                  </div>
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <TrendingUp className="mx-auto mb-2 text-primary" size={32} />
-                    <div className="font-bold text-xl">{property.roi}</div>
-                    <div className="text-sm text-muted-foreground">ROI</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="bg-card p-6 rounded-lg border border-border mb-8">
-                <h2 className="font-heading text-2xl font-bold mb-4">Description</h2>
-                <p className="text-muted-foreground leading-relaxed">{property.description}</p>
-              </div>
-
-              {/* Location Map Placeholder */}
-              <div className="bg-card p-6 rounded-lg border border-border">
-                <h2 className="font-heading text-2xl font-bold mb-4">Location</h2>
-                <div className="bg-muted h-64 rounded-lg flex items-center justify-center">
-                  <div className="text-center text-muted-foreground">
-                    <MapPin size={48} className="mx-auto mb-2" />
-                    <p>Interactive map will be displayed here</p>
-                    <p className="text-sm">{property.location}</p>
-                  </div>
-                </div>
-              </div>
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </div>
+          ) : error ? (
+            <div className="text-center py-20 text-red-600">{error}</div>
+          ) : !property ? (
+            <div className="text-center py-20">Property not found.</div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left: Gallery */}
+              <div className="lg:col-span-2">
+                <div className="bg-card rounded-lg overflow-hidden shadow">
+                  {property.images && property.images.length > 0 ? (
+                    <>
+                      <div className="w-full h-96 bg-gray-100 flex items-center justify-center overflow-hidden">
+                        <img
+                          src={property.images[currentImage]}
+                          alt={`${property.title} image ${currentImage + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
 
-            {/* Contact Form */}
-            <div className="lg:col-span-1">
-              <div className="bg-card p-6 rounded-lg border border-border sticky top-24">
-                <h3 className="font-heading text-2xl font-bold mb-6">Interested in this property?</h3>
-                <div className="space-y-4 mb-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Full Name</label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="John Doe"
-                    />
+                      {property.images.length > 1 && (
+                        <div className="p-3 flex gap-2 overflow-x-auto bg-muted">
+                          {property.images.map((img, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setCurrentImage(idx)}
+                              className={`flex-shrink-0 w-24 h-16 border rounded overflow-hidden ${idx === currentImage ? 'ring-2 ring-primary' : 'opacity-80 hover:opacity-100'}`}
+                              aria-label={`Show image ${idx + 1}`}
+                            >
+                              <img src={img} alt={`thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="w-full h-96 flex items-center justify-center text-muted-foreground">
+                      No images available
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-6 bg-card p-6 rounded-lg shadow">
+                  <h2 className="text-2xl font-semibold mb-3">Overview</h2>
+                  {renderDescription(property.description)}
+                </div>
+              </div>
+
+              {/* Right: Summary & Actions */}
+              <aside className="space-y-4">
+                <div className="bg-card p-6 rounded-lg shadow">
+                  <h1 className="text-2xl font-bold mb-1">{property.title}</h1>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+                    <MapPin className="h-4 w-4" /> {property.location}
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Email</label>
-                    <input
-                      type="email"
-                      className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="john@example.com"
-                    />
+
+                  <div className="text-3xl font-extrabold text-foreground mb-4">{formatPrice(property.price)}</div>
+
+                  <div className="grid grid-cols-3 gap-3 mb-4 text-sm">
+                    <div className="flex flex-col items-start">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Bed className="h-4 w-4" /> Bedrooms
+                      </div>
+                      <div className="font-medium text-foreground">{property.bedrooms}</div>
+                    </div>
+
+                    <div className="flex flex-col items-start">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Bath className="h-4 w-4" /> Bathrooms
+                      </div>
+                      <div className="font-medium text-foreground">{property.bathrooms}</div>
+                    </div>
+
+                    <div className="flex flex-col items-start">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Square className="h-4 w-4" /> Area
+                      </div>
+                      <div className="font-medium text-foreground">{property.area} sqft</div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Phone</label>
-                    <input
-                      type="tel"
-                      className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="+1 (555) 123-4567"
-                    />
+
+                  <div className="flex items-center gap-2 text-sm mb-4">
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    <div className="text-sm text-muted-foreground">Estimated ROI</div>
+                    <div className="ml-auto font-medium">{property.roi ?? 'N/A'}</div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Message</label>
-                    <textarea
-                      rows={4}
-                      className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                      placeholder="I'm interested in this property..."
-                    ></textarea>
+
+                  <div className="flex flex-col gap-2">
+                    <Link to="/contact">
+                      <Button className="w-full">Contact Agent</Button>
+                    </Link>
+
+                    {property.pdf_url && (
+                      <a href={property.pdf_url} target="_blank" rel="noreferrer">
+                        <Button variant="outline" className="w-full">Download Brochure</Button>
+                      </a>
+                    )}
+
+                    {property.video_url && (
+                      <a href={property.video_url} target="_blank" rel="noreferrer">
+                        <Button variant="ghost" className="w-full">Watch Video Tour</Button>
+                      </a>
+                    )}
                   </div>
                 </div>
-                <Button className="w-full bg-primary hover:bg-primary-glow mb-3">
-                  Request Information
-                </Button>
-                <Link to="/contact">
-                  <Button variant="outline" className="w-full hover-gold">
-                    Schedule Viewing
-                  </Button>
-                </Link>
-              </div>
+
+                <div className="bg-card p-4 rounded-lg text-sm text-muted-foreground">
+                  <div className="font-medium mb-2">Property Details</div>
+                  <div className="flex flex-col gap-2">
+                    <div><span className="text-muted-foreground">Type: </span>{property.type}</div>
+                    <div><span className="text-muted-foreground">Location: </span>{property.location}</div>
+                    <div><span className="text-muted-foreground">Listed: </span>{property.featured ? 'Featured' : 'Standard'}</div>
+                  </div>
+                </div>
+              </aside>
             </div>
-          </div>
+          )}
         </div>
-      </div>
-
+      </section>
       <Footer />
     </div>
   );
