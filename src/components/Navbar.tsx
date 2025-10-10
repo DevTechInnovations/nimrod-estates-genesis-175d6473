@@ -36,7 +36,14 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
+          
           <Link to="/" className="flex items-center space-x-2">
+          <img
+              src="/NM.png"
+              alt="Nimrod Estates logo"
+              className="w-15 h-14 "
+              loading="eager"
+            />
             <div className="text-2xl font-heading font-bold">
               <span className="text-gradient-gold">NIMROD</span>
               <span className="text-foreground ml-2">ESTATES</span>

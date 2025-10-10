@@ -78,7 +78,7 @@ const Index = () => {
               </Button>
             </Link>
             <Link to="/contact">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button size="lg" variant="outline" className="border-white text-black hover:bg-white/10">
                 Get Started
               </Button>
             </Link>
