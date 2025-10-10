@@ -37,15 +37,15 @@ const PropertyDetails = () => {
       setLoading(true);
       try {
         const { data, error } = await supabase
-          .from<Property>('properties')
+          .from('properties')
           .select('*')
           .eq('id', id)
-          .single();
+          .maybeSingle();
 
         if (error) {
           throw error;
         }
-        setProperty(data || null);
+        setProperty(data as Property | null);
         setCurrentImage(0);
       } catch (err: any) {
         console.error('Error fetching property:', err);
