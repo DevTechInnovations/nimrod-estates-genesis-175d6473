@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
+import { ImageUpload } from './ImageUpload';
 
 interface PropertyFormData {
   title: string;
@@ -18,7 +19,7 @@ interface PropertyFormData {
   featured: boolean;
   video_url: string;
   pdf_url: string;
-  images: string;
+  images: string[];
 }
 
 interface PropertyFormProps {
@@ -42,7 +43,7 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
     featured: false,
     video_url: '',
     pdf_url: '',
-    images: '',
+    images: [],
   });
 
   useEffect(() => {
@@ -60,18 +61,18 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
         featured: initialData.featured || false,
         video_url: initialData.video_url || '',
         pdf_url: initialData.pdf_url || '',
-        images: initialData.images?.join('\n') || '',
+        images: initialData.images || [],
       });
     }
   }, [initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const imagesArray = formData.images
-      .split('\n')
-      .map(url => url.trim())
-      .filter(url => url.length > 0);
+
+    if (formData.images.length === 0) {
+      alert('Please upload at least one image');
+      return;
+    }
 
     await onSubmit({
       title: formData.title,
@@ -86,7 +87,7 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
       featured: formData.featured,
       video_url: formData.video_url || null,
       pdf_url: formData.pdf_url || null,
-      images: imagesArray,
+      images: formData.images,
     });
   };
 
@@ -195,14 +196,10 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="images">Image URLs (one per line) *</Label>
-        <Textarea
-          id="images"
-          rows={4}
-          placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
-          value={formData.images}
-          onChange={(e) => setFormData({ ...formData, images: e.target.value })}
-          required
+        <Label>Property Images *</Label>
+        <ImageUpload
+          images={formData.images}
+          onImagesChange={(images) => setFormData({ ...formData, images })}
         />
       </div>
 
