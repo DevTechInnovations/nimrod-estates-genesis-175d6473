@@ -1,14 +1,51 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, TrendingUp, Globe, Star } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PropertyCard from '@/components/PropertyCard';
 import { Button } from '@/components/ui/button';
-import { properties } from '@/data/properties';
+import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-luxury-estate.jpg';
 
+interface Property {
+  id: string;
+  title: string;
+  location: string;
+  price: string;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  roi: string | null;
+  images: string[];
+  featured: boolean;
+}
+
 const Index = () => {
-  const featuredProperties = properties.filter((p) => p.featured).slice(0, 3);
+  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedProperties = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('properties')
+          .select('*')
+          .eq('featured', true)
+          .order('created_at', { ascending: false })
+          .limit(3);
+
+        if (error) throw error;
+        setFeaturedProperties(data || []);
+      } catch (error) {
+        console.error('Error fetching featured properties:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedProperties();
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -86,20 +123,30 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            {featuredProperties.map((property) => (
-              <PropertyCard
-                key={property.id}
-                id={property.id}
-                image={property.images[0]}
-                title={property.title}
-                location={property.location}
-                price={property.price}
-                bedrooms={property.bedrooms}
-                bathrooms={property.bathrooms}
-                area={property.area}
-                roi={property.roi}
-              />
-            ))}
+            {loading ? (
+              <div className="col-span-3 text-center py-12 text-muted-foreground">
+                Loading featured properties...
+              </div>
+            ) : featuredProperties.length === 0 ? (
+              <div className="col-span-3 text-center py-12 text-muted-foreground">
+                No featured properties available yet.
+              </div>
+            ) : (
+              featuredProperties.map((property) => (
+                <PropertyCard
+                  key={property.id}
+                  id={property.id}
+                  image={property.images?.[0] || ''}
+                  title={property.title}
+                  location={property.location}
+                  price={property.price}
+                  bedrooms={property.bedrooms}
+                  bathrooms={property.bathrooms}
+                  area={property.area}
+                  roi={property.roi}
+                />
+              ))
+            )}
           </div>
 
           <div className="text-center">
