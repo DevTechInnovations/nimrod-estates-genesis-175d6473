@@ -65,6 +65,11 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            <Link to="/member-auth">
+              <Button variant="outline" size="sm">
+                Member Login
+              </Button>
+            </Link>
             <Link to="/auth">
               <Button variant="default" size="sm" className="bg-primary hover:bg-primary-glow">
                 Admin Login
@@ -96,8 +101,13 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            <Link to="/member-auth" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button variant="outline" size="sm" className="w-full mt-4">
+                Member Login
+              </Button>
+            </Link>
             <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-              <Button variant="default" size="sm" className="w-full mt-4 bg-primary hover:bg-primary-glow">
+              <Button variant="default" size="sm" className="w-full mt-2 bg-primary hover:bg-primary-glow">
                 Admin Login
               </Button>
             </Link>

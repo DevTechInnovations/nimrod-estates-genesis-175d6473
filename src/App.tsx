@@ -11,6 +11,9 @@ import Properties from "./pages/Properties";
 import PropertyDetails from "./pages/PropertyDetails";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
+import MemberAuth from "./pages/MemberAuth";
+import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +34,9 @@ const App = () => (
             <Route path="/properties/:id" element={<PropertyDetails />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/member-auth" element={<MemberAuth />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/admin" element={<AdminDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
