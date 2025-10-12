@@ -16,34 +16,46 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          account_status: Database["public"]["Enums"]["account_status"] | null
           created_at: string
           email: string
           email_notifications: boolean | null
           full_name: string | null
           id: string
+          last_login_at: string | null
           membership_tier: Database["public"]["Enums"]["membership_tier"] | null
+          payment_status: Database["public"]["Enums"]["payment_status"] | null
+          payment_verified_at: string | null
           updated_at: string
         }
         Insert: {
+          account_status?: Database["public"]["Enums"]["account_status"] | null
           created_at?: string
           email: string
           email_notifications?: boolean | null
           full_name?: string | null
           id: string
+          last_login_at?: string | null
           membership_tier?:
             | Database["public"]["Enums"]["membership_tier"]
             | null
+          payment_status?: Database["public"]["Enums"]["payment_status"] | null
+          payment_verified_at?: string | null
           updated_at?: string
         }
         Update: {
+          account_status?: Database["public"]["Enums"]["account_status"] | null
           created_at?: string
           email?: string
           email_notifications?: boolean | null
           full_name?: string | null
           id?: string
+          last_login_at?: string | null
           membership_tier?:
             | Database["public"]["Enums"]["membership_tier"]
             | null
+          payment_status?: Database["public"]["Enums"]["payment_status"] | null
+          payment_verified_at?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -143,8 +155,10 @@ export type Database = {
       }
     }
     Enums: {
+      account_status: "active" | "suspended" | "pending"
       app_role: "admin" | "user"
       membership_tier: "gold" | "silver" | "platinum"
+      payment_status: "verified" | "unverified" | "pending"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -272,8 +286,10 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_status: ["active", "suspended", "pending"],
       app_role: ["admin", "user"],
       membership_tier: ["gold", "silver", "platinum"],
+      payment_status: ["verified", "unverified", "pending"],
     },
   },
 } as const

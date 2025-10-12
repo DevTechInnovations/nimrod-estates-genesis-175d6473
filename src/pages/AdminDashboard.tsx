@@ -5,9 +5,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, LogOut, Plus } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Loader2, LogOut, Plus, Users, Home } from 'lucide-react';
 import { PropertyForm } from '@/components/admin/PropertyForm';
 import { PropertyList } from '@/components/admin/PropertyList';
+import { UserManagement } from '@/components/admin/UserManagement';
 
 export default function AdminDashboard() {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
@@ -152,50 +154,72 @@ export default function AdminDashboard() {
       </header>
 
       <div className="container mx-auto py-8 px-4">
-        <div className="mb-6">
-          <Button
-            onClick={() => {
-              setShowForm(!showForm);
-              setEditingProperty(null);
-            }}
-            className="mb-4"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            {showForm ? 'View All Properties' : 'Add New Property'}
-          </Button>
-        </div>
+        <Tabs defaultValue="properties" className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="properties" className="flex items-center gap-2">
+              <Home className="h-4 w-4" />
+              Properties
+            </TabsTrigger>
+            <TabsTrigger value="users" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Users
+            </TabsTrigger>
+          </TabsList>
 
-        {showForm ? (
-          <Card className="max-w-3xl mx-auto">
-            <CardHeader>
-              <CardTitle>
-                {editingProperty ? 'Edit Property' : 'Add New Property Listing'}
-              </CardTitle>
-              <CardDescription>
-                {editingProperty
-                  ? 'Update the property details'
-                  : 'Fill in the details to create a new property listing'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <PropertyForm
-                initialData={editingProperty}
-                onSubmit={handleCreateOrUpdate}
-                onCancel={handleCancelForm}
-                loading={loading}
-              />
-            </CardContent>
-          </Card>
-        ) : (
-          <div>
-            <h2 className="text-2xl font-semibold mb-6">Manage Properties</h2>
-            <PropertyList
-              properties={properties}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
-          </div>
-        )}
+          <TabsContent value="properties">
+            <div className="mb-6">
+              <Button
+                onClick={() => {
+                  setShowForm(!showForm);
+                  setEditingProperty(null);
+                }}
+                className="mb-4"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                {showForm ? 'View All Properties' : 'Add New Property'}
+              </Button>
+            </div>
+
+            {showForm ? (
+              <Card className="max-w-3xl mx-auto">
+                <CardHeader>
+                  <CardTitle>
+                    {editingProperty ? 'Edit Property' : 'Add New Property Listing'}
+                  </CardTitle>
+                  <CardDescription>
+                    {editingProperty
+                      ? 'Update the property details'
+                      : 'Fill in the details to create a new property listing'}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <PropertyForm
+                    initialData={editingProperty}
+                    onSubmit={handleCreateOrUpdate}
+                    onCancel={handleCancelForm}
+                    loading={loading}
+                  />
+                </CardContent>
+              </Card>
+            ) : (
+              <div>
+                <h2 className="text-2xl font-semibold mb-6">Manage Properties</h2>
+                <PropertyList
+                  properties={properties}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="users">
+            <div>
+              <h2 className="text-2xl font-semibold mb-6">User Management</h2>
+              <UserManagement />
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
