@@ -13,6 +13,7 @@ interface PropertyCardProps {
   area: number;
   roi?: string;
   currency?: 'USD' | 'ZAR' | 'AED';
+  exchangeRates?: { USD: number; ZAR: number; AED: number };
 }
 
 const PropertyCard = ({
@@ -26,20 +27,15 @@ const PropertyCard = ({
   area,
   roi,
   currency = 'USD',
+  exchangeRates = { USD: 1, ZAR: 18.5, AED: 3.67 },
 }: PropertyCardProps) => {
   const formatPrice = (p?: string, curr: 'USD' | 'ZAR' | 'AED' = 'USD') => {
     if (!p) return 'N/A';
     const num = Number(String(p).replace(/[^0-9.-]+/g, ''));
     if (!Number.isFinite(num)) return p;
     
-    // Conversion rates (base is USD)
-    const rates = {
-      USD: 1,
-      ZAR: 18.5,
-      AED: 3.67
-    };
-    
-    const convertedAmount = num * rates[curr];
+    // Use live exchange rates
+    const convertedAmount = num * exchangeRates[curr];
     
     return new Intl.NumberFormat('en-US', {
       style: 'currency',

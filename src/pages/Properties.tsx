@@ -38,10 +38,28 @@ const Properties = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [currency, setCurrency] = useState<'USD' | 'ZAR' | 'AED'>('USD');
+  const [exchangeRates, setExchangeRates] = useState({ USD: 1, ZAR: 18.5, AED: 3.67 });
 
   useEffect(() => {
     fetchProperties();
+    fetchExchangeRates();
   }, []);
+
+  const fetchExchangeRates = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('currency-rates');
+      
+      if (error) throw error;
+      
+      if (data) {
+        setExchangeRates(data);
+        console.log('Live exchange rates loaded:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching exchange rates:', error);
+      // Keep using default fallback rates
+    }
+  };
 
   const fetchProperties = async () => {
     try {
@@ -166,6 +184,7 @@ const Properties = () => {
                     area={property.area}
                     roi={property.roi}
                     currency={currency}
+                    exchangeRates={exchangeRates}
                   />
                 </Link>
               ))}
