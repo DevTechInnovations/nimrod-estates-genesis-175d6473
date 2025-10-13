@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader2, DollarSign } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PropertyCard from '@/components/PropertyCard';
@@ -7,6 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Property {
   id: string;
@@ -30,6 +37,7 @@ const Properties = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
+  const [currency, setCurrency] = useState<'USD' | 'ZAR' | 'AED'>('USD');
 
   useEffect(() => {
     fetchProperties();
@@ -95,6 +103,21 @@ const Properties = () => {
               />
             </div>
 
+            {/* Currency Selector */}
+            <div className="w-full md:w-40">
+              <Select value={currency} onValueChange={(value: 'USD' | 'ZAR' | 'AED') => setCurrency(value)}>
+                <SelectTrigger className="w-full">
+                  <DollarSign className="mr-2 h-4 w-4" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USD">USD ($)</SelectItem>
+                  <SelectItem value="ZAR">ZAR (R)</SelectItem>
+                  <SelectItem value="AED">AED (د.إ)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Type Filter */}
             <div className="flex gap-2 overflow-x-auto">
               {propertyTypes.map((type) => (
@@ -142,6 +165,7 @@ const Properties = () => {
                     bathrooms={property.bathrooms}
                     area={property.area}
                     roi={property.roi}
+                    currency={currency}
                   />
                 </Link>
               ))}

@@ -12,6 +12,7 @@ interface PropertyCardProps {
   bathrooms: number;
   area: number;
   roi?: string;
+  currency?: 'USD' | 'ZAR' | 'AED';
 }
 
 const PropertyCard = ({
@@ -24,16 +25,27 @@ const PropertyCard = ({
   bathrooms,
   area,
   roi,
+  currency = 'USD',
 }: PropertyCardProps) => {
-  const formatPrice = (p?: string) => {
+  const formatPrice = (p?: string, curr: 'USD' | 'ZAR' | 'AED' = 'USD') => {
     if (!p) return 'N/A';
     const num = Number(String(p).replace(/[^0-9.-]+/g, ''));
     if (!Number.isFinite(num)) return p;
+    
+    // Conversion rates (base is USD)
+    const rates = {
+      USD: 1,
+      ZAR: 18.5,
+      AED: 3.67
+    };
+    
+    const convertedAmount = num * rates[curr];
+    
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: curr,
       maximumFractionDigits: 0,
-    }).format(num);
+    }).format(convertedAmount);
   };
 
   return (
@@ -78,7 +90,7 @@ const PropertyCard = ({
         <div className="flex items-center justify-between pt-4 border-t border-border">
           <div>
             <p className="text-2xl font-heading font-bold text-primary">
-              {formatPrice(price)}
+              {formatPrice(price, currency)}
             </p>
           </div>
           <Link to={`/properties/${id}`}>
