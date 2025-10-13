@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, TrendingUp, Globe, Star } from 'lucide-react';
+import { ArrowRight, Shield, TrendingUp, Globe, Star, Trophy, Award, Crown } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PropertyCard from '@/components/PropertyCard';
@@ -175,7 +175,9 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Gold Tier */}
             <div className="bg-card p-8 rounded-lg border-2 border-border hover-lift">
-              <div className="text-primary text-4xl mb-4">🥉</div>
+              <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 shadow-sm">
+                <Trophy size={32} className="text-amber-500" />
+              </div>
               <h3 className="font-heading text-2xl font-bold mb-2">Gold</h3>
               <p className="text-3xl font-bold text-primary mb-4">$299/mo</p>
               <ul className="space-y-3 mb-6 text-muted-foreground">
@@ -197,7 +199,9 @@ const Index = () => {
 
             {/* Silver Tier */}
             <div className="bg-card p-8 rounded-lg border-2 border-primary hover-lift transform md:scale-105 shadow-gold">
-              <div className="text-primary text-4xl mb-4">🥈</div>
+              <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-slate-50 to-slate-100 shadow-sm">
+                <Award size={32} className="text-slate-400" />
+              </div>
               <h3 className="font-heading text-2xl font-bold mb-2">Silver</h3>
               <p className="text-3xl font-bold text-primary mb-4">$599/mo</p>
               <ul className="space-y-3 mb-6 text-muted-foreground">
@@ -223,7 +227,9 @@ const Index = () => {
 
             {/* Platinum Tier */}
             <div className="bg-card p-8 rounded-lg border-2 border-border hover-lift">
-              <div className="text-primary text-4xl mb-4">🥇</div>
+              <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-indigo-50 to-indigo-100 shadow-sm">
+                <Crown size={32} className="text-indigo-600" />
+              </div>
               <h3 className="font-heading text-2xl font-bold mb-2">Platinum</h3>
               <p className="text-3xl font-bold text-primary mb-4">$1,299/mo</p>
               <ul className="space-y-3 mb-6 text-muted-foreground">
