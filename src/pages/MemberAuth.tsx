@@ -8,15 +8,17 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { supabase } from '@/integrations/supabase/client';
+
+// Define the membership tier type
+type MembershipTier = 'silver' | 'gold' | 'platinum';
 
 export default function MemberAuth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [membershipTier, setMembershipTier] = useState<'silver' | 'gold' | 'platinum'>('silver');
+  const [membershipTier, setMembershipTier] = useState<MembershipTier>('silver');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -43,42 +45,20 @@ export default function MemberAuth() {
     setLoading(false);
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    const { error } = await signUp(email, password, fullName);
-
-    if (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error signing up',
-        description: error.message,
-      });
-      setLoading(false);
-      return;
-    }
-
-    // Update membership tier
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ membership_tier: membershipTier })
-        .eq('id', user.id);
-
-      if (updateError) {
-        console.error('Error updating membership tier:', updateError);
+    
+    // Navigate to pricing page with selected tier instead of creating account immediately
+    navigate('/pricing', { 
+      state: { 
+        membershipTier,
+        userData: {
+          email,
+          password,
+          fullName
+        }
       }
-    }
-
-    toast({
-      title: 'Account created!',
-      description: `Welcome to Nimrod Estates ${membershipTier.charAt(0).toUpperCase() + membershipTier.slice(1)} membership.`,
     });
-    navigate('/dashboard');
-
-    setLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
@@ -216,7 +196,7 @@ export default function MemberAuth() {
                 
                 <div className="space-y-3">
                   <Label>Membership Tier</Label>
-                  <RadioGroup value={membershipTier} onValueChange={(value: any) => setMembershipTier(value)}>
+                  <RadioGroup value={membershipTier} onValueChange={(value: MembershipTier) => setMembershipTier(value)}>
                     <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors">
                       <RadioGroupItem value="silver" id="silver" />
                       <Label htmlFor="silver" className="flex-1 cursor-pointer">
@@ -241,8 +221,8 @@ export default function MemberAuth() {
                   </RadioGroup>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Creating account...' : 'Create Account'}
+                <Button type="submit" className="w-full">
+                  Continue to Pricing
                 </Button>
 
                 <div className="relative my-4">
