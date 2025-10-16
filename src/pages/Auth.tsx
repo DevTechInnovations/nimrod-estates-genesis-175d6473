@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -13,9 +13,16 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp } = useAuth();
+  const { user, isAdmin, loading: authLoading, signIn, signUp } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Redirect when user becomes authenticated and is admin
+  useEffect(() => {
+    if (!authLoading && user && isAdmin) {
+      navigate('/admin');
+    }
+  }, [user, isAdmin, authLoading, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,15 +36,15 @@ export default function Auth() {
         title: 'Error signing in',
         description: error.message,
       });
+      setLoading(false);
     } else {
       toast({
         title: 'Welcome back!',
         description: 'You have successfully signed in.',
       });
-      navigate('/admin');
+      // Navigation will be handled by the useEffect above
+      // Don't setLoading(false) here as we want to show loading until redirect
     }
-
-    setLoading(false);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -52,6 +59,7 @@ export default function Auth() {
         title: 'Error signing up',
         description: error.message,
       });
+      setLoading(false);
     } else {
       toast({
         title: 'Account created!',
@@ -59,9 +67,22 @@ export default function Auth() {
       });
       navigate('/');
     }
-
-    setLoading(false);
   };
+
+  // Show loading state while checking auth or redirecting
+  if (loading || (user && isAdmin)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <p>Signing in... Redirecting to admin dashboard</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
