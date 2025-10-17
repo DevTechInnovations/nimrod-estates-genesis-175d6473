@@ -14,8 +14,21 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['Playfair Display', 'serif'],
-        body: ['Inter', 'sans-serif'],
+        heading: [
+          'Montserrat',
+          'Inter', 
+          'Manrope',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'sans-serif'
+        ],
+        body: [
+          'Inter',
+          'Manrope',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'sans-serif'
+        ],
       },
       colors: {
         border: "hsl(var(--border))",
