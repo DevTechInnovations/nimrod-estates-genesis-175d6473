@@ -45,55 +45,63 @@ const PropertyCard = ({
   };
 
   return (
-    <div className="group bg-card rounded-lg overflow-hidden shadow-lg hover-lift border border-border">
-      <div className="relative overflow-hidden h-64">
+    <div className="group bg-card overflow-hidden shadow-lg hover-lift border border-border relative">
+      {/* Image Container - Always Visible with Sharp Edges */}
+      <div className="relative overflow-hidden h-80">
         <img
           src={image}
           alt={title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
         />
         {roi && (
-          <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
+          <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
             {roi} ROI
           </div>
         )}
       </div>
 
-      <div className="p-6">
-        <h3 className="font-heading text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-          {title}
-        </h3>
+      {/* Details Overlay - Appears on Hover */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
+        <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+          <h3 className="font-heading text-xl font-semibold mb-2 text-primary-foreground">
+            {title}
+          </h3>
 
-        <div className="flex items-center text-muted-foreground mb-3">
-          <MapPin size={16} className="mr-1" />
-          <span className="text-sm">{location}</span>
-        </div>
-
-        <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
-          <div className="flex items-center space-x-4">
-            <span className="flex items-center">
-              <Bed size={16} className="mr-1" /> {bedrooms}
-            </span>
-            <span className="flex items-center">
-              <Bath size={16} className="mr-1" /> {bathrooms}
-            </span>
-            <span className="flex items-center">
-              <Square size={16} className="mr-1" /> {area} m²
-            </span>
+          <div className="flex items-center text-primary-foreground/90 mb-3">
+            <MapPin size={16} className="mr-1 text-primary" />
+            <span className="text-sm">{location}</span>
           </div>
-        </div>
 
-        <div className="flex items-center justify-between pt-4 border-t border-border">
-          <div>
-            <p className="text-2xl font-heading font-bold text-primary">
-              {formatPrice(price, currency)}
-            </p>
+          <div className="flex items-center justify-between mb-4 text-sm text-primary-foreground/90">
+            <div className="flex items-center space-x-4">
+              <span className="flex items-center">
+                <Bed size={16} className="mr-1 text-primary" /> {bedrooms}
+              </span>
+              <span className="flex items-center">
+                <Bath size={16} className="mr-1 text-primary" /> {bathrooms}
+              </span>
+              <span className="flex items-center">
+                <Square size={16} className="mr-1 text-primary" /> {area} m²
+              </span>
+            </div>
           </div>
-          <Link to={`/properties/${id}`}>
-            <Button variant="outline" size="sm" className="hover-gold">
-              View Details
-            </Button>
-          </Link>
+
+          <div className="flex items-center justify-between pt-4 border-t border-primary/30">
+            <div>
+              <p className="text-2xl font-heading font-bold text-primary">
+                {formatPrice(price, currency)}
+              </p>
+            </div>
+            <Link to={`/properties/${id}`}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/25"
+              >
+                View Details
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
