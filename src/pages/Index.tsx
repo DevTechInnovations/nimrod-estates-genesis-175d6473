@@ -173,11 +173,12 @@ const Index = () => {
       </section>
 
       {/* Membership Tiers */}
-<section className="py-20 bg-white text-white">
+<section className="py-20 bg-gray-100 text-white">
   <div className="container mx-auto px-6">
-  <div className="text-center mb-16">
+    <div className="text-center mb-16">
       <h2 className="text-4xl font-bold mb-4 tracking-tight">
-      <span className="text-primary">Exclusive Membership</span> Tiers
+        <span className="text-black">Exclusive</span>{" "}
+        <span className="text-yellow-500"> Membership Tiers</span>
       </h2>
       <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed font-medium">
         Join our community of elite investors and unlock premium benefits
