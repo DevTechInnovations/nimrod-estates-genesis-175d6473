@@ -1,6 +1,7 @@
 import { Users, Globe2, Award, TrendingUp } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import heroImage from '@/assets/3d-electric-car-building.jpg';
 
 const About = () => {
   const team = [
@@ -31,24 +32,33 @@ const About = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-b from-background to-muted">
-        <div className="container mx-auto px-4 text-center">
+      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${heroImage})`,
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
+        </div>
+
+        <div className="relative z-10 container mx-auto px-4 text-center text-white">
           <h1 className="font-heading text-5xl md:text-6xl font-bold mb-6">
             About <span className="text-gradient-gold">Nimrod Estates</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Empowering investors with global real estate opportunities since 2003
+          <p className="text-xl md:text-2xl max-w-3xl mx-auto text-white/90">
+            Empowering investors with real estate opportunities since 2003
           </p>
         </div>
       </section>
 
       {/* Company Overview */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="font-heading text-4xl font-bold mb-6">
-                Our <span className="text-gradient-gold">Mission</span>
+                Our <span className="text-primary">Mission</span>
               </h2>
               <p className="text-lg text-muted-foreground mb-4">
                 At Nimrod Estates, we believe that luxury real estate investment should be accessible, 
@@ -61,22 +71,22 @@ const About = () => {
               </p>
             </div>
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-card p-6 rounded-lg border border-border hover-lift">
+              <div className="bg-white p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
                 <Users className="text-primary mb-4" size={40} />
                 <div className="text-3xl font-bold text-primary mb-2">2,500+</div>
                 <div className="text-muted-foreground">Satisfied Clients</div>
               </div>
-              <div className="bg-card p-6 rounded-lg border border-border hover-lift">
+              <div className="bg-white p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
                 <Globe2 className="text-primary mb-4" size={40} />
                 <div className="text-3xl font-bold text-primary mb-2">50+</div>
                 <div className="text-muted-foreground">Countries</div>
               </div>
-              <div className="bg-card p-6 rounded-lg border border-border hover-lift">
+              <div className="bg-white p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
                 <Award className="text-primary mb-4" size={40} />
                 <div className="text-3xl font-bold text-primary mb-2">15+</div>
                 <div className="text-muted-foreground">Industry Awards</div>
               </div>
-              <div className="bg-card p-6 rounded-lg border border-border hover-lift">
+              <div className="bg-white p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
                 <TrendingUp className="text-primary mb-4" size={40} />
                 <div className="text-3xl font-bold text-primary mb-2">12%</div>
                 <div className="text-muted-foreground">Avg. ROI</div>
@@ -87,10 +97,10 @@ const About = () => {
       </section>
 
       {/* Vision */}
-      <section className="py-20 bg-muted">
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-heading text-4xl font-bold mb-8">
-            Our <span className="text-gradient-gold">Vision</span>
+            Our <span className="text-primary">Vision</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-12">
             To be the world's most trusted and innovative luxury real estate investment platform, 
@@ -101,11 +111,11 @@ const About = () => {
       </section>
 
       {/* Leadership Team */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-heading text-4xl font-bold mb-4">
-              Leadership <span className="text-gradient-gold">Team</span>
+              Leadership <span className="text-primary">Team</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Meet the experienced professionals guiding Nimrod Estates to new heights
@@ -114,7 +124,7 @@ const About = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {team.map((member, index) => (
-              <div key={index} className="bg-card rounded-lg overflow-hidden hover-lift border border-border">
+              <div key={index} className="bg-white rounded-2xl overflow-hidden hover-lift border-2 border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="aspect-square overflow-hidden">
                   <img
                     src={member.image}
@@ -123,64 +133,11 @@ const About = () => {
                   />
                 </div>
                 <div className="p-6 text-center">
-                  <h3 className="font-heading text-xl font-bold mb-1">{member.name}</h3>
-                  <p className="text-primary text-sm">{member.title}</p>
+                  <h3 className="font-heading text-xl font-bold mb-1 text-gray-900">{member.name}</h3>
+                  <p className="text-primary text-sm font-medium">{member.title}</p>
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Global Reach */}
-      <section className="py-20 bg-secondary text-secondary-foreground">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl font-bold mb-4">
-              Global <span className="text-gradient-gold">Reach</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Our international presence spans across continents, bringing you the best investment 
-              opportunities from around the world
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-card p-8 rounded-lg text-center">
-              <h3 className="font-heading text-2xl font-bold mb-3">North America</h3>
-              <p className="text-muted-foreground mb-4">
-                Premium properties in major US and Canadian cities
-              </p>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>New York • Los Angeles</li>
-                <li>Miami • Toronto</li>
-                <li>Vancouver • Chicago</li>
-              </ul>
-            </div>
-
-            <div className="bg-card p-8 rounded-lg text-center">
-              <h3 className="font-heading text-2xl font-bold mb-3">Europe</h3>
-              <p className="text-muted-foreground mb-4">
-                Luxury residences in Europe's most prestigious locations
-              </p>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>London • Paris</li>
-                <li>Monaco • Zurich</li>
-                <li>Barcelona • Milan</li>
-              </ul>
-            </div>
-
-            <div className="bg-card p-8 rounded-lg text-center">
-              <h3 className="font-heading text-2xl font-bold mb-3">Asia & Middle East</h3>
-              <p className="text-muted-foreground mb-4">
-                Exclusive properties in rapidly growing markets
-              </p>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>Dubai • Singapore</li>
-                <li>Hong Kong • Tokyo</li>
-                <li>Bangkok • Mumbai</li>
-              </ul>
-            </div>
           </div>
         </div>
       </section>
