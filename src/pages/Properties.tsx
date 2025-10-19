@@ -28,10 +28,13 @@ interface Property {
   roi: string | null;
   images: string[];
   featured: boolean;
+  investmentOpportunity: boolean;
+  exclusive: boolean; // ← ADD THIS
   type: string;
   video_url: string | null;
   pdf_url: string | null;
 }
+
 
 const Properties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -40,11 +43,29 @@ const Properties = () => {
   const [typeFilter, setTypeFilter] = useState('All');
   const [currency, setCurrency] = useState<'USD' | 'ZAR' | 'AED'>('USD');
   const [exchangeRates, setExchangeRates] = useState({ USD: 1, ZAR: 18.5, AED: 3.67 });
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // ← ADD THIS
 
   useEffect(() => {
     fetchProperties();
     fetchExchangeRates();
+    checkAuth(); // ← ADD THIS
   }, []);
+
+  const checkAuth = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+      
+      // Listen for auth state changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setIsAuthenticated(!!session);
+      });
+
+      return () => subscription.unsubscribe();
+    } catch (error) {
+      console.error('Error checking auth:', error);
+    }
+  };
 
   const fetchExchangeRates = async () => {
     try {
@@ -87,6 +108,11 @@ const Properties = () => {
     
     const matchesType = typeFilter === 'All' || property.type === typeFilter;
     
+    // Filter out exclusive properties if not authenticated
+    if (property.exclusive && !isAuthenticated) {
+      return false;
+    }
+    
     return matchesSearch && matchesType;
   });
 
@@ -111,6 +137,11 @@ const Properties = () => {
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto text-white/90">
             Discover exceptional investment opportunities around the world
+            {!isAuthenticated && (
+              <span className="block text-sm mt-2 text-amber-300">
+                Sign in to access exclusive properties
+              </span>
+            )}
           </p>
         </div>
       </section>
@@ -168,6 +199,11 @@ const Properties = () => {
 
           <div className="mt-4 text-sm text-muted-foreground">
             Showing {filteredProperties.length} of {properties.length} properties
+            {!isAuthenticated && (
+              <span className="ml-2 text-amber-600">
+                • Sign in to view exclusive properties
+              </span>
+            )}
           </div>
         </div>
       </section>
@@ -182,39 +218,47 @@ const Properties = () => {
           ) : filteredProperties.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProperties.map((property) => (
-                <Link
+                <PropertyCard
                   key={property.id}
-                  to={`/properties/${property.id}`}
-                  className="block"
-                >
-                  <PropertyCard
-                    id={property.id}
-                    image={property.images?.[0]}
-                    title={property.title}
-                    location={property.location}
-                    price={property.price}
-                    bedrooms={property.bedrooms}
-                    bathrooms={property.bathrooms}
-                    area={property.area}
-                    roi={property.roi}
-                    currency={currency}
-                    exchangeRates={exchangeRates}
-                  />
-                </Link>
+                  id={property.id}
+                  image={property.images?.[0]}
+                  title={property.title}
+                  location={property.location}
+                  price={property.price}
+                  bedrooms={property.bedrooms}
+                  bathrooms={property.bathrooms}
+                  area={property.area}
+                  roi={property.roi}
+                  exclusive={property.exclusive} // ← ADD THIS
+                  currency={currency}
+                  exchangeRates={exchangeRates}
+                  isAuthenticated={isAuthenticated} // ← ADD THIS
+                />
               ))}
             </div>
           ) : (
             <div className="text-center py-20 bg-white rounded-2xl shadow-lg">
-              <p className="text-xl text-muted-foreground mb-4">No properties found matching your criteria.</p>
-              <Button
-                onClick={() => {
-                  setSearchTerm('');
-                  setTypeFilter('All');
-                }}
-                className="bg-primary hover:bg-primary/90 text-white"
-              >
-                Clear Filters
-              </Button>
+              <p className="text-xl text-muted-foreground mb-4">
+                {isAuthenticated ? 'No properties found matching your criteria.' : 'No properties available. Sign in to view exclusive properties.'}
+              </p>
+              <div className="flex gap-4 justify-center">
+                <Button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setTypeFilter('All');
+                  }}
+                  className="bg-primary hover:bg-primary/90 text-white"
+                >
+                  Clear Filters
+                </Button>
+                {!isAuthenticated && (
+                  <Link to="/login">
+                    <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-50">
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </div>
           )}
         </div>

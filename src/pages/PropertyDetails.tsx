@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Loader2, MapPin, Bed, Bath, Square, TrendingUp, ArrowLeft } from 'lucide-react';
+import { Loader2, MapPin, Bed, Bath, Square, TrendingUp, ArrowLeft, Crown } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -16,8 +16,10 @@ interface Property {
   bathrooms: number;
   area: number;
   roi: string | null;
-  images: string[] | null;
+  images: string[];
   featured: boolean;
+  exclusive: boolean;
+  investmentOpportunity: boolean;
   type: string;
   video_url: string | null;
   pdf_url: string | null;
@@ -45,7 +47,13 @@ const PropertyDetails = () => {
         if (error) {
           throw error;
         }
-        setProperty(data as Property | null);
+        
+        if (!data) {
+          setError('Property not found');
+          return;
+        }
+        
+        setProperty(data as Property);
         setCurrentImage(0);
       } catch (err: any) {
         console.error('Error fetching property:', err);
@@ -162,6 +170,27 @@ const PropertyDetails = () => {
               {/* Right: Summary & Actions */}
               <aside className="space-y-4">
                 <div className="bg-card p-6 rounded-lg shadow">
+                  {/* Badges Section */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {property.exclusive && (
+                      <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center">
+                        <Crown size={14} className="mr-1" />
+                        Exclusive
+                      </div>
+                    )}
+                    {property.investmentOpportunity && (
+                      <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center">
+                        <TrendingUp size={14} className="mr-1" />
+                        Investment Opportunity
+                      </div>
+                    )}
+                    {property.featured && (
+                      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
+                        Featured
+                      </div>
+                    )}
+                  </div>
+
                   <h1 className="text-2xl font-bold mb-1">{property.title}</h1>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
                     <MapPin className="h-4 w-4" /> {property.location}
@@ -188,15 +217,17 @@ const PropertyDetails = () => {
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Square className="h-4 w-4" /> Area
                       </div>
-                      <div className="font-medium text-foreground">{property.area} sqft</div>
+                      <div className="font-medium text-foreground">{property.area} m²</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm mb-4">
-                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                    <div className="text-sm text-muted-foreground">Estimated ROI</div>
-                    <div className="ml-auto font-medium">{property.roi ?? 'N/A'}</div>
-                  </div>
+                  {property.roi && (
+                    <div className="flex items-center gap-2 text-sm mb-4">
+                      <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                      <div className="text-sm text-muted-foreground">Estimated ROI</div>
+                      <div className="ml-auto font-medium">{property.roi}</div>
+                    </div>
+                  )}
 
                   <div className="flex flex-col gap-2">
                     <Link to="/contact">
@@ -222,7 +253,13 @@ const PropertyDetails = () => {
                   <div className="flex flex-col gap-2">
                     <div><span className="text-muted-foreground">Type: </span>{property.type}</div>
                     <div><span className="text-muted-foreground">Location: </span>{property.location}</div>
-                    <div><span className="text-muted-foreground">Listed: </span>{property.featured ? 'Featured' : 'Standard'}</div>
+                    <div><span className="text-muted-foreground">Status: </span>{property.featured ? 'Featured' : 'Standard'}</div>
+                    {property.exclusive && (
+                      <div><span className="text-muted-foreground">Access: </span>Exclusive Members</div>
+                    )}
+                    {property.investmentOpportunity && (
+                      <div><span className="text-muted-foreground">Category: </span>Investment Property</div>
+                    )}
                   </div>
                 </div>
               </aside>
