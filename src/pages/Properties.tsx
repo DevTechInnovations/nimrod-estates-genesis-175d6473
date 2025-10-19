@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import heroImage from '@/assets/luxurious-villa-with-modern-architectural-design.jpg';
 
 interface Property {
   id: string;
@@ -94,23 +95,32 @@ const Properties = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-12 bg-gradient-to-b from-background to-muted">
-        <div className="container mx-auto px-4 text-center">
+      <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${heroImage})`,
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
+        </div>
+
+        <div className="relative z-10 container mx-auto px-4 text-center text-white">
           <h1 className="font-heading text-5xl md:text-6xl font-bold mb-6">
             Luxury <span className="text-gradient-gold">Property</span> Listings
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl max-w-3xl mx-auto text-white/90">
             Discover exceptional investment opportunities around the world
           </p>
         </div>
       </section>
 
       {/* Search and Filters */}
-      <section className="py-8 bg-muted sticky top-20 z-40 shadow-md">
+      <section className="py-8 bg-white border-b border-gray-200 sticky top-20 z-40 shadow-sm">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
             {/* Search */}
-            <div className="flex-1 relative">
+            <div className="flex-1 relative min-w-0">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={20} />
               <Input
                 type="text"
@@ -137,13 +147,17 @@ const Properties = () => {
             </div>
 
             {/* Type Filter */}
-            <div className="flex gap-2 overflow-x-auto">
+            <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
               {propertyTypes.map((type) => (
                 <Button
                   key={type}
                   variant={typeFilter === type ? 'default' : 'outline'}
                   onClick={() => setTypeFilter(type)}
-                  className={typeFilter === type ? 'bg-primary hover:bg-primary-glow' : 'hover-gold'}
+                  className={`whitespace-nowrap ${
+                    typeFilter === type 
+                      ? 'bg-primary hover:bg-primary/90 text-white' 
+                      : 'border-gray-300 text-gray-700 hover:border-primary hover:text-primary'
+                  }`}
                   size="sm"
                 >
                   {type}
@@ -159,7 +173,7 @@ const Properties = () => {
       </section>
 
       {/* Property Grid */}
-      <section className="py-12 bg-background">
+      <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           {loading ? (
             <div className="flex justify-center items-center py-20">
@@ -190,14 +204,14 @@ const Properties = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20">
-              <p className="text-xl text-muted-foreground">No properties found matching your criteria.</p>
+            <div className="text-center py-20 bg-white rounded-2xl shadow-lg">
+              <p className="text-xl text-muted-foreground mb-4">No properties found matching your criteria.</p>
               <Button
                 onClick={() => {
                   setSearchTerm('');
                   setTypeFilter('All');
                 }}
-                className="mt-4 bg-primary hover:bg-primary-glow"
+                className="bg-primary hover:bg-primary/90 text-white"
               >
                 Clear Filters
               </Button>

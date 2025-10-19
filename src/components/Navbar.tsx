@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown, User, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoginDropdownOpen, setIsLoginDropdownOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -36,18 +37,13 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          
           <Link to="/" className="flex items-center space-x-2">
-          <img
+            <img
               src="/NM.png"
               alt="Nimrod Estates logo"
-              className="w-15 h-14 "
+              className="w-15 h-14"
               loading="eager"
             />
-            <div className="text-2xl font-heading font-bold">
-              <span className="text-gradient-gold">NIMROD</span>
-              <span className="text-foreground ml-2">ESTATES</span>
-            </div>
           </Link>
 
           {/* Desktop Navigation */}
@@ -65,16 +61,42 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <Link to="/member-auth">
-              <Button variant="outline" size="sm">
-                Member Login
-              </Button>
-            </Link>
-            <Link to="/auth">
-              <Button variant="default" size="sm" className="bg-primary hover:bg-primary-glow">
-                Admin Login
-              </Button>
-            </Link>
+            
+            {/* Login Dropdown - Styled like other nav items */}
+            <div className="relative">
+              <button
+                className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
+                  isLoginDropdownOpen
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-foreground hover-gold'
+                }`}
+                onClick={() => setIsLoginDropdownOpen(!isLoginDropdownOpen)}
+              >
+                Login
+                <ChevronDown className={`h-4 w-4 transition-transform ${isLoginDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {isLoginDropdownOpen && (
+                <div className="absolute top-full right-0 mt-2 w-48 bg-background border border-border rounded-lg shadow-lg py-2 z-50">
+                  <Link
+                    to="/member-auth"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors"
+                    onClick={() => setIsLoginDropdownOpen(false)}
+                  >
+                    <User className="h-4 w-4" />
+                    <span>Member Login</span>
+                  </Link>
+                  <Link
+                    to="/auth"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors"
+                    onClick={() => setIsLoginDropdownOpen(false)}
+                  >
+                    <Shield className="h-4 w-4" />
+                    <span>Admin Login</span>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -101,19 +123,38 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <Link to="/member-auth" onClick={() => setIsMobileMenuOpen(false)}>
-              <Button variant="outline" size="sm" className="w-full mt-4">
-                Member Login
-              </Button>
-            </Link>
-            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-              <Button variant="default" size="sm" className="w-full mt-2 bg-primary hover:bg-primary-glow">
-                Admin Login
-              </Button>
-            </Link>
+            
+            {/* Mobile Login Options - Styled as simple links */}
+            <div className="border-t border-border mt-4 pt-4">
+              <div className="text-sm font-medium text-foreground/60 px-2 py-1">Login Options</div>
+              <Link
+                to="/member-auth"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 py-2 text-sm text-foreground hover:text-primary transition-colors"
+              >
+                <User className="h-4 w-4" />
+                <span>Member Login</span>
+              </Link>
+              <Link
+                to="/auth"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 py-2 text-sm text-foreground hover:text-primary transition-colors"
+              >
+                <Shield className="h-4 w-4" />
+                <span>Admin Login</span>
+              </Link>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Close dropdown when clicking outside */}
+      {isLoginDropdownOpen && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setIsLoginDropdownOpen(false)}
+        />
+      )}
     </nav>
   );
 };

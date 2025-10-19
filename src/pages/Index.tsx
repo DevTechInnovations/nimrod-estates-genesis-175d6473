@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, TrendingUp, Globe, Star, Trophy, Award, Crown } from 'lucide-react';
+import { ArrowRight, Shield, TrendingUp, Globe, Star, Trophy, Award, Crown, Check, Zap, Sparkles } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PropertyCard from '@/components/PropertyCard';
@@ -63,22 +63,30 @@ const Index = () => {
         </div>
 
         <div className="relative z-10 container mx-auto px-4 text-center text-white">
-          <h1 className="font-heading text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-            Global Investment &<br />
-            <span className="text-gradient-gold">Luxury Property</span> Opportunities
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in text-white/90">
-            Empowering investors with premium real estate opportunities worldwide
-          </p>
+       <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in leading-tight">
+        <span className="text-gradient-gold">Luxury Real Estate</span> Investments
+        </h1>
+        <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in text-white/90 leading-relaxed">
+        Invest with confidence in exclusive properties worldwide.
+        </p>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
             <Link to="/properties">
-              <Button size="lg" className="bg-primary hover:bg-primary-glow text-white shadow-gold">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-primary text-primary bg-transparent hover:bg-primary hover:text-white transition-all duration-300 shadow-gold"
+              >
                 Explore Properties
                 <ArrowRight className="ml-2" size={20} />
               </Button>
             </Link>
             <Link to="/contact">
-              <Button size="lg" variant="outline" className="border-white text-black hover:bg-white/10">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-primary text-primary bg-transparent hover:bg-primary hover:text-white transition-all duration-300"
+              >
                 Get Started
               </Button>
             </Link>
@@ -91,20 +99,20 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div className="animate-fade-in">
-              <div className="text-4xl font-heading font-bold text-gradient-gold mb-2">500+</div>
-              <div className="text-muted-foreground">Luxury Properties</div>
+              <div className="text-4xl font-bold text-gradient-gold mb-2 tracking-tight">500+</div>
+              <div className="text-muted-foreground font-medium">Luxury Properties</div>
             </div>
             <div className="animate-fade-in">
-              <div className="text-4xl font-heading font-bold text-gradient-gold mb-2">50+</div>
-              <div className="text-muted-foreground">Global Locations</div>
+              <div className="text-4xl font-bold text-gradient-gold mb-2 tracking-tight">50+</div>
+              <div className="text-muted-foreground font-medium">Global Locations</div>
             </div>
             <div className="animate-fade-in">
-              <div className="text-4xl font-heading font-bold text-gradient-gold mb-2">$2.5B+</div>
-              <div className="text-muted-foreground">Assets Managed</div>
+              <div className="text-4xl font-bold text-gradient-gold mb-2 tracking-tight">$2.5B+</div>
+              <div className="text-muted-foreground font-medium">Assets Managed</div>
             </div>
             <div className="animate-fade-in">
-              <div className="text-4xl font-heading font-bold text-gradient-gold mb-2">98%</div>
-              <div className="text-muted-foreground">Client Satisfaction</div>
+              <div className="text-4xl font-bold text-gradient-gold mb-2 tracking-tight">98%</div>
+              <div className="text-muted-foreground font-medium">Client Satisfaction</div>
             </div>
           </div>
         </div>
@@ -114,21 +122,21 @@ const Index = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl font-bold mb-4">
+            <h2 className="text-4xl font-bold mb-4 tracking-tight">
               Featured <span className="text-gradient-gold">Properties</span>
             </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed font-medium">
               Discover our handpicked selection of exceptional investment opportunities
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {loading ? (
-              <div className="col-span-3 text-center py-12 text-muted-foreground">
+              <div className="col-span-3 text-center py-12 text-muted-foreground font-medium">
                 Loading featured properties...
               </div>
             ) : featuredProperties.length === 0 ? (
-              <div className="col-span-3 text-center py-12 text-muted-foreground">
+              <div className="col-span-3 text-center py-12 text-muted-foreground font-medium">
                 No featured properties available yet.
               </div>
             ) : (
@@ -151,7 +159,11 @@ const Index = () => {
 
           <div className="text-center">
             <Link to="/properties">
-              <Button size="lg" variant="outline" className="hover-gold">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-primary text-primary bg-transparent hover:bg-primary hover:text-white transition-all duration-300 font-semibold"
+              >
                 View All Properties
                 <ArrowRight className="ml-2" size={20} />
               </Button>
@@ -161,149 +173,216 @@ const Index = () => {
       </section>
 
       {/* Membership Tiers */}
-      <section className="py-20 bg-muted">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl font-bold mb-4">
-              Exclusive <span className="text-gradient-gold">Membership</span> Tiers
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Join our community of elite investors and unlock premium benefits
-            </p>
+<section className="py-20 bg-gray-100 text-white">
+  <div className="container mx-auto px-6">
+    <div className="text-center mb-16">
+      <h2 className="text-4xl font-bold mb-4 tracking-tight">
+        <span className="text-black">Exclusive</span>{" "}
+        <span className="text-yellow-500"> Membership Tiers</span>
+      </h2>
+      <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed font-medium">
+        Join our community of elite investors and unlock premium benefits
+      </p>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto">
+      {/* Gold Tier */}
+      <div className="bg-secondary border-2 border-gray-800 hover:border-primary transition-all duration-300 hover:-translate-y-2 shadow-xl group relative overflow-hidden p-10">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
+        <div className="relative z-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/20 group-hover:bg-primary/30 transition-colors">
+            <Trophy size={28} className="text-primary" />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Gold Tier */}
-            <div className="bg-card p-8 rounded-lg border-2 border-border hover-lift">
-              <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 shadow-sm">
-                <Trophy size={32} className="text-amber-500" />
-              </div>
-              <h3 className="font-heading text-2xl font-bold mb-2">Gold</h3>
-              <p className="text-3xl font-bold text-primary mb-4">$299/mo</p>
-              <ul className="space-y-3 mb-6 text-muted-foreground">
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  Access to basic property listings
-                </li>
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  Monthly market reports
-                </li>
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  Email support
-                </li>
-              </ul>
-              <Button className="w-full bg-primary hover:bg-primary-glow">Join Gold</Button>
-            </div>
-
-            {/* Silver Tier */}
-            <div className="bg-card p-8 rounded-lg border-2 border-primary hover-lift transform md:scale-105 shadow-gold">
-              <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-slate-50 to-slate-100 shadow-sm">
-                <Award size={32} className="text-slate-400" />
-              </div>
-              <h3 className="font-heading text-2xl font-bold mb-2">Silver</h3>
-              <p className="text-3xl font-bold text-primary mb-4">$599/mo</p>
-              <ul className="space-y-3 mb-6 text-muted-foreground">
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  All Gold benefits
-                </li>
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  Priority property access
-                </li>
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  Investment advisory
-                </li>
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  Phone support
-                </li>
-              </ul>
-              <Button className="w-full bg-primary hover:bg-primary-glow">Join Silver</Button>
-            </div>
-
-            {/* Platinum Tier */}
-            <div className="bg-card p-8 rounded-lg border-2 border-border hover-lift">
-              <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-indigo-50 to-indigo-100 shadow-sm">
-                <Crown size={32} className="text-indigo-600" />
-              </div>
-              <h3 className="font-heading text-2xl font-bold mb-2">Platinum</h3>
-              <p className="text-3xl font-bold text-primary mb-4">$1,299/mo</p>
-              <ul className="space-y-3 mb-6 text-muted-foreground">
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  All Silver benefits
-                </li>
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  Exclusive off-market deals
-                </li>
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  Personal wealth advisor
-                </li>
-                <li className="flex items-start">
-                  <Star className="text-primary mr-2 mt-1 flex-shrink-0" size={16} />
-                  24/7 concierge service
-                </li>
-              </ul>
-              <Button className="w-full bg-primary hover:bg-primary-glow">Join Platinum</Button>
-            </div>
+          <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Gold</h3>
+          <div className="flex items-baseline mb-6">
+            <span className="text-3xl font-bold text-primary tracking-tight">$299</span>
+            <span className="text-gray-400 ml-2 font-medium">/month</span>
           </div>
+          <ul className="space-y-4 mb-8">
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Access to basic property listings</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Monthly market reports</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Email support</span>
+            </li>
+          </ul>
+          <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300">
+            Join Gold
+          </Button>
         </div>
-      </section>
+      </div>
+
+      {/* Silver Tier - Featured */}
+      <div className="bg-secondary border-2 border-primary shadow-2xl transform md:scale-105 transition-all duration-300 p-10 relative group overflow-hidden">
+        <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 text-sm font-semibold flex items-center rounded-none">
+          <Zap size={14} className="mr-1" /> Most Popular
+        </div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/15 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
+        <div className="relative z-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/30 group-hover:bg-primary/40 transition-colors">
+            <Award size={28} className="text-primary" />
+          </div>
+          <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Silver</h3>
+          <div className="flex items-baseline mb-6">
+            <span className="text-3xl font-bold text-primary tracking-tight">$599</span>
+            <span className="text-gray-400 ml-2 font-medium">/month</span>
+          </div>
+          <ul className="space-y-4 mb-8">
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">All Gold benefits</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Priority property access</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Investment advisory</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Phone support</span>
+            </li>
+          </ul>
+          <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300">
+            Join Silver
+          </Button>
+        </div>
+      </div>
+
+      {/* Platinum Tier */}
+      <div className="bg-secondary border-2 border-gray-800 hover:border-primary transition-all duration-300 hover:-translate-y-2 shadow-xl group relative overflow-hidden p-10">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
+        <div className="relative z-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/20 group-hover:bg-primary/30 transition-colors">
+            <Crown size={28} className="text-primary" />
+          </div>
+          <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Platinum</h3>
+          <div className="flex items-baseline mb-6">
+            <span className="text-3xl font-bold text-primary tracking-tight">$1,299</span>
+            <span className="text-gray-400 ml-2 font-medium">/month</span>
+          </div>
+          <ul className="space-y-4 mb-8">
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">All Silver benefits</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Exclusive off-market deals</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Personal wealth advisor</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">24/7 concierge service</span>
+            </li>
+          </ul>
+          <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300">
+            Join Platinum
+          </Button>
+        </div>
+      </div>
+    </div>
+
+    {/* Additional Info */}
+    <div className="text-center mt-12">
+      <p className="text-gray-400 font-medium flex items-center justify-center">
+        <Sparkles size={16} className="mr-2 text-primary" />
+        All plans include a 30-day money-back guarantee
+      </p>
+    </div>
+  </div>
+</section>
 
       {/* Why Choose Us */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl font-bold mb-4">
-              Why Choose <span className="text-gradient-gold">Nimrod Estates</span>
-            </h2>
+     {/* <section className="py-20 bg-white">
+  <div className="container mx-auto px-4">
+    <div className="text-center mb-16">
+      <h2 className="text-4xl font-bold mb-4 tracking-tight">
+        Why Choose <span className="text-primary">Nimrod Estates</span>
+      </h2>
+      <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed font-medium">
+        Discover what sets us apart in the world of luxury real estate investment
+      </p>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+
+      <div className="group text-center p-8 rounded-2xl bg-white border-2 border-gray-100 hover:border-primary/30 hover-lift shadow-lg hover:shadow-xl transition-all duration-300">
+        <div className="relative mb-6">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 shadow-md group-hover:shadow-lg transition-all duration-300">
+            <Globe className="text-primary" size={32} />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6 hover-lift">
-              <div className="inline-block p-4 bg-primary/10 rounded-full mb-4">
-                <Globe className="text-primary" size={40} />
-              </div>
-              <h3 className="font-heading text-xl font-bold mb-3">Global Reach</h3>
-              <p className="text-muted-foreground">
-                Access exclusive properties in over 50 countries worldwide
-              </p>
-            </div>
-
-            <div className="text-center p-6 hover-lift">
-              <div className="inline-block p-4 bg-primary/10 rounded-full mb-4">
-                <Shield className="text-primary" size={40} />
-              </div>
-              <h3 className="font-heading text-xl font-bold mb-3">Trusted Service</h3>
-              <p className="text-muted-foreground">
-                20+ years of excellence in luxury real estate investment
-              </p>
-            </div>
-
-            <div className="text-center p-6 hover-lift">
-              <div className="inline-block p-4 bg-primary/10 rounded-full mb-4">
-                <TrendingUp className="text-primary" size={40} />
-              </div>
-              <h3 className="font-heading text-xl font-bold mb-3">High Returns</h3>
-              <p className="text-muted-foreground">
-                Average ROI of 12% with carefully curated investment opportunities
-              </p>
-            </div>
+          <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+            <div className="w-2 h-2 bg-white rounded-full"></div>
           </div>
         </div>
-      </section>
+        <h3 className="text-xl font-bold mb-4 tracking-tight text-gray-900">Global Reach</h3>
+        <p className="text-muted-foreground leading-relaxed font-medium">
+          Access exclusive properties in over 50 countries worldwide with our international network
+        </p>
+        <div className="mt-6 pt-6 border-t border-gray-100">
+          <div className="text-2xl font-bold text-primary">50+</div>
+          <div className="text-sm text-muted-foreground font-medium">Countries</div>
+        </div>
+      </div>
+
+      <div className="group text-center p-8 rounded-2xl bg-white border-2 border-primary/20 hover:border-primary/50 hover-lift shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div className="relative mb-6">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 group-hover:from-primary/30 group-hover:to-primary/15 shadow-lg group-hover:shadow-xl transition-all duration-300">
+            <Shield className="text-primary" size={32} />
+          </div>
+          <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+          </div>
+        </div>
+        <h3 className="text-xl font-bold mb-4 tracking-tight text-gray-900">Trusted Service</h3>
+        <p className="text-muted-foreground leading-relaxed font-medium">
+          20+ years of excellence in luxury real estate investment with proven track record
+        </p>
+        <div className="mt-6 pt-6 border-t border-gray-100">
+          <div className="text-2xl font-bold text-primary">20+</div>
+          <div className="text-sm text-muted-foreground font-medium">Years Experience</div>
+        </div>
+      </div>
+
+      <div className="group text-center p-8 rounded-2xl bg-white border-2 border-gray-100 hover:border-primary/30 hover-lift shadow-lg hover:shadow-xl transition-all duration-300">
+        <div className="relative mb-6">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 shadow-md group-hover:shadow-lg transition-all duration-300">
+            <TrendingUp className="text-primary" size={32} />
+          </div>
+          <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+          </div>
+        </div>
+        <h3 className="text-xl font-bold mb-4 tracking-tight text-gray-900">High Returns</h3>
+        <p className="text-muted-foreground leading-relaxed font-medium">
+          Average ROI of 12% with carefully curated investment opportunities and expert guidance
+        </p>
+        <div className="mt-6 pt-6 border-t border-gray-100">
+          <div className="text-2xl font-bold text-primary">12%</div>
+          <div className="text-sm text-muted-foreground font-medium">Average ROI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> */}
 
       {/* Testimonials */}
-      <section className="py-20 bg-secondary text-secondary-foreground">
+      {/* <section className="py-20 bg-secondary text-secondary-foreground">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl font-bold mb-4">
+            <h2 className="text-4xl font-bold mb-4 tracking-tight">
               Client <span className="text-gradient-gold">Success Stories</span>
             </h2>
           </div>
@@ -315,11 +394,11 @@ const Index = () => {
                   <Star key={i} className="text-primary fill-primary" size={20} />
                 ))}
               </div>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-4 leading-relaxed font-medium">
                 "Nimrod Estates helped me diversify my portfolio with premium international properties. The returns have exceeded my expectations!"
               </p>
-              <div className="font-semibold">James Morrison</div>
-              <div className="text-sm text-muted-foreground">Platinum Member</div>
+              <div className="font-semibold tracking-wide">James Morrison</div>
+              <div className="text-sm text-muted-foreground font-medium">Platinum Member</div>
             </div>
 
             <div className="bg-card p-6 rounded-lg">
@@ -328,11 +407,11 @@ const Index = () => {
                   <Star key={i} className="text-primary fill-primary" size={20} />
                 ))}
               </div>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-4 leading-relaxed font-medium">
                 "Professional service, exclusive access to off-market deals, and exceptional support throughout the entire investment process."
               </p>
-              <div className="font-semibold">Sarah Chen</div>
-              <div className="text-sm text-muted-foreground">Silver Member</div>
+              <div className="font-semibold tracking-wide">Sarah Chen</div>
+              <div className="text-sm text-muted-foreground font-medium">Silver Member</div>
             </div>
 
             <div className="bg-card p-6 rounded-lg">
@@ -341,15 +420,15 @@ const Index = () => {
                   <Star key={i} className="text-primary fill-primary" size={20} />
                 ))}
               </div>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-4 leading-relaxed font-medium">
                 "The wealth advisory team at Nimrod Estates is outstanding. They've transformed my approach to real estate investment."
               </p>
-              <div className="font-semibold">Michael Rodriguez</div>
-              <div className="text-sm text-muted-foreground">Gold Member</div>
+              <div className="font-semibold tracking-wide">Michael Rodriguez</div>
+              <div className="text-sm text-muted-foreground font-medium">Gold Member</div>
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <Footer />
     </div>
