@@ -97,18 +97,34 @@ const About = () => {
       </section>
 
       {/* Vision */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="font-heading text-4xl font-bold mb-8">
-            Our <span className="text-primary">Vision</span>
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-12">
-            To be the world's most trusted and innovative luxury real estate investment platform, 
-            creating wealth and opportunity for our clients while setting new standards of excellence 
-            in the industry.
-          </p>
-        </div>
-      </section>
+   <section className="py-24 bg-gray-50">
+  <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
+    
+    {/* Text Content */}
+    <div className="md:w-1/2 text-center md:text-left">
+      <h2 className="font-heading text-5xl font-extrabold mb-6">
+        Our <span className="text-primary">Vision</span>
+      </h2>
+      <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-6">
+        To be the world's most trusted and innovative luxury real estate investment platform, 
+        creating wealth and opportunity for our clients while setting new standards of excellence 
+        in the industry.
+      </p>
+      <button className="px-8 py-3 font-semibold text-white bg-primary rounded-full shadow-lg hover:bg-primary/90 transition-all duration-300">
+        Learn More
+      </button>
+    </div>
+
+    {/* Image */}
+    <div className="md:w-1/2">
+      <img
+        src="src/assets/3d-house-model-with-modern-architecture (1).jpg" 
+        alt="Luxury Real Estate"
+        className="w-full h-auto shadow-lg object-cover"
+      />
+    </div>
+  </div>
+</section>
 
       {/* Leadership Team */}
 <section className="py-20 bg-white">
