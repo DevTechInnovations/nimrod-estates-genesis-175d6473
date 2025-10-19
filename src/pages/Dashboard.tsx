@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { Crown, Mail, User, Settings } from 'lucide-react';
+import { Crown, Mail, User, Settings, Home, HeadphonesIcon, Star, Calendar, Shield, Zap, LogOut } from 'lucide-react';
 
 interface Profile {
   full_name: string;
@@ -17,7 +17,7 @@ interface Profile {
 }
 
 export default function Dashboard() {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
 
@@ -48,10 +48,22 @@ export default function Dashboard() {
     fetchProfile();
   }, [user]);
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/member-auth');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -63,106 +75,256 @@ export default function Dashboard() {
   const getTierColor = (tier: string) => {
     switch (tier) {
       case 'platinum':
-        return 'bg-gradient-to-r from-slate-700 to-slate-400 text-white';
+        return 'bg-gradient-to-r from-slate-700 via-slate-600 to-slate-500 text-white shadow-lg';
       case 'gold':
-        return 'bg-gradient-to-r from-yellow-600 to-yellow-400 text-white';
+        return 'bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 text-white shadow-lg';
       case 'silver':
-        return 'bg-gradient-to-r from-gray-500 to-gray-300 text-white';
+        return 'bg-gradient-to-r from-gray-500 via-gray-400 to-gray-300 text-white shadow-md';
       default:
         return 'bg-secondary';
     }
   };
 
+  const getTierIcon = (tier: string) => {
+    switch (tier) {
+      case 'platinum':
+        return <Crown className="h-6 w-6" />;
+      case 'gold':
+        return <Star className="h-6 w-6" />;
+      case 'silver':
+        return <Shield className="h-6 w-6" />;
+      default:
+        return <User className="h-6 w-6" />;
+    }
+  };
+
+  const getTierBenefits = (tier: string) => {
+    const benefits = {
+      platinum: [
+        'Exclusive luxury properties',
+        '24/7 dedicated concierge',
+        'Priority viewing appointments',
+        'Market trend reports',
+        'Investment advisory'
+      ],
+      gold: [
+        'Premium property access',
+        'Extended viewing hours',
+        'Market updates',
+        'Priority support',
+        'Flexible scheduling'
+      ],
+      silver: [
+        'Standard property listings',
+        'Email notifications',
+        'Basic support',
+        'Online scheduling',
+        'Market overview'
+      ]
+    };
+    return benefits[tier as keyof typeof benefits] || benefits.silver;
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center space-y-2">
-            <h1 className="text-4xl font-serif gradient-text">Member Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back, {profile.full_name}</p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Crown className="h-5 w-5" />
-                  Membership Status
-                </CardTitle>
-                <CardDescription>Your current membership tier</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Badge className={`${getTierColor(profile.membership_tier)} text-lg py-2 px-4`}>
-                  {profile.membership_tier.charAt(0).toUpperCase() + profile.membership_tier.slice(1)} Member
+      <main className="flex-1 container mx-auto px-4 pt-24 pb-8"> {/* Increased pt-24 to push content down further */}
+        {/* Welcome Section - Moved further down */}
+        <div className="max-w-6xl mx-auto mb-8">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center relative">
+            {/* Sign Out Button */}
+            <div className="absolute top-4 right-4">
+              <Button 
+                onClick={handleSignOut}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 text-gold-600 hover:text-black hover:border-gold-200"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </Button>
+            </div>
+            
+            <div className="max-w-2xl mx-auto pt-4"> {/* Added pt-4 to account for sign out button */}
+              <h1 className="text-4xl font-bold text-gray-900 mb-3">
+                Welcome back, {profile.full_name}!
+              </h1>
+              <p className="text-xl text-gray-600 mb-6">
+                Here's everything you need to manage your membership and explore properties.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Badge variant="secondary" className="px-3 py-1">
+                  <Zap className="h-3 w-3 mr-1" />
+                  Active Member
                 </Badge>
-                <div className="text-sm text-muted-foreground">
-                  {profile.membership_tier === 'platinum' && (
-                    <p>You have access to all premium features and exclusive properties.</p>
-                  )}
-                  {profile.membership_tier === 'gold' && (
-                    <p>You have access to enhanced benefits and priority viewing.</p>
-                  )}
-                  {profile.membership_tier === 'silver' && (
-                    <p>You have access to all basic membership benefits.</p>
-                  )}
+                <Badge variant="secondary" className="px-3 py-1">
+                  <Calendar className="h-3 w-3 mr-1" />
+                  Joined Recently
+                </Badge>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-6xl mx-auto space-y-8">
+          {/* Main Dashboard Grid */}
+          <div className="grid gap-8 lg:grid-cols-3">
+            {/* Membership Card */}
+            <Card className="lg:col-span-2 border-0 shadow-lg">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-3 text-2xl">
+                      {getTierIcon(profile.membership_tier)}
+                      Membership Status
+                    </CardTitle>
+                    <CardDescription className="text-base mt-2">
+                      Your current membership tier and benefits
+                    </CardDescription>
+                  </div>
+                  <Badge className={`${getTierColor(profile.membership_tier)} text-sm py-2 px-4 font-semibold`}>
+                    {profile.membership_tier.charAt(0).toUpperCase() + profile.membership_tier.slice(1)}
+                  </Badge>
                 </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-2">
+                  {getTierBenefits(profile.membership_tier).map((benefit, index) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full"></div>
+                      <span className="text-sm text-gray-700">{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+                <Button 
+                  onClick={() => navigate('/upgrade')}
+                  className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-sm"
+                  size="lg"
+                >
+                  Upgrade Membership
+                </Button>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Profile Information
+            {/* Profile Information */}
+            <Card className="border-0 shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-2xl">
+                  <User className="h-6 w-6" />
+                  Profile
                 </CardTitle>
-                <CardDescription>Your account details</CardDescription>
+                <CardDescription>
+                  Your account details
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <p className="text-sm text-muted-foreground">Name</p>
-                  <p className="font-medium">{profile.full_name}</p>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Full Name</p>
+                    <p className="font-semibold text-gray-900">{profile.full_name}</p>
+                  </div>
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1 flex items-center gap-1">
+                      <Mail className="h-3 w-3" />
+                      Email Address
+                    </p>
+                    <p className="font-semibold text-gray-900">{profile.email}</p>
+                  </div>
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Notifications</p>
+                    <p className="font-semibold text-gray-900">
+                      {profile.email_notifications ? 'Enabled' : 'Disabled'}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground flex items-center gap-1">
-                    <Mail className="h-3 w-3" />
-                    Email
-                  </p>
-                  <p className="font-medium">{profile.email}</p>
-                </div>
+                <Button 
+                  onClick={() => navigate('/settings')}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Edit Profile
+                </Button>
               </CardContent>
             </Card>
           </div>
 
-          <Card>
+          {/* Quick Actions */}
+          <Card className="border-0 shadow-lg">
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Manage your account and preferences</CardDescription>
+              <CardTitle className="text-2xl">Quick Actions</CardTitle>
+              <CardDescription>
+                Manage your account and explore properties
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <Button 
-                onClick={() => navigate('/settings')} 
-                className="w-full justify-start"
-                variant="outline"
-              >
-                <Settings className="mr-2 h-4 w-4" />
-                Account Settings
-              </Button>
-              <Button 
-                onClick={() => navigate('/properties')} 
-                className="w-full justify-start"
-                variant="outline"
-              >
-                Browse Properties
-              </Button>
-              <Button 
-                onClick={() => navigate('/contact')} 
-                className="w-full justify-start"
-                variant="outline"
-              >
-                Contact Support
-              </Button>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-3">
+                <Button 
+                  onClick={() => navigate('/properties')}
+                  className="h-24 flex flex-col gap-3 p-4 hover:shadow-md transition-all"
+                  variant="outline"
+                >
+                  <Home className="h-6 w-6" />
+                  <span className="font-semibold">Browse Properties</span>
+                  <span className="text-xs text-gray-500">Explore available listings</span>
+                </Button>
+
+                <Button 
+                  onClick={() => navigate('/appointments')}
+                  className="h-24 flex flex-col gap-3 p-4 hover:shadow-md transition-all"
+                  variant="outline"
+                >
+                  <Calendar className="h-6 w-6" />
+                  <span className="font-semibold">My Appointments</span>
+                  <span className="text-xs text-gray-500">View scheduled viewings</span>
+                </Button>
+
+                <Button 
+                  onClick={() => navigate('/contact')}
+                  className="h-24 flex flex-col gap-3 p-4 hover:shadow-md transition-all"
+                  variant="outline"
+                >
+                  <HeadphonesIcon className="h-6 w-6" />
+                  <span className="font-semibold">Contact Support</span>
+                  <span className="text-xs text-gray-500">Get help & assistance</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Activity Section */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl">Recent Activity</CardTitle>
+              <CardDescription>
+                Your latest interactions and updates
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <div>
+                      <p className="font-medium text-gray-900">Membership Activated</p>
+                      <p className="text-sm text-gray-600">Your {profile.membership_tier} membership is active</p>
+                    </div>
+                  </div>
+                  <span className="text-sm text-gray-500">Today</span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <div>
+                      <p className="font-medium text-gray-900">Profile Completed</p>
+                      <p className="text-sm text-gray-600">Your profile information has been updated</p>
+                    </div>
+                  </div>
+                  <span className="text-sm text-gray-500">Recently</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
