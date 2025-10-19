@@ -161,23 +161,6 @@ const Contact = () => {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="font-heading text-4xl font-bold mb-4 text-gray-900">
-            Prefer to Chat <span className="text-primary">Directly?</span>
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Connect with us instantly via WhatsApp for quick responses
-          </p>
-          <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
-            <Phone className="mr-2" size={20} />
-            WhatsApp Us
-          </Button>
-        </div>
-      </section>
-
       <Footer />
     </div>
   );

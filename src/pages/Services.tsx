@@ -1,4 +1,4 @@
-import { Building2, LineChart, Shield, Key, Lock, Users } from 'lucide-react';
+import { Building2, LineChart, Shield, Key, Lock, Users, ArrowRight, CheckCircle } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -71,149 +71,252 @@ const Services = () => {
       </section>
 
       {/* Public Services */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl font-bold mb-4">
-              Available to <span className="text-primary">Everyone</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Access these premium services without a membership
-            </p>
-          </div>
+<section className="py-20 bg-gray-50">
+  <div className="container mx-auto px-6">
+    <div className="text-center mb-16">
+      <h2 className="font-heading text-4xl font-extrabold mb-4 tracking-tight">
+        Available to <span className="text-primary">Everyone</span>
+      </h2>
+      <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
+        Access these premium services — no membership required
+      </p>
+    </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {publicServices.map((service, index) => {
-              const Icon = service.icon;
-              return (
-                <div
-                  key={index}
-                  className="bg-white p-8 rounded-2xl border-2 border-gray-100 hover:border-primary/30 hover-lift shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 group-hover:bg-primary/20 transition-colors">
-                    <Icon className="text-primary" size={32} />
-                  </div>
-                  <h3 className="font-heading text-2xl font-bold mb-4 text-gray-900">{service.title}</h3>
-                  <p className="text-muted-foreground mb-6">{service.description}</p>
-                  <Link to="/contact">
-                    <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
-                      Learn More
-                    </Button>
-                  </Link>
-                </div>
-              );
-            })}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+      {publicServices.map((service, index) => {
+        const Icon = service.icon;
+        const serviceImages = [
+          "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+          "https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+        ];
+        
+        return (
+          <div
+            key={index}
+            className="group relative bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col h-full"
+          >
+            {/* Image Section */}
+            <div className="relative h-48 overflow-hidden flex-shrink-0">
+              <img
+                src={serviceImages[index]}
+                alt={service.title}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              
+              {/* Icon Overlay */}
+              <div className="absolute top-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm">
+                <Icon className="text-primary" size={24} />
+              </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="p-8 flex flex-col flex-grow">
+              {/* Title */}
+              <h3 className="font-heading text-2xl font-bold mb-3 text-gray-900 group-hover:text-primary transition-colors duration-300">
+                {service.title}
+              </h3>
+
+              {/* Description */}
+              <p className="text-muted-foreground mb-8 leading-relaxed flex-grow">
+                {service.description}
+              </p>
+
+              {/* Button - Always at bottom */}
+              <div className="mt-auto">
+                <Link to="/contact">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="border-primary text-primary bg-transparent hover:bg-primary hover:text-white w-full transition-all duration-300"
+                  >
+                    Learn More
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        );
+      })}
+    </div>
+  </div>
+</section>
 
       {/* Member-Only Services */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl font-bold mb-4">
-              <span className="text-primary">Member-Exclusive</span> Services
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Premium services available only to our valued members
-            </p>
-          </div>
+{/* Member-Only Services */}
+<section className="py-20 bg-gray-50">
+  <div className="container mx-auto px-6">
+    <div className="text-center mb-16">
+      <h2 className="font-heading text-4xl font-extrabold mb-4 tracking-tight">
+        <span className="text-primary">Member-Exclusive</span> Services
+      </h2>
+      <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
+        Premium services available only to our valued members
+      </p>
+    </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {memberServices.map((service, index) => {
-              const Icon = service.icon;
-              return (
-                <div
-                  key={index}
-                  className="bg-white p-8 rounded-2xl border-2 border-primary/20 hover:border-primary/50 hover-lift shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
-                >
-                  <div className="absolute top-4 right-4">
-                    <Lock className="text-primary/40" size={24} />
-                  </div>
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 group-hover:bg-primary/20 transition-colors">
-                    <Icon className="text-primary" size={32} />
-                  </div>
-                  <div className="inline-block px-3 py-1 bg-primary/20 text-primary text-sm font-semibold rounded-full mb-4">
-                    {service.tier}
-                  </div>
-                  <h3 className="font-heading text-2xl font-bold mb-4 text-gray-900">{service.title}</h3>
-                  <p className="text-muted-foreground mb-6">{service.description}</p>
-                  <Button className="bg-primary hover:bg-primary/90 text-white">
-                    Unlock Access
-                  </Button>
-                </div>
-              );
-            })}
-          </div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+      {memberServices.map((service, index) => {
+        const Icon = service.icon;
+        const serviceImages = [
+          "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+          "https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+        ];
+        
+        return (
+          <div
+            key={index}
+            className="group relative bg-white rounded-2xl border-2 border-primary/20 hover:border-primary/50 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col h-full"
+          >
+            {/* Image Section */}
+            <div className="relative h-48 overflow-hidden flex-shrink-0">
+              <img
+                src={serviceImages[index]}
+                alt={service.title}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              
+              {/* Icon Overlay */}
+              <div className="absolute top-4 left-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm">
+                <Icon className="text-primary" size={24} />
+              </div>
 
-          <div className="text-center mt-12">
-            <p className="text-muted-foreground mb-4 text-lg">
-              Ready to unlock exclusive benefits?
-            </p>
-            <Link to="/">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
-                View Membership Plans
-              </Button>
-            </Link>
+              {/* Lock Icon */}
+              <div className="absolute top-4 right-4 inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/20 backdrop-blur-sm">
+                <Lock className="text-primary" size={20} />
+              </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="p-8 flex flex-col flex-grow">
+              {/* Tier Badge */}
+              <div className="inline-block px-3 py-1 bg-primary/20 text-primary text-sm font-semibold rounded-full mb-4">
+                {service.tier}
+              </div>
+
+              {/* Title */}
+              <h3 className="font-heading text-2xl font-bold mb-3 text-gray-900 group-hover:text-primary transition-colors duration-300">
+                {service.title}
+              </h3>
+
+              {/* Description */}
+              <p className="text-muted-foreground mb-8 leading-relaxed flex-grow">
+                {service.description}
+              </p>
+
+              {/* Button - Always at bottom */}
+              <div className="mt-auto">
+                <Button className="border border-primary text-primary bg-transparent hover:bg-primary hover:text-white w-full transition-all duration-300 font-semibold py-3">
+                  Unlock Access
+                  <Key className="ml-2" size={16} />
+                </Button>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        );
+      })}
+    </div>
+
+    {/* CTA Section */}
+    <div className="text-center mt-16">
+      <p className="text-muted-foreground mb-6 text-lg">
+        Ready to unlock exclusive benefits?
+      </p>
+      <Link to="/">
+        <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8">
+          View Membership Plans
+          <ArrowRight className="ml-2" size={16} />
+        </Button>
+      </Link>
+    </div>
+  </div>
+</section>
 
       {/* Process Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl font-bold mb-4">
-              How We <span className="text-primary">Work</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Our streamlined process ensures a smooth investment journey
-            </p>
-          </div>
+<section className="py-20 bg-white">
+  <div className="container mx-auto px-6">
+    <div className="text-center mb-16">
+      <h2 className="font-heading text-4xl font-extrabold mb-4 tracking-tight">
+        Our <span className="text-primary">Seamless</span> Process
+      </h2>
+      <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
+        From vision to acquisition - your guided journey to premium real estate investment
+      </p>
+    </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-primary/5 transition-colors duration-300">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-white font-bold text-xl mb-4 shadow-md">
-                1
-              </div>
-              <h3 className="font-heading text-xl font-bold mb-3 text-gray-900">Consultation</h3>
-              <p className="text-muted-foreground">
-                Initial meeting to understand your investment goals and preferences
-              </p>
-            </div>
+    <div className="relative">
+      {/* Timeline Connector */}
+      <div className="hidden md:block absolute top-24 left-1/2 transform -translate-x-1/2 w-3/4 h-1 bg-primary/20">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+      </div>
 
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-primary/5 transition-colors duration-300">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-white font-bold text-xl mb-4 shadow-md">
-                2
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        {[
+          {
+            number: '01',
+            title: 'Consultation',
+            description: 'Initial meeting to understand your investment goals and preferences',
+            icon: Users,
+            color: 'from-blue-500 to-cyan-500'
+          },
+          {
+            number: '02',
+            title: 'Property Selection',
+            description: 'Curated property recommendations based on your criteria',
+            icon: Building2,
+            color: 'from-emerald-500 to-green-500'
+          },
+          {
+            number: '03',
+            title: 'Due Diligence',
+            description: 'Comprehensive analysis and verification of investment opportunities',
+            icon: Shield,
+            color: 'from-amber-500 to-orange-500'
+          },
+          {
+            number: '04',
+            title: 'Acquisition',
+            description: 'Full support through transaction completion and beyond',
+            icon: CheckCircle,
+            color: 'from-purple-500 to-pink-500'
+          }
+        ].map((step, index) => {
+          const Icon = step.icon;
+          return (
+            <div
+              key={index}
+              className="group relative text-center"
+            >
+              {/* Step Circle */}
+              <div className={`relative z-10 inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r ${step.color} text-white font-bold text-xl mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300 mx-auto`}>
+                <div className="absolute inset-2 bg-white/20 rounded-full"></div>
+                <span className="relative z-10">{step.number}</span>
               </div>
-              <h3 className="font-heading text-xl font-bold mb-3 text-gray-900">Property Selection</h3>
-              <p className="text-muted-foreground">
-                Curated property recommendations based on your criteria
-              </p>
-            </div>
 
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-primary/5 transition-colors duration-300">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-white font-bold text-xl mb-4 shadow-md">
-                3
+              {/* Content Card */}
+              <div className="group relative bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gray-50 mb-4 group-hover:bg-primary/5 transition-colors mx-auto">
+                  <Icon className="text-primary" size={24} />
+                </div>
+                
+                <h3 className="font-heading text-xl font-bold mb-3 text-gray-900 group-hover:text-primary transition-colors duration-300">
+                  {step.title}
+                </h3>
+                
+                <p className="text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
               </div>
-              <h3 className="font-heading text-xl font-bold mb-3 text-gray-900">Due Diligence</h3>
-              <p className="text-muted-foreground">
-                Comprehensive analysis and verification of investment opportunities
-              </p>
             </div>
-
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-primary/5 transition-colors duration-300">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-white font-bold text-xl mb-4 shadow-md">
-                4
-              </div>
-              <h3 className="font-heading text-xl font-bold mb-3 text-gray-900">Acquisition</h3>
-              <p className="text-muted-foreground">
-                Full support through transaction completion and beyond
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</section>
 
       <Footer />
     </div>

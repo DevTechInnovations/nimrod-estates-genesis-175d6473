@@ -12,10 +12,7 @@ const Navbar = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -39,10 +36,24 @@ const Navbar = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
+  // Dynamic color setup
+  const textColor = isScrolled ? 'text-black' : 'text-white';
+  const textColorSoft = isScrolled
+    ? 'text-black/70 hover:text-primary'
+    : 'text-white/80 hover:text-primary';
+  const borderColor = 'border-primary';
+  const dropdownBg = isScrolled
+    ? 'bg-white border-gray-200'
+    : 'bg-black/90 border-white/20';
+  const dropdownText = isScrolled
+    ? 'text-black hover:text-primary'
+    : 'text-white/90 hover:text-primary';
+  const iconColor = isScrolled ? 'text-black' : 'text-white';
+
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-background/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
+        isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto px-4">
@@ -73,8 +84,8 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            
-            {/* Login Dropdown - Styled like other nav items */}
+
+            {/* Login Dropdown */}
             <div className="relative">
               <button
                 className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
@@ -97,7 +108,7 @@ const Navbar = () => {
                   </>
                 )}
               </button>
-              
+
               {isLoginDropdownOpen && (
                 <div className="absolute top-full right-0 mt-2 w-48 bg-background border border-border rounded-lg shadow-lg py-2 z-50">
                   {user ? (
@@ -155,7 +166,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-foreground"
+            className={`md:hidden ${textColor}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -164,82 +175,77 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 bg-background/95 backdrop-blur-md">
-            {getNavLinks().map((link) => (
+          <div
+            className={`md:hidden py-4 ${
+              isScrolled
+                ? 'bg-white text-black'
+                : 'bg-black/90 text-white backdrop-blur-md'
+            }`}
+          >
+            {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-3 py-2 text-sm font-medium transition-colors ${
-                  isActive(link.path) ? 'text-primary' : 'text-foreground hover:text-primary'
-                } ${link.name === 'Dashboard' ? 'text-green-600 hover:text-green-700' : ''}`}
+                className={`block py-2 text-sm font-medium transition-colors ${
+                  isActive(link.path)
+                    ? 'text-primary'
+                    : isScrolled
+                    ? 'text-black/80 hover:text-primary'
+                    : 'text-white/80 hover:text-primary'
+                }`}
               >
                 {link.name === 'Dashboard' && <LayoutDashboard className="h-4 w-4" />}
                 {link.name}
               </Link>
             ))}
-            
-            {/* Mobile Login Options - Styled as simple links */}
-            <div className="border-t border-border mt-4 pt-4">
-              <div className="text-sm font-medium text-foreground/60 px-2 py-1">
-                {user ? 'My Account' : 'Login Options'}
+
+            {/* Mobile Login Options */}
+            <div
+              className={`border-t mt-4 pt-4 ${
+                isScrolled ? 'border-black/20' : 'border-white/20'
+              }`}
+            >
+              <div
+                className={`text-sm font-medium px-2 py-1 ${
+                  isScrolled ? 'text-black/60' : 'text-white/60'
+                }`}
+              >
+                Login Options
               </div>
-              {user ? (
-                <>
-                  <Link
-                    to="/dashboard"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-3 py-2 text-sm text-foreground hover:text-primary transition-colors"
-                  >
-                    <LayoutDashboard className="h-4 w-4" />
-                    <span>Dashboard</span>
-                  </Link>
-                  <Link
-                    to="/profile"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-3 py-2 text-sm text-foreground hover:text-primary transition-colors"
-                  >
-                    <User className="h-4 w-4" />
-                    <span>My Profile</span>
-                  </Link>
-                  <Link
-                    to="/auth"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-3 py-2 text-sm text-foreground hover:text-primary transition-colors"
-                  >
-                    <Shield className="h-4 w-4" />
-                    <span>Admin Panel</span>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/member-auth"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-3 py-2 text-sm text-foreground hover:text-primary transition-colors"
-                  >
-                    <User className="h-4 w-4" />
-                    <span>Member Login</span>
-                  </Link>
-                  <Link
-                    to="/auth"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-3 py-2 text-sm text-foreground hover:text-primary transition-colors"
-                  >
-                    <Shield className="h-4 w-4" />
-                    <span>Admin Login</span>
-                  </Link>
-                </>
-              )}
+              <Link
+                to="/member-auth"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 py-2 text-sm transition-colors ${
+                  isScrolled
+                    ? 'text-black/80 hover:text-primary'
+                    : 'text-white/80 hover:text-primary'
+                }`}
+              >
+                <User className={`h-4 w-4 ${iconColor}`} />
+                <span>Member Login</span>
+              </Link>
+              <Link
+                to="/auth"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 py-2 text-sm transition-colors ${
+                  isScrolled
+                    ? 'text-black/80 hover:text-primary'
+                    : 'text-white/80 hover:text-primary'
+                }`}
+              >
+                <Shield className={`h-4 w-4 ${iconColor}`} />
+                <span>Admin Login</span>
+              </Link>
             </div>
           </div>
         )}
       </div>
 
-      {/* Close dropdown when clicking outside */}
+      {/* Click outside to close dropdown */}
       {isLoginDropdownOpen && (
-        <div 
-          className="fixed inset-0 z-40" 
+        <div
+          className="fixed inset-0 z-40"
           onClick={() => setIsLoginDropdownOpen(false)}
         />
       )}
