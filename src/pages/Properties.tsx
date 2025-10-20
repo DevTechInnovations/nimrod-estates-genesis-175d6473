@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2, DollarSign } from 'lucide-react';
+import { Search, Loader2, DollarSign, Filter, X } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PropertyCard from '@/components/PropertyCard';
@@ -14,6 +14,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { Slider } from '@/components/ui/slider';
+import { Badge } from '@/components/ui/badge';
 import heroImage from '@/assets/luxurious-villa-with-modern-architectural-design.jpg';
 
 interface Property {
@@ -29,12 +38,27 @@ interface Property {
   images: string[];
   featured: boolean;
   investmentOpportunity: boolean;
-  exclusive: boolean; // ← ADD THIS
+  exclusive: boolean;
   type: string;
   video_url: string | null;
   pdf_url: string | null;
+  garage?: number;
+  year_built?: number;
+  parking_spaces?: number;
 }
 
+interface Filters {
+  bedrooms: number[];
+  bathrooms: number[];
+  minPrice: number;
+  maxPrice: number;
+  minArea: number;
+  maxArea: number;
+  garage: number[];
+  parkingSpaces: number[];
+  yearBuilt: number[];
+  features: string[];
+}
 
 const Properties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -43,20 +67,36 @@ const Properties = () => {
   const [typeFilter, setTypeFilter] = useState('All');
   const [currency, setCurrency] = useState<'USD' | 'ZAR' | 'AED'>('USD');
   const [exchangeRates, setExchangeRates] = useState({ USD: 1, ZAR: 18.5, AED: 3.67 });
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // ← ADD THIS
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [filters, setFilters] = useState<Filters>({
+    bedrooms: [],
+    bathrooms: [],
+    minPrice: 0,
+    maxPrice: 10000000,
+    minArea: 0,
+    maxArea: 10000,
+    garage: [],
+    parkingSpaces: [],
+    yearBuilt: [],
+    features: []
+  });
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   useEffect(() => {
     fetchProperties();
     fetchExchangeRates();
-    checkAuth(); // ← ADD THIS
+    checkAuth();
   }, []);
+
+  useEffect(() => {
+    updateActiveFilters();
+  }, [filters]);
 
   const checkAuth = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
       
-      // Listen for auth state changes
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
         setIsAuthenticated(!!session);
       });
@@ -79,7 +119,6 @@ const Properties = () => {
       }
     } catch (error) {
       console.error('Error fetching exchange rates:', error);
-      // Keep using default fallback rates
     }
   };
 
@@ -92,6 +131,20 @@ const Properties = () => {
 
       if (error) throw error;
       setProperties(data || []);
+      
+      // Set initial filter ranges based on actual data
+      if (data && data.length > 0) {
+        const prices = data.map(p => parseFloat(p.price.replace(/[^0-9.-]+/g, "")) || 0);
+        const areas = data.map(p => p.area || 0);
+        
+        setFilters(prev => ({
+          ...prev,
+          minPrice: Math.min(...prices),
+          maxPrice: Math.max(...prices),
+          minArea: Math.min(...areas),
+          maxArea: Math.max(...areas)
+        }));
+      }
     } catch (error) {
       console.error('Error fetching properties:', error);
     } finally {
@@ -99,7 +152,66 @@ const Properties = () => {
     }
   };
 
+  const updateActiveFilters = () => {
+    const active: string[] = [];
+    
+    if (filters.bedrooms.length > 0) {
+      active.push(`${filters.bedrooms.join(',')} Bedrooms`);
+    }
+    if (filters.bathrooms.length > 0) {
+      active.push(`${filters.bathrooms.join(',')} Bathrooms`);
+    }
+    if (filters.garage.length > 0) {
+      active.push(`${filters.garage.join(',')} Garage`);
+    }
+    if (filters.parkingSpaces.length > 0) {
+      active.push(`${filters.parkingSpaces.join(',')} Parking`);
+    }
+    if (filters.yearBuilt.length > 0) {
+      active.push(`Built ${filters.yearBuilt.join(',')}`);
+    }
+    if (filters.minPrice > 0 || filters.maxPrice < 10000000) {
+      active.push(`Price: $${filters.minPrice.toLocaleString()} - $${filters.maxPrice.toLocaleString()}`);
+    }
+    if (filters.minArea > 0 || filters.maxArea < 10000) {
+      active.push(`Area: ${filters.minArea} - ${filters.maxArea} sqft`);
+    }
+
+    setActiveFilters(active);
+  };
+
+  const clearFilter = (filterType: keyof Filters) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: Array.isArray(prev[filterType]) ? [] : 
+                   typeof prev[filterType] === 'number' ? 
+                   (filterType === 'minPrice' ? 0 : 
+                    filterType === 'maxPrice' ? 10000000 :
+                    filterType === 'minArea' ? 0 : 10000) : 
+                   prev[filterType]
+    }));
+  };
+
+  const clearAllFilters = () => {
+    setFilters({
+      bedrooms: [],
+      bathrooms: [],
+      minPrice: 0,
+      maxPrice: 10000000,
+      minArea: 0,
+      maxArea: 10000,
+      garage: [],
+      parkingSpaces: [],
+      yearBuilt: [],
+      features: []
+    });
+  };
+
   const propertyTypes = ['All', ...Array.from(new Set(properties.map(p => p.type)))];
+  const bedroomOptions = [1, 2, 3, 4, 5, 6];
+  const bathroomOptions = [1, 2, 3, 4, 5, 6];
+  const garageOptions = [0, 1, 2, 3, 4];
+  const parkingOptions = [0, 1, 2, 3, 4, 5];
 
   const filteredProperties = properties.filter((property) => {
     const matchesSearch =
@@ -112,8 +224,20 @@ const Properties = () => {
     if (property.exclusive && !isAuthenticated) {
       return false;
     }
+
+    // Numeric filters
+    const price = parseFloat(property.price.replace(/[^0-9.-]+/g, "")) || 0;
+    const matchesPrice = price >= filters.minPrice && price <= filters.maxPrice;
+    const matchesArea = property.area >= filters.minArea && property.area <= filters.maxArea;
     
-    return matchesSearch && matchesType;
+    // Array filters
+    const matchesBedrooms = filters.bedrooms.length === 0 || filters.bedrooms.includes(property.bedrooms);
+    const matchesBathrooms = filters.bathrooms.length === 0 || filters.bathrooms.includes(property.bathrooms);
+    const matchesGarage = filters.garage.length === 0 || filters.garage.includes(property.garage || 0);
+    const matchesParking = filters.parkingSpaces.length === 0 || filters.parkingSpaces.includes(property.parking_spaces || 0);
+    
+    return matchesSearch && matchesType && matchesPrice && matchesArea && 
+           matchesBedrooms && matchesBathrooms && matchesGarage && matchesParking;
   });
 
   return (
@@ -177,6 +301,166 @@ const Properties = () => {
               </Select>
             </div>
 
+            {/* Advanced Filters */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  Filters
+                  {activeFilters.length > 0 && (
+                    <Badge variant="secondary" className="ml-1">
+                      {activeFilters.length}
+                    </Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>Property Filters</SheetTitle>
+                </SheetHeader>
+                
+                <div className="space-y-6 mt-6">
+                  {/* Price Range */}
+                  <div>
+                    <h4 className="font-semibold mb-3">Price Range</h4>
+                    <div className="space-y-4">
+                      <Slider
+                        value={[filters.minPrice, filters.maxPrice]}
+                        min={0}
+                        max={10000000}
+                        step={10000}
+                        onValueChange={([min, max]) => setFilters(prev => ({ ...prev, minPrice: min, maxPrice: max }))}
+                        className="my-4"
+                      />
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>${filters.minPrice.toLocaleString()}</span>
+                        <span>${filters.maxPrice.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Area Range */}
+                  <div>
+                    <h4 className="font-semibold mb-3">Area (sqft)</h4>
+                    <div className="space-y-4">
+                      <Slider
+                        value={[filters.minArea, filters.maxArea]}
+                        min={0}
+                        max={10000}
+                        step={100}
+                        onValueChange={([min, max]) => setFilters(prev => ({ ...prev, minArea: min, maxArea: max }))}
+                        className="my-4"
+                      />
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>{filters.minArea} sqft</span>
+                        <span>{filters.maxArea} sqft</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bedrooms */}
+                  <div>
+                    <h4 className="font-semibold mb-3">Bedrooms</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {bedroomOptions.map(beds => (
+                        <Button
+                          key={beds}
+                          variant={filters.bedrooms.includes(beds) ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setFilters(prev => ({
+                            ...prev,
+                            bedrooms: prev.bedrooms.includes(beds) 
+                              ? prev.bedrooms.filter(b => b !== beds)
+                              : [...prev.bedrooms, beds]
+                          }))}
+                        >
+                          {beds}+
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bathrooms */}
+                  <div>
+                    <h4 className="font-semibold mb-3">Bathrooms</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {bathroomOptions.map(baths => (
+                        <Button
+                          key={baths}
+                          variant={filters.bathrooms.includes(baths) ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setFilters(prev => ({
+                            ...prev,
+                            bathrooms: prev.bathrooms.includes(baths) 
+                              ? prev.bathrooms.filter(b => b !== baths)
+                              : [...prev.bathrooms, baths]
+                          }))}
+                        >
+                          {baths}+
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Garage */}
+                  <div>
+                    <h4 className="font-semibold mb-3">Garage</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {garageOptions.map(garage => (
+                        <Button
+                          key={garage}
+                          variant={filters.garage.includes(garage) ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setFilters(prev => ({
+                            ...prev,
+                            garage: prev.garage.includes(garage) 
+                              ? prev.garage.filter(g => g !== garage)
+                              : [...prev.garage, garage]
+                          }))}
+                        >
+                          {garage}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Parking Spaces */}
+                  <div>
+                    <h4 className="font-semibold mb-3">Parking Spaces</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {parkingOptions.map(parking => (
+                        <Button
+                          key={parking}
+                          variant={filters.parkingSpaces.includes(parking) ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setFilters(prev => ({
+                            ...prev,
+                            parkingSpaces: prev.parkingSpaces.includes(parking) 
+                              ? prev.parkingSpaces.filter(p => p !== parking)
+                              : [...prev.parkingSpaces, parking]
+                          }))}
+                        >
+                          {parking}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Clear Filters */}
+                  <div className="flex gap-2 pt-4">
+                    <Button variant="outline" onClick={clearAllFilters} className="flex-1">
+                      Clear All
+                    </Button>
+                    <SheetTrigger asChild>
+                      <Button className="flex-1">
+                        Apply Filters
+                      </Button>
+                    </SheetTrigger>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+
             {/* Type Filter */}
             <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
               {propertyTypes.map((type) => (
@@ -187,7 +471,7 @@ const Properties = () => {
                   className={`whitespace-nowrap ${
                     typeFilter === type 
                       ? 'bg-primary hover:bg-primary/90 text-white' 
-                      : 'border-gray-300 text-gray-700 hover:border-primary hover:text-primary'
+                      : 'border-gray-300 text-gray-700 hover:border-primary hover:text-black'
                   }`}
                   size="sm"
                 >
@@ -196,6 +480,27 @@ const Properties = () => {
               ))}
             </div>
           </div>
+
+          {/* Active Filters */}
+          {activeFilters.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {activeFilters.map((filter, index) => (
+                <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                  {filter}
+                  <X 
+                    className="h-3 w-3 cursor-pointer" 
+                    onClick={() => {
+                      // This is a simplified clear - you might want to implement individual filter clearing
+                      clearAllFilters();
+                    }}
+                  />
+                </Badge>
+              ))}
+              <Button variant="ghost" size="sm" onClick={clearAllFilters} className="text-xs h-6">
+                Clear All
+              </Button>
+            </div>
+          )}
 
           <div className="mt-4 text-sm text-muted-foreground">
             Showing {filteredProperties.length} of {properties.length} properties
@@ -229,10 +534,10 @@ const Properties = () => {
                   bathrooms={property.bathrooms}
                   area={property.area}
                   roi={property.roi}
-                  exclusive={property.exclusive} // ← ADD THIS
+                  exclusive={property.exclusive}
                   currency={currency}
                   exchangeRates={exchangeRates}
-                  isAuthenticated={isAuthenticated} // ← ADD THIS
+                  isAuthenticated={isAuthenticated}
                 />
               ))}
             </div>
@@ -246,6 +551,7 @@ const Properties = () => {
                   onClick={() => {
                     setSearchTerm('');
                     setTypeFilter('All');
+                    clearAllFilters();
                   }}
                   className="bg-primary hover:bg-primary/90 text-white"
                 >
