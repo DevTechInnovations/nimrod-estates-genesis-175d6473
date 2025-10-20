@@ -102,8 +102,10 @@ const Contact = () => {
                   <div>
                     <h3 className="font-semibold mb-1 text-gray-900">Office Address</h3>
                     <p className="text-muted-foreground">
-                      123 Luxury Avenue, Suite 500<br />
-                      Global City, GC 10001
+                       90 rivonia road , Sandton , SA<br />
+                       Emirates Towers, Shaikh Zayed Rd , Dubai , UAE <br />
+                       Bank street , Canary Wharf, London, UK
+                      
                     </p>
                   </div>
                 </div>
@@ -115,8 +117,8 @@ const Contact = () => {
                   <div>
                     <h3 className="font-semibold mb-1 text-gray-900">Phone</h3>
                     <p className="text-muted-foreground">
-                      +1 (555) 123-4567<br />
-                      +1 (555) 123-4568 (International)
+                      +971 58 305 1460<br />
+                      +27 69 531 1134
                     </p>
                   </div>
                 </div>
@@ -128,35 +130,42 @@ const Contact = () => {
                   <div>
                     <h3 className="font-semibold mb-1 text-gray-900">Email</h3>
                     <p className="text-muted-foreground">
-                      info@nimrodestates.com<br />
-                      support@nimrodestates.com
+                      info@nimrodestates.com <br />
+                      international@nimrodestates.com
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 p-4 rounded-2xl bg-gray-50 hover:bg-primary/5 transition-colors duration-300">
-                  <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                    <Clock className="text-primary" size={24} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1 text-gray-900">Business Hours</h3>
-                    <p className="text-muted-foreground">
-                      Monday - Friday: 9:00 AM - 6:00 PM<br />
-                      Saturday: 10:00 AM - 4:00 PM<br />
-                      Sunday: Closed
-                    </p>
-                  </div>
-                </div>
               </div>
 
               {/* Map Placeholder */}
-              <div className="bg-gray-100 h-64 rounded-2xl flex items-center justify-center mt-8 border-2 border-gray-200">
-                <div className="text-center text-muted-foreground">
-                  <MapPin size={48} className="mx-auto mb-2 text-primary/50" />
-                  <p className="font-medium">Interactive Google Map</p>
-                  <p className="text-sm">123 Luxury Avenue, Global City</p>
+             <div className="mt-8 rounded-2xl border-2 border-gray-200 overflow-hidden">
+              {/* Map */}
+              <div className="relative">
+                {/* Keep a fixed height on small screens; grow responsively above md */}
+                <div className="h-64 md:h-[420px] w-full">
+                  <iframe
+                    title="Emirates Towers, Sheikh Zayed Road, Dubai"
+                    src={`https://www.google.com/maps?q=${encodeURIComponent(
+                      "Emirates Towers, Sheikh Zayed Rd, Dubai, UAE"
+                    )}&output=embed`}
+                    className="h-full w-full"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
                 </div>
+                {/* Optional subtle overlay gradient for nicer edges */}
+                <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/5" />
               </div>
+
+              {/* Caption */}
+              <div className="bg-gray-50 px-4 py-3 text-center">
+                <p className="font-medium">Interactive Google Map</p>
+                <p className="text-sm text-muted-foreground">
+                  Emirates Towers, Sheikh Zayed Rd, Dubai, UAE
+                </p>
+              </div>
+            </div>
             </div>
           </div>
         </div>

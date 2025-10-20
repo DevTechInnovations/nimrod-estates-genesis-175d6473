@@ -74,15 +74,15 @@ const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start space-x-2">
                 <MapPin size={16} className="mt-1 text-primary flex-shrink-0" />
-                <span>123 Luxury Avenue, Global City</span>
+                <span>Emirates Towers, Shaikh Zayed Rd , Dubai , UAE</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Phone size={16} className="text-primary flex-shrink-0" />
-                <span>+1 (555) 123-4567</span>
+                <span>+971 58 305 1460 </span>
               </li>
               <li className="flex items-center space-x-2">
                 <Mail size={16} className="text-primary flex-shrink-0" />
-                <span>info@nimrodestates.com</span>
+                <span> info@nimrodestates.com </span>
               </li>
             </ul>
           </div>
