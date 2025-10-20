@@ -8,6 +8,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoginDropdownOpen, setIsLoginDropdownOpen] = useState(false);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const location = useLocation();
   const { user } = useAuth();
 
@@ -20,9 +21,15 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
-    { name: 'Services', path: '/services' },
     { name: 'Properties', path: '/properties' },
     { name: 'Contact', path: '/contact' },
+  ];
+
+  const mainServiceCategories = [
+    { name: 'Real Estate Services', path: '/services/real-estate' },
+    { name: 'Wealth & Investment', path: '/services/wealth-investment' },
+    { name: 'Business Consulting', path: '/services/business-consulting' },
+    { name: 'Business Setup', path: '/services/business-setup' },
   ];
 
   const getNavLinks = () => {
@@ -32,11 +39,65 @@ const Navbar = () => {
   };
 
   const isActive = (path: string) => location.pathname === path;
+  const isServicesActive = () => location.pathname.startsWith('/services');
 
-  // ✅ Dynamic colors: white before scroll, black after scroll
   const textColor = isScrolled ? 'text-black' : 'text-white';
   const hoverColor = isScrolled ? 'hover:text-primary' : 'hover:text-primary';
-  const borderColor = isScrolled ? 'border-black' : 'border-white';
+
+  // Services Dropdown - Only main categories that link to pages
+  const ServicesDropdown = () => (
+    <div className="relative">
+      <button
+        className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 
+          ${isServicesActive() || isServicesDropdownOpen 
+            ? 'text-primary border-b-2 border-primary' 
+            : `${textColor} ${hoverColor}`
+          }`}
+        onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
+      >
+        Services
+        <ChevronDown
+          className={`h-4 w-4 transition-transform ${
+            isServicesDropdownOpen ? 'rotate-180' : ''
+          }`}
+        />
+      </button>
+
+      {isServicesDropdownOpen && (
+        <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+          {mainServiceCategories.map((category, index) => (
+            <Link
+              key={index}
+              to={category.path}
+              className="flex items-center px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+              onClick={() => setIsServicesDropdownOpen(false)}
+            >
+              {category.name}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  // Mobile Services Menu - Only main categories
+  const MobileServicesMenu = () => (
+    <div className="border-t mt-4 pt-4 border-white/20">
+      <div className="text-sm font-medium px-2 py-1 opacity-60 mb-2">
+        Services
+      </div>
+      {mainServiceCategories.map((category, index) => (
+        <Link
+          key={index}
+          to={category.path}
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="block py-2 px-4 text-sm transition-colors hover:text-primary"
+        >
+          {category.name}
+        </Link>
+      ))}
+    </div>
+  );
 
   return (
     <nav
@@ -72,6 +133,9 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+
+            {/* Services Dropdown */}
+            <ServicesDropdown />
 
             {/* Login Dropdown */}
             <div className="relative">
@@ -191,6 +255,10 @@ const Navbar = () => {
               </Link>
             ))}
 
+            {/* Mobile Services Menu */}
+            <MobileServicesMenu />
+
+            {/* Login Options */}
             <div className="border-t mt-4 pt-4 border-white/20">
               <div className="text-sm font-medium px-2 py-1 opacity-60">
                 Login Options
@@ -216,11 +284,14 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Overlay to close dropdown */}
-      {isLoginDropdownOpen && (
+      {/* Overlay to close dropdowns */}
+      {(isLoginDropdownOpen || isServicesDropdownOpen) && (
         <div
           className="fixed inset-0 z-40"
-          onClick={() => setIsLoginDropdownOpen(false)}
+          onClick={() => {
+            setIsLoginDropdownOpen(false);
+            setIsServicesDropdownOpen(false);
+          }}
         />
       )}
     </nav>
