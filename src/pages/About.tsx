@@ -57,19 +57,21 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="font-heading text-4xl font-bold mb-6">
-                Our <span className="text-primary">Mission</span>
-              </h2>
-              <p className="text-lg text-muted-foreground mb-4">
-                At Nimrod Estates, we believe that luxury real estate investment should be accessible, 
-                transparent, and profitable. Our mission is to connect discerning investors with the 
-                world's most exceptional properties while providing unparalleled service and expertise.
-              </p>
-              <p className="text-lg text-muted-foreground">
-                With over two decades of experience in international real estate, we've built a 
-                reputation for excellence, integrity, and outstanding returns on investment.
-              </p>
-            </div>
+  <h2 className="font-heading text-4xl font-bold mb-6">
+    Our <span className="text-primary">Mission</span>
+  </h2>
+  <p className="text-lg text-muted-foreground mb-4">
+    Our mission is to connect clients to the best premium real estate opportunities worldwide
+    offering access to exclusive properties that embody sophistication, value, and long-term growth.
+    We aim to simplify global real estate investment through trust, expertise, and seamless service.
+  </p>
+  <p className="text-lg text-muted-foreground">
+    By leveraging strategic partnerships and a deep understanding of international markets, 
+    we empower our clients to invest with confidence and success. At Nimrod Estates, we don’t 
+    just connect clients with properties — we connect them with possibilities.
+  </p>
+</div>
+
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-secondary p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
                 <Users className="text-primary mb-4" size={40} />
@@ -110,19 +112,25 @@ const About = () => {
     </div>
 
     {/* Text Content - Now second on mobile, right on desktop */}
-    <div className="md:w-1/2 text-center md:text-left">
-      <h2 className="font-heading text-5xl font-extrabold mb-6">
-        Our <span className="text-primary">Vision</span>
-      </h2>
-      <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-6">
-        To be the world's most trusted and innovative luxury real estate investment platform, 
-        creating wealth and opportunity for our clients while setting new standards of excellence 
-        in the industry.
-      </p>
-<button className="px-8 py-2 font-semibold text-white bg-primary rounded-md shadow-lg hover:bg-primary/90 transition-all duration-300">
-  Learn More
-</button>
-    </div>
+   <div className="md:w-1/2 text-center md:text-left">
+  <h2 className="font-heading text-5xl font-extrabold mb-6">
+    Our <span className="text-primary">Vision</span>
+  </h2>
+  <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-6">
+    We pride ourselves on being the world’s most trusted and innovative real estate partner 
+    redefining luxury living and investment opportunities through integrity, excellence, and exclusivity. 
+    Our vision is to create a future where premium real estate is not just a symbol of success, 
+    but a gateway to enduring value, growth, and prestige.
+  </p>
+  <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-6">
+    By continuously setting new benchmarks in the industry, we aim to inspire confidence, 
+    elevate lifestyles, and build lasting wealth for our clients. At Nimrod Estates, 
+    we don’t just develop properties — we shape the global standard of luxury living.
+  </p>
+  <button className="px-8 py-2 font-semibold text-white bg-primary rounded-md shadow-lg hover:bg-primary/90 transition-all duration-300">
+    Learn More
+  </button>
+</div>
   </div>
 </section>
 
