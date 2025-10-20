@@ -71,25 +71,25 @@ const About = () => {
               </p>
             </div>
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
+              <div className="bg-secondary p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
                 <Users className="text-primary mb-4" size={40} />
                 <div className="text-3xl font-bold text-primary mb-2">2,500+</div>
-                <div className="text-muted-foreground">Satisfied Clients</div>
+                <div className="text-primary font-bold">Satisfied Clients</div>
               </div>
-              <div className="bg-white p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
+              <div className="bg-secondary p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
                 <Globe2 className="text-primary mb-4" size={40} />
                 <div className="text-3xl font-bold text-primary mb-2">50+</div>
-                <div className="text-muted-foreground">Countries</div>
+                <div className="text-primary font-bold">Countries</div>
               </div>
-              <div className="bg-white p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
+              <div className="bg-secondary p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
                 <Award className="text-primary mb-4" size={40} />
                 <div className="text-3xl font-bold text-primary mb-2">15+</div>
-                <div className="text-muted-foreground">Industry Awards</div>
+                <div className="text-primary font-bold">Industry Awards</div>
               </div>
-              <div className="bg-white p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
+              <div className="bg-secondary p-6 rounded-lg border-2 border-gray-100 hover-lift shadow-lg">
                 <TrendingUp className="text-primary mb-4" size={40} />
                 <div className="text-3xl font-bold text-primary mb-2">12%</div>
-                <div className="text-muted-foreground">Avg. ROI</div>
+                <div className="text-primary font-bold">Avg. ROI</div>
               </div>
             </div>
           </div>
@@ -97,10 +97,19 @@ const About = () => {
       </section>
 
       {/* Vision */}
-   <section className="py-24 bg-gray-50">
+  <section className="py-24 bg-gray-50">
   <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
     
-    {/* Text Content */}
+    {/* Image - Now first on mobile, left on desktop */}
+    <div className="md:w-1/2">
+      <img
+        src="src/assets/3d-house-model-with-modern-architecture (1).jpg" 
+        alt="Luxury Real Estate"
+        className="w-full h-auto shadow-lg object-cover"
+      />
+    </div>
+
+    {/* Text Content - Now second on mobile, right on desktop */}
     <div className="md:w-1/2 text-center md:text-left">
       <h2 className="font-heading text-5xl font-extrabold mb-6">
         Our <span className="text-primary">Vision</span>
@@ -110,18 +119,9 @@ const About = () => {
         creating wealth and opportunity for our clients while setting new standards of excellence 
         in the industry.
       </p>
-      <button className="px-8 py-3 font-semibold text-white bg-primary rounded-full shadow-lg hover:bg-primary/90 transition-all duration-300">
-        Learn More
-      </button>
-    </div>
-
-    {/* Image */}
-    <div className="md:w-1/2">
-      <img
-        src="src/assets/3d-house-model-with-modern-architecture (1).jpg" 
-        alt="Luxury Real Estate"
-        className="w-full h-auto shadow-lg object-cover"
-      />
+<button className="px-8 py-2 font-semibold text-white bg-primary rounded-md shadow-lg hover:bg-primary/90 transition-all duration-300">
+  Learn More
+</button>
     </div>
   </div>
 </section>

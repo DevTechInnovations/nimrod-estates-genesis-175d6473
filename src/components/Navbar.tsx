@@ -25,30 +25,18 @@ const Navbar = () => {
     { name: 'Contact', path: '/contact' },
   ];
 
-  // Add dashboard link to navLinks when user is logged in
   const getNavLinks = () => {
     const links = [...navLinks];
-    if (user) {
-      links.push({ name: 'Dashboard', path: '/dashboard' });
-    }
+    if (user) links.push({ name: 'Dashboard', path: '/dashboard' });
     return links;
   };
 
   const isActive = (path: string) => location.pathname === path;
 
-  // Dynamic color setup
+  // ✅ Dynamic colors: white before scroll, black after scroll
   const textColor = isScrolled ? 'text-black' : 'text-white';
-  const textColorSoft = isScrolled
-    ? 'text-black/70 hover:text-primary'
-    : 'text-white/80 hover:text-primary';
-  const borderColor = 'border-primary';
-  const dropdownBg = isScrolled
-    ? 'bg-white border-gray-200'
-    : 'bg-black/90 border-white/20';
-  const dropdownText = isScrolled
-    ? 'text-black hover:text-primary'
-    : 'text-white/90 hover:text-primary';
-  const iconColor = isScrolled ? 'text-black' : 'text-white';
+  const hoverColor = isScrolled ? 'hover:text-primary' : 'hover:text-primary';
+  const borderColor = isScrolled ? 'border-black' : 'border-white';
 
   return (
     <nav
@@ -74,11 +62,11 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
-                  isActive(link.path)
+                className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 
+                  ${isActive(link.path)
                     ? 'text-primary border-b-2 border-primary'
-                    : 'text-foreground hover-gold'
-                } ${link.name === 'Dashboard' ? 'text-gold-600 hover:text-gold-600' : ''}`}
+                    : `${textColor} ${hoverColor}`
+                  }`}
               >
                 {link.name === 'Dashboard' && <LayoutDashboard className="h-4 w-4" />}
                 {link.name}
@@ -88,34 +76,40 @@ const Navbar = () => {
             {/* Login Dropdown */}
             <div className="relative">
               <button
-                className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
-                  isLoginDropdownOpen
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-foreground hover-gold'
-                } ${user ? 'text-gold-600 hover:text-gold-600' : ''}`}
+                className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 
+                  ${isLoginDropdownOpen ? 'text-primary border-b-2 border-primary' : `${textColor} ${hoverColor}`}
+                `}
                 onClick={() => setIsLoginDropdownOpen(!isLoginDropdownOpen)}
               >
                 {user ? (
                   <>
                     <User className="h-4 w-4" />
                     My Account
-                    <ChevronDown className={`h-4 w-4 transition-transform ${isLoginDropdownOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${
+                        isLoginDropdownOpen ? 'rotate-180' : ''
+                      }`}
+                    />
                   </>
                 ) : (
                   <>
                     Login
-                    <ChevronDown className={`h-4 w-4 transition-transform ${isLoginDropdownOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${
+                        isLoginDropdownOpen ? 'rotate-180' : ''
+                      }`}
+                    />
                   </>
                 )}
               </button>
 
               {isLoginDropdownOpen && (
-                <div className="absolute top-full right-0 mt-2 w-48 bg-background border border-border rounded-lg shadow-lg py-2 z-50">
+                <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
                   {user ? (
                     <>
                       <Link
                         to="/dashboard"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors"
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <LayoutDashboard className="h-4 w-4" />
@@ -123,16 +117,16 @@ const Navbar = () => {
                       </Link>
                       <Link
                         to="/settings"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors"
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <User className="h-4 w-4" />
                         <span>My Profile</span>
                       </Link>
-                      <div className="border-t border-border my-1"></div>
+                      <div className="border-t border-gray-200 my-1"></div>
                       <Link
                         to="/auth"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors"
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <Shield className="h-4 w-4" />
@@ -143,7 +137,7 @@ const Navbar = () => {
                     <>
                       <Link
                         to="/member-auth"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors"
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <User className="h-4 w-4" />
@@ -151,7 +145,7 @@ const Navbar = () => {
                       </Link>
                       <Link
                         to="/auth"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors"
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <Shield className="h-4 w-4" />
@@ -177,12 +171,10 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div
             className={`md:hidden py-4 ${
-              isScrolled
-                ? 'bg-white text-black'
-                : 'bg-black/90 text-white backdrop-blur-md'
+              isScrolled ? 'bg-white text-black' : 'bg-black/90 text-white backdrop-blur-md'
             }`}
           >
-            {navLinks.map((link) => (
+            {getNavLinks().map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
@@ -191,50 +183,32 @@ const Navbar = () => {
                   isActive(link.path)
                     ? 'text-primary'
                     : isScrolled
-                    ? 'text-black/80 hover:text-primary'
+                    ? 'text-black hover:text-primary'
                     : 'text-white/80 hover:text-primary'
                 }`}
               >
-                {link.name === 'Dashboard' && <LayoutDashboard className="h-4 w-4" />}
                 {link.name}
               </Link>
             ))}
 
-            {/* Mobile Login Options */}
-            <div
-              className={`border-t mt-4 pt-4 ${
-                isScrolled ? 'border-black/20' : 'border-white/20'
-              }`}
-            >
-              <div
-                className={`text-sm font-medium px-2 py-1 ${
-                  isScrolled ? 'text-black/60' : 'text-white/60'
-                }`}
-              >
+            <div className="border-t mt-4 pt-4 border-white/20">
+              <div className="text-sm font-medium px-2 py-1 opacity-60">
                 Login Options
               </div>
               <Link
                 to="/member-auth"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-3 py-2 text-sm transition-colors ${
-                  isScrolled
-                    ? 'text-black/80 hover:text-primary'
-                    : 'text-white/80 hover:text-primary'
-                }`}
+                className="flex items-center gap-3 py-2 text-sm transition-colors hover:text-primary"
               >
-                <User className={`h-4 w-4 ${iconColor}`} />
+                <User className="h-4 w-4" />
                 <span>Member Login</span>
               </Link>
               <Link
                 to="/auth"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-3 py-2 text-sm transition-colors ${
-                  isScrolled
-                    ? 'text-black/80 hover:text-primary'
-                    : 'text-white/80 hover:text-primary'
-                }`}
+                className="flex items-center gap-3 py-2 text-sm transition-colors hover:text-primary"
               >
-                <Shield className={`h-4 w-4 ${iconColor}`} />
+                <Shield className="h-4 w-4" />
                 <span>Admin Login</span>
               </Link>
             </div>
@@ -242,7 +216,7 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Click outside to close dropdown */}
+      {/* Overlay to close dropdown */}
       {isLoginDropdownOpen && (
         <div
           className="fixed inset-0 z-40"
