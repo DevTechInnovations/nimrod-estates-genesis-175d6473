@@ -172,7 +172,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Membership Tiers */}
+   {/* Membership Tiers */}
 <section className="py-20 bg-gray-100 text-white">
   <div className="container mx-auto px-6">
     <div className="text-center mb-16">
@@ -187,9 +187,9 @@ const Index = () => {
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto">
       {/* Gold Tier */}
-      <div className="bg-secondary border-2 border-gray-800 hover:border-primary transition-all duration-300 hover:-translate-y-2 shadow-xl group relative overflow-hidden p-10">
+      <div className="bg-secondary border-2 border-gray-800 hover:border-primary transition-all duration-300 hover:-translate-y-2 shadow-xl group relative overflow-hidden p-10 flex flex-col h-full">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
-        <div className="relative z-10">
+        <div className="relative z-10 flex-1">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/20 group-hover:bg-primary/30 transition-colors">
             <Trophy size={28} className="text-primary" />
           </div>
@@ -212,19 +212,19 @@ const Index = () => {
               <span className="text-gray-300 font-medium">Email support</span>
             </li>
           </ul>
-          <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300">
-            Join Gold
-          </Button>
         </div>
+        <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
+          Join Gold
+        </Button>
       </div>
 
       {/* Silver Tier - Featured */}
-      <div className="bg-secondary border-2 border-primary shadow-2xl transform md:scale-105 transition-all duration-300 p-10 relative group overflow-hidden">
+      <div className="bg-secondary border-2 border-primary shadow-2xl transform md:scale-105 transition-all duration-300 p-10 relative group overflow-hidden flex flex-col h-full">
         <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 text-sm font-semibold flex items-center rounded-none">
           <Zap size={14} className="mr-1" /> Most Popular
         </div>
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/15 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
-        <div className="relative z-10">
+        <div className="relative z-10 flex-1">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/30 group-hover:bg-primary/40 transition-colors">
             <Award size={28} className="text-primary" />
           </div>
@@ -251,16 +251,16 @@ const Index = () => {
               <span className="text-gray-300 font-medium">Phone support</span>
             </li>
           </ul>
-          <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300">
-            Join Silver
-          </Button>
         </div>
+        <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
+          Join Silver
+        </Button>
       </div>
 
       {/* Platinum Tier */}
-      <div className="bg-secondary border-2 border-gray-800 hover:border-primary transition-all duration-300 hover:-translate-y-2 shadow-xl group relative overflow-hidden p-10">
+      <div className="bg-secondary border-2 border-gray-800 hover:border-primary transition-all duration-300 hover:-translate-y-2 shadow-xl group relative overflow-hidden p-10 flex flex-col h-full">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
-        <div className="relative z-10">
+        <div className="relative z-10 flex-1">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/20 group-hover:bg-primary/30 transition-colors">
             <Crown size={28} className="text-primary" />
           </div>
@@ -287,10 +287,10 @@ const Index = () => {
               <span className="text-gray-300 font-medium">24/7 concierge service</span>
             </li>
           </ul>
-          <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300">
-            Join Platinum
-          </Button>
         </div>
+        <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
+          Join Platinum
+        </Button>
       </div>
     </div>
 
@@ -303,7 +303,6 @@ const Index = () => {
     </div>
   </div>
 </section>
-
       {/* Why Choose Us */}
      {/* <section className="py-20 bg-white">
   <div className="container mx-auto px-4">
