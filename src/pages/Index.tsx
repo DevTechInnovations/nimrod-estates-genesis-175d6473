@@ -194,22 +194,29 @@ const Index = () => {
             <Trophy size={28} className="text-primary" />
           </div>
           <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Gold</h3>
-          <div className="flex items-baseline mb-6">
-            <span className="text-3xl font-bold text-primary tracking-tight">$299</span>
+          <div className="flex items-baseline mb-2">
+            <span className="text-3xl font-bold text-primary tracking-tight">$500</span>
             <span className="text-gray-400 ml-2 font-medium">/month</span>
+          </div>
+          <div className="text-sm text-gray-400 mb-6 font-medium">
+            Investment Range: $100K - $500K
           </div>
           <ul className="space-y-4 mb-8">
             <li className="flex items-start">
               <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Access to basic property listings</span>
+              <span className="text-gray-300 font-medium">Access to premium property listings</span>
             </li>
             <li className="flex items-start">
               <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Monthly market reports</span>
+              <span className="text-gray-300 font-medium">Monthly market insights & reports</span>
             </li>
             <li className="flex items-start">
               <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Email support</span>
+              <span className="text-gray-300 font-medium">Priority email support</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Basic investment consultation</span>
             </li>
           </ul>
         </div>
@@ -229,9 +236,12 @@ const Index = () => {
             <Award size={28} className="text-primary" />
           </div>
           <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Silver</h3>
-          <div className="flex items-baseline mb-6">
-            <span className="text-3xl font-bold text-primary tracking-tight">$599</span>
+          <div className="flex items-baseline mb-2">
+            <span className="text-3xl font-bold text-primary tracking-tight">$1,000</span>
             <span className="text-gray-400 ml-2 font-medium">/month</span>
+          </div>
+          <div className="text-sm text-gray-400 mb-6 font-medium">
+            Investment Range: $500K - $1M
           </div>
           <ul className="space-y-4 mb-8">
             <li className="flex items-start">
@@ -240,15 +250,19 @@ const Index = () => {
             </li>
             <li className="flex items-start">
               <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Priority property access</span>
+              <span className="text-gray-300 font-medium">Exclusive off-market properties</span>
             </li>
             <li className="flex items-start">
               <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Investment advisory</span>
+              <span className="text-gray-300 font-medium">Personal investment advisor</span>
             </li>
             <li className="flex items-start">
               <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Phone support</span>
+              <span className="text-gray-300 font-medium">Priority phone & email support</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Custom portfolio analysis</span>
             </li>
           </ul>
         </div>
@@ -265,9 +279,12 @@ const Index = () => {
             <Crown size={28} className="text-primary" />
           </div>
           <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Platinum</h3>
-          <div className="flex items-baseline mb-6">
-            <span className="text-3xl font-bold text-primary tracking-tight">$1,299</span>
+          <div className="flex items-baseline mb-2">
+            <span className="text-3xl font-bold text-primary tracking-tight">$2,000</span>
             <span className="text-gray-400 ml-2 font-medium">/month</span>
+          </div>
+          <div className="text-sm text-gray-400 mb-6 font-medium">
+            Investment Range: $1M - $1B
           </div>
           <ul className="space-y-4 mb-8">
             <li className="flex items-start">
@@ -276,15 +293,23 @@ const Index = () => {
             </li>
             <li className="flex items-start">
               <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Exclusive off-market deals</span>
+              <span className="text-gray-300 font-medium">First access to premium developments</span>
             </li>
             <li className="flex items-start">
               <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Personal wealth advisor</span>
+              <span className="text-gray-300 font-medium">Dedicated wealth management team</span>
             </li>
             <li className="flex items-start">
               <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">24/7 concierge service</span>
+              <span className="text-gray-300 font-medium">24/7 executive concierge</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Global investment opportunities</span>
+            </li>
+            <li className="flex items-start">
+              <Check size={18} className="text-primary mr-3 mt-0.5" />
+              <span className="text-gray-300 font-medium">Private deal structuring</span>
             </li>
           </ul>
         </div>
@@ -298,137 +323,11 @@ const Index = () => {
     <div className="text-center mt-12">
       <p className="text-gray-400 font-medium flex items-center justify-center">
         <Sparkles size={16} className="mr-2 text-primary" />
-        All plans include a 30-day money-back guarantee
+        All plans include personalized onboarding and dedicated support
       </p>
     </div>
   </div>
 </section>
-      {/* Why Choose Us */}
-     {/* <section className="py-20 bg-white">
-  <div className="container mx-auto px-4">
-    <div className="text-center mb-16">
-      <h2 className="text-4xl font-bold mb-4 tracking-tight">
-        Why Choose <span className="text-primary">Nimrod Estates</span>
-      </h2>
-      <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed font-medium">
-        Discover what sets us apart in the world of luxury real estate investment
-      </p>
-    </div>
-
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-
-      <div className="group text-center p-8 rounded-2xl bg-white border-2 border-gray-100 hover:border-primary/30 hover-lift shadow-lg hover:shadow-xl transition-all duration-300">
-        <div className="relative mb-6">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 shadow-md group-hover:shadow-lg transition-all duration-300">
-            <Globe className="text-primary" size={32} />
-          </div>
-          <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-            <div className="w-2 h-2 bg-white rounded-full"></div>
-          </div>
-        </div>
-        <h3 className="text-xl font-bold mb-4 tracking-tight text-gray-900">Global Reach</h3>
-        <p className="text-muted-foreground leading-relaxed font-medium">
-          Access exclusive properties in over 50 countries worldwide with our international network
-        </p>
-        <div className="mt-6 pt-6 border-t border-gray-100">
-          <div className="text-2xl font-bold text-primary">50+</div>
-          <div className="text-sm text-muted-foreground font-medium">Countries</div>
-        </div>
-      </div>
-
-      <div className="group text-center p-8 rounded-2xl bg-white border-2 border-primary/20 hover:border-primary/50 hover-lift shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-        <div className="relative mb-6">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 group-hover:from-primary/30 group-hover:to-primary/15 shadow-lg group-hover:shadow-xl transition-all duration-300">
-            <Shield className="text-primary" size={32} />
-          </div>
-          <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-            <div className="w-2 h-2 bg-white rounded-full"></div>
-          </div>
-        </div>
-        <h3 className="text-xl font-bold mb-4 tracking-tight text-gray-900">Trusted Service</h3>
-        <p className="text-muted-foreground leading-relaxed font-medium">
-          20+ years of excellence in luxury real estate investment with proven track record
-        </p>
-        <div className="mt-6 pt-6 border-t border-gray-100">
-          <div className="text-2xl font-bold text-primary">20+</div>
-          <div className="text-sm text-muted-foreground font-medium">Years Experience</div>
-        </div>
-      </div>
-
-      <div className="group text-center p-8 rounded-2xl bg-white border-2 border-gray-100 hover:border-primary/30 hover-lift shadow-lg hover:shadow-xl transition-all duration-300">
-        <div className="relative mb-6">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 shadow-md group-hover:shadow-lg transition-all duration-300">
-            <TrendingUp className="text-primary" size={32} />
-          </div>
-          <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-            <div className="w-2 h-2 bg-white rounded-full"></div>
-          </div>
-        </div>
-        <h3 className="text-xl font-bold mb-4 tracking-tight text-gray-900">High Returns</h3>
-        <p className="text-muted-foreground leading-relaxed font-medium">
-          Average ROI of 12% with carefully curated investment opportunities and expert guidance
-        </p>
-        <div className="mt-6 pt-6 border-t border-gray-100">
-          <div className="text-2xl font-bold text-primary">12%</div>
-          <div className="text-sm text-muted-foreground font-medium">Average ROI</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> */}
-
-      {/* Testimonials */}
-      {/* <section className="py-20 bg-secondary text-secondary-foreground">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 tracking-tight">
-              Client <span className="text-gradient-gold">Success Stories</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-card p-6 rounded-lg">
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="text-primary fill-primary" size={20} />
-                ))}
-              </div>
-              <p className="text-muted-foreground mb-4 leading-relaxed font-medium">
-                "Nimrod Estates helped me diversify my portfolio with premium international properties. The returns have exceeded my expectations!"
-              </p>
-              <div className="font-semibold tracking-wide">James Morrison</div>
-              <div className="text-sm text-muted-foreground font-medium">Platinum Member</div>
-            </div>
-
-            <div className="bg-card p-6 rounded-lg">
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="text-primary fill-primary" size={20} />
-                ))}
-              </div>
-              <p className="text-muted-foreground mb-4 leading-relaxed font-medium">
-                "Professional service, exclusive access to off-market deals, and exceptional support throughout the entire investment process."
-              </p>
-              <div className="font-semibold tracking-wide">Sarah Chen</div>
-              <div className="text-sm text-muted-foreground font-medium">Silver Member</div>
-            </div>
-
-            <div className="bg-card p-6 rounded-lg">
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="text-primary fill-primary" size={20} />
-                ))}
-              </div>
-              <p className="text-muted-foreground mb-4 leading-relaxed font-medium">
-                "The wealth advisory team at Nimrod Estates is outstanding. They've transformed my approach to real estate investment."
-              </p>
-              <div className="font-semibold tracking-wide">Michael Rodriguez</div>
-              <div className="text-sm text-muted-foreground font-medium">Gold Member</div>
-            </div>
-          </div>
-        </div>
-      </section> */}
-
       <Footer />
     </div>
   );
