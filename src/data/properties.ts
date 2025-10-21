@@ -9,6 +9,7 @@ export interface Property {
   area: number;
   roi?: string;
   images: string[];
+  imageLink?: string;
   featured: boolean;
   type: string;
   videoUrl?: string;

@@ -17,6 +17,7 @@ interface Property {
   area: number;
   roi: string | null;
   images: string[];
+  imageLinks: string[]; // Add this line
   featured: boolean;
   exclusive: boolean;
   investmentOpportunity: boolean;
@@ -68,6 +69,9 @@ const PropertyDetails = () => {
     fetchProperty();
   }, [id]);
 
+  // Combine images and Imagelinks for display
+  const allImages = property ? [...(property.images || []), ...(property.imageLinks || [])] : [];
+
   const formatPrice = (p?: string) => {
     if (!p) return 'N/A';
     const num = Number(p.replace(/[^0-9.-]+/g, ''));
@@ -84,23 +88,23 @@ const PropertyDetails = () => {
   };
 
   const nextImage = () => {
-    if (!property?.images) return;
-    setCurrentImage((prev) => (prev + 1) % property.images.length);
+    if (allImages.length === 0) return;
+    setCurrentImage((prev) => (prev + 1) % allImages.length);
   };
 
   const prevImage = () => {
-    if (!property?.images) return;
-    setCurrentImage((prev) => (prev - 1 + property.images.length) % property.images.length);
+    if (allImages.length === 0) return;
+    setCurrentImage((prev) => (prev - 1 + allImages.length) % allImages.length);
   };
 
   const nextModalImage = () => {
-    if (!property?.images) return;
-    setModalImageIndex((prev) => (prev + 1) % property.images.length);
+    if (allImages.length === 0) return;
+    setModalImageIndex((prev) => (prev + 1) % allImages.length);
   };
 
   const prevModalImage = () => {
-    if (!property?.images) return;
-    setModalImageIndex((prev) => (prev - 1 + property.images.length) % property.images.length);
+    if (allImages.length === 0) return;
+    setModalImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
   };
 
   const openModal = (index: number) => {
@@ -177,11 +181,11 @@ const PropertyDetails = () => {
               {/* Left: Gallery */}
               <div className="lg:col-span-2">
                 <div className="bg-card rounded-lg overflow-hidden shadow relative">
-                  {property.images && property.images.length > 0 ? (
+                  {allImages.length > 0 ? (
                     <>
                       <div className="w-full h-96 bg-gray-100 flex items-center justify-center overflow-hidden relative">
                         <img
-                          src={property.images[currentImage]}
+                          src={allImages[currentImage]}
                           alt={`${property.title} image ${currentImage + 1}`}
                           className="w-full h-full object-cover cursor-pointer"
                           onClick={() => openModal(currentImage)}
@@ -197,7 +201,7 @@ const PropertyDetails = () => {
                         </button>
 
                         {/* Navigation arrows */}
-                        {property.images.length > 1 && (
+                        {allImages.length > 1 && (
                           <>
                             <button
                               onClick={prevImage}
@@ -217,9 +221,9 @@ const PropertyDetails = () => {
                         )}
                       </div>
 
-                      {property.images.length > 1 && (
+                      {allImages.length > 1 && (
                         <div className="p-3 flex gap-2 overflow-x-auto bg-muted">
-                          {property.images.map((img, idx) => (
+                          {allImages.map((img, idx) => (
                             <button
                               key={idx}
                               onClick={() => setCurrentImage(idx)}
@@ -352,7 +356,7 @@ const PropertyDetails = () => {
       <Footer />
 
       {/* Image Modal */}
-      {isModalOpen && property?.images && (
+      {isModalOpen && allImages.length > 0 && (
         <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
           <button
             onClick={closeModal}
@@ -362,7 +366,7 @@ const PropertyDetails = () => {
             <X className="h-6 w-6" />
           </button>
 
-          {property.images.length > 1 && (
+          {allImages.length > 1 && (
             <>
               <button
                 onClick={prevModalImage}
@@ -383,14 +387,14 @@ const PropertyDetails = () => {
 
           <div className="relative max-w-4xl max-h-full w-full h-full flex items-center justify-center">
             <img
-              src={property.images[modalImageIndex]}
-              alt={`${property.title} image ${modalImageIndex + 1}`}
+              src={allImages[modalImageIndex]}
+              alt={`${property?.title} image ${modalImageIndex + 1}`}
               className="max-w-full max-h-full object-contain"
             />
             
             {/* Image counter */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-              {modalImageIndex + 1} / {property.images.length}
+              {modalImageIndex + 1} / {allImages.length}
             </div>
           </div>
         </div>

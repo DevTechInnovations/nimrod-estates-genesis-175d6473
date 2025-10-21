@@ -1,47 +1,48 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Bed, Bath, Square, Crown } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Crown, TrendingUp } from 'lucide-react'; // Added TrendingUp
 import { Button } from '@/components/ui/button';
 
 interface PropertyCardProps {
   id: string;
-  image: string;
+  image?: string;
   title: string;
   location: string;
   price: string;
   bedrooms: number;
   bathrooms: number;
   area: number;
-  roi?: string;
+  imageLinks: string[];
+  roi: string | null;
   investmentOpportunity: boolean; 
-  exclusive?: boolean; 
-  currency?: 'USD' | 'ZAR' | 'AED';
-  exchangeRates?: { USD: number; ZAR: number; AED: number };
-  isAuthenticated?: boolean; 
+  exclusive: boolean;
+  currency: 'USD' | 'ZAR' | 'AED';
+  exchangeRates: { USD: number; ZAR: number; AED: number };
+  isAuthenticated: boolean;
+  allImages?: string[];
 }
-
 
 const PropertyCard = ({
   id,
   image,
   title,
+  imageLinks,
   location,
   price,
   bedrooms,
   bathrooms,
   area,
   roi,
-  investmentOpportunity = false, // ← ADD THIS
-  exclusive = false, // ← ADD THIS with default
+  investmentOpportunity = false,
+  exclusive = false,
   currency = 'USD',
   exchangeRates = { USD: 1, ZAR: 18.5, AED: 3.67 },
-  isAuthenticated = false, // ← ADD THIS with default
+  isAuthenticated = false,
 }: PropertyCardProps) => {
   const formatPrice = (p?: string, curr: 'USD' | 'ZAR' | 'AED' = 'USD') => {
     if (!p) return 'N/A';
     const num = Number(String(p).replace(/[^0-9.-]+/g, ''));
     if (!Number.isFinite(num)) return p;
     
-    // Use live exchange rates
     const convertedAmount = num * exchangeRates[curr];
     
     return new Intl.NumberFormat('en-US', {
@@ -54,20 +55,49 @@ const PropertyCard = ({
   // Check if property should be blurred/locked
   const isLocked = exclusive && !isAuthenticated;
 
+  // FIX: Prioritize imageLinks over image prop
+  const displayImage = imageLinks && imageLinks.length > 0 
+    ? imageLinks[0] 
+    : image || '';
+
+
+
+
+ // DEBUG: Add this console.log here
+  console.log('PropertyCard debug:', {
+    id,
+    image,
+    imageLinks,
+    displayImage,
+    hasImageLinks: imageLinks && imageLinks.length > 0,
+    imageLinksLength: imageLinks?.length || 0
+  });
+  
+
+
+
   return (
     <div className={`group bg-card overflow-hidden shadow-lg hover-lift border border-border relative ${
       isLocked ? 'opacity-80' : ''
     }`}>
       <div className="relative overflow-hidden h-80">
-        <img
-          src={image}
-          alt={title}
-          className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${
-            isLocked ? 'blur-sm' : ''
-          }`}
-        />
+        {displayImage ? (
+          <img
+            src={displayImage}
+            alt={title}
+            className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${
+              isLocked ? 'blur-sm' : ''
+            }`}
+          />
+        ) : (
+          <div className="w-full h-full bg-muted flex items-center justify-center">
+            <div className="text-center text-muted-foreground">
+              <Square size={48} className="mx-auto mb-2" />
+              <p>No Image Available</p>
+            </div>
+          </div>
+        )}
         
-       
         {/* Badges Container */}
         <div className="absolute top-4 left-4 flex flex-col gap-2">
           {/* Exclusive Badge */}
@@ -157,9 +187,3 @@ const PropertyCard = ({
 };
 
 export default PropertyCard;
-
-
-
-
-      
-   

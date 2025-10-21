@@ -25,6 +25,30 @@ import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import heroImage from '@/assets/luxurious-villa-with-modern-architectural-design.jpg';
 
+// interface Property {
+//   id: string;
+//   title: string;
+//   description: string;
+//   location: string;
+//   price: string;
+//   bedrooms: number;
+//   bathrooms: number;
+//   area: number;
+//   roi: string | null;
+//   images: string[];
+//   featured: boolean;
+//   investmentOpportunity: boolean;
+//   exclusive: boolean;
+//   type: string;
+//   video_url: string | null;
+//   pdf_url: string | null;
+//   garage?: number;
+//   year_built?: number;
+//   parking_spaces?: number;
+// }
+
+
+
 interface Property {
   id: string;
   title: string;
@@ -36,6 +60,7 @@ interface Property {
   area: number;
   roi: string | null;
   images: string[];
+  imageLinks: string[]; // Add this line
   featured: boolean;
   investmentOpportunity: boolean;
   exclusive: boolean;

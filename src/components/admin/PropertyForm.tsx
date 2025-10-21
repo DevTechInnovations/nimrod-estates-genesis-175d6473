@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Building, MapPin, DollarSign, Bed, Bath, Square, Crown, TrendingUp } from 'lucide-react';
+import { Loader2, Building, MapPin, DollarSign, Bed, Bath, Square, Crown, TrendingUp, Link, Plus, X } from 'lucide-react';
 import { ImageUpload } from './ImageUpload';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -20,10 +20,11 @@ interface PropertyFormData {
   type: string;
   featured: boolean;
   exclusive: boolean;
-  investmentOpportunity: boolean; // ← ADD THIS
+  investmentOpportunity: boolean;
   video_url: string;
   pdf_url: string;
   images: string[];
+  imageLinks: string[]; // Now included since column exists
 }
 
 interface PropertyFormProps {
@@ -46,11 +47,14 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
     type: '',
     featured: false,
     exclusive: false,
-    investmentOpportunity: false, // ← ADD THIS
+    investmentOpportunity: false,
     video_url: '',
     pdf_url: '',
     images: [],
+    imageLinks: [], // Initialize empty array
   });
+
+  const [newImageLink, setNewImageLink] = useState('');
 
   useEffect(() => {
     if (initialData) {
@@ -66,10 +70,11 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
         type: initialData.type || '',
         featured: initialData.featured || false,
         exclusive: initialData.exclusive || false,
-        investmentOpportunity: initialData.investmentOpportunity || false, // ← ADD THIS
+        investmentOpportunity: initialData.investmentOpportunity || false,
         video_url: initialData.video_url || '',
         pdf_url: initialData.pdf_url || '',
         images: initialData.images || [],
+        imageLinks: initialData.imageLinks || [], // Initialize from existing data
       });
     }
   }, [initialData]);
@@ -77,12 +82,13 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (formData.images.length === 0) {
-      alert('Please upload at least one image');
+    if (formData.images.length === 0 && formData.imageLinks.length === 0) {
+      alert('Please upload at least one image or add an image link');
       return;
     }
 
-    await onSubmit({
+    // Prepare the data exactly as the database expects it
+    const submitData = {
       title: formData.title,
       description: formData.description,
       location: formData.location,
@@ -94,12 +100,72 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
       type: formData.type,
       featured: formData.featured,
       exclusive: formData.exclusive,
-      investmentOpportunity: formData.investmentOpportunity, // ← ADD THIS
+      investmentOpportunity: formData.investmentOpportunity,
       video_url: formData.video_url || null,
       pdf_url: formData.pdf_url || null,
       images: formData.images,
+      imageLinks: formData.imageLinks, // Include the imageLinks array
+    };
+
+    console.log('Submitting data:', submitData); // Debug log
+    await onSubmit(submitData);
+  };
+
+  const addImageLink = () => {
+    if (!newImageLink.trim()) return;
+
+    // Validate URL format
+    try {
+      new URL(newImageLink);
+    } catch {
+      alert('Please enter a valid URL');
+      return;
+    }
+
+    // Check for Google Drive links and convert to direct image URL if possible
+    const processedLink = processGoogleDriveLink(newImageLink);
+
+    setFormData({
+      ...formData,
+      imageLinks: [...formData.imageLinks, processedLink],
+    });
+    setNewImageLink('');
+  };
+
+  const removeImageLink = (index: number) => {
+    setFormData({
+      ...formData,
+      imageLinks: formData.imageLinks.filter((_, i) => i !== index),
     });
   };
+
+  const processGoogleDriveLink = (url: string): string => {
+    if (url.includes('drive.google.com')) {
+      const fileIdMatch = url.match(/\/d\/([^\/]+)/);
+      if (fileIdMatch) {
+        const fileId = fileIdMatch[1];
+        return `https://drive.google.com/uc?export=view&id=${fileId}`;
+      }
+      
+      const openIdMatch = url.match(/[?&]id=([^&]+)/);
+      if (openIdMatch) {
+        const fileId = openIdMatch[1];
+        return `https://drive.google.com/uc?export=view&id=${fileId}`;
+      }
+    }
+    
+    return url;
+  };
+
+  const removeUploadedImage = (index: number) => {
+    setFormData({
+      ...formData,
+      images: formData.images.filter((_, i) => i !== index),
+    });
+  };
+
+  // All images for preview (uploaded + links)
+  const allImages = [...formData.images, ...formData.imageLinks];
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -257,13 +323,106 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
             {/* Media Section */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Media & Documents</h3>
+              
+              {/* Image Upload */}
               <div className="space-y-2">
-                <Label>Property Images *</Label>
+                <Label>Upload Property Images *</Label>
                 <ImageUpload
                   images={formData.images}
                   onImagesChange={(images) => setFormData({ ...formData, images })}
                 />
               </div>
+
+              {/* Image Links */}
+              <div className="space-y-2">
+                <Label htmlFor="image-link" className="flex items-center gap-2">
+                  <Link className="h-4 w-4" />
+                  Add Image Links (optional)
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="image-link"
+                    placeholder="https://example.com/image.jpg or Google Drive link"
+                    value={newImageLink}
+                    onChange={(e) => setNewImageLink(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addImageLink();
+                      }
+                    }}
+                  />
+                  <Button type="button" onClick={addImageLink} variant="outline">
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Supports direct image URLs and Google Drive links
+                </p>
+
+                {/* Image Links Preview */}
+                {formData.imageLinks.length > 0 && (
+                  <div className="mt-3">
+                    <Label>Image Links Preview ({formData.imageLinks.length})</Label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+                      {formData.imageLinks.map((link, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={link}
+                            alt={`External image ${index + 1}`}
+                            className="w-full h-32 object-cover rounded-lg border"
+                            onError={(e) => {
+                              e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzljYTNhZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIExpbms8L3RleHQ+PC9zdmc+';
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImageLink(index)}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Combined Images Preview */}
+              {allImages.length > 0 && (
+                <div className="mt-4">
+                  <Label>All Property Images ({allImages.length})</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+                    {allImages.map((image, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={image}
+                          alt={`Property image ${index + 1}`}
+                          className="w-full h-24 object-cover rounded-lg border"
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg" />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (index < formData.images.length) {
+                              removeUploadedImage(index);
+                            } else {
+                              removeImageLink(index - formData.images.length);
+                            }
+                          }}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                        <div className="absolute bottom-1 left-1 bg-black bg-opacity-50 text-white text-xs px-1 rounded">
+                          {index < formData.images.length ? 'Uploaded' : 'Link'}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
