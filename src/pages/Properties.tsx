@@ -548,22 +548,25 @@ const Properties = () => {
           ) : filteredProperties.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProperties.map((property) => (
-                <PropertyCard
-                  key={property.id}
-                  id={property.id}
-                  image={property.images?.[0]}
-                  title={property.title}
-                  location={property.location}
-                  price={property.price}
-                  bedrooms={property.bedrooms}
-                  bathrooms={property.bathrooms}
-                  area={property.area}
-                  roi={property.roi}
-                  exclusive={property.exclusive}
-                  currency={currency}
-                  exchangeRates={exchangeRates}
-                  isAuthenticated={isAuthenticated}
-                />
+            <PropertyCard
+  key={property.id}
+  id={property.id}
+  image={property.images?.[0] || ''}
+  imageLinks={property.imageLinks || []}
+  title={property.title}
+  location={property.location}
+  price={property.price}
+  bedrooms={property.bedrooms}
+  bathrooms={property.bathrooms}
+  area={property.area}
+  roi={property.roi}
+  investmentOpportunity={property.investmentOpportunity || false}
+  exclusive={property.exclusive || false}
+  currency="USD"
+  exchangeRates={{ USD: 1, ZAR: 18.5, AED: 3.67 }}
+  isAuthenticated={false}
+/>
+
               ))}
             </div>
           ) : (
