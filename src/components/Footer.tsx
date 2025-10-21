@@ -87,18 +87,38 @@ const Footer = () => {
           {/* Global Offices */}
           <div>
             <h4 className="font-heading font-semibold mb-4">Global Offices</h4>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center space-x-2">
-                <MapPin size={14} className="text-primary flex-shrink-0" />
-                <span className="text-white">Monaco</span>
+            <div className="space-y-4 text-sm text-white">
+              {/* Monaco */}
+              <div>
+                <div className="flex items-center space-x-2 mb-1">
+                  <MapPin size={14} className="text-primary flex-shrink-0" />
+                  <span className="font-semibold">Monaco</span>
+                </div>
+                <p className="text-muted-foreground">
+                  Monte Carlo Sun, Bd d'Italie 74, 98000 Monaco
+                </p>
               </div>
-              <div className="flex items-center space-x-2">
-                <MapPin size={14} className="text-primary flex-shrink-0" />
-                <span className="text-white">Dubai</span>
+
+              {/* Dubai */}
+              <div>
+                <div className="flex items-center space-x-2 mb-1">
+                  <MapPin size={14} className="text-primary flex-shrink-0" />
+                  <span className="font-semibold">Dubai</span>
+                </div>
+                <p className="text-muted-foreground">
+                  Emirates Towers, Dubai, United Arab Emirates
+                </p>
               </div>
-              <div className="flex items-center space-x-2">
-                <MapPin size={14} className="text-primary flex-shrink-0" />
-                <span className="text-white">South Africa</span>
+
+              {/* South Africa */}
+              <div>
+                <div className="flex items-center space-x-2 mb-1">
+                  <MapPin size={14} className="text-primary flex-shrink-0" />
+                  <span className="font-semibold">South Africa</span>
+                </div>
+                <p className="text-muted-foreground">
+                  96 Rivonia Road, Sandton, Gauteng
+                </p>
               </div>
             </div>
           </div>
@@ -110,7 +130,7 @@ const Footer = () => {
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Phone size={14} className="text-primary flex-shrink-0" />
-                  <span className="text-white">+971 58 3051460</span>
+                  <span className="text-white">+971 58 305 1460</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Phone size={14} className="text-primary flex-shrink-0" />
@@ -131,12 +151,14 @@ const Footer = () => {
 
         {/* Copyright and Powered By Section */}
         <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p className="mb-2">&copy; {new Date().getFullYear()} Nimrod Estates. All rights reserved.</p>
+          <p className="mb-2">
+            &copy; {new Date().getFullYear()} Nimrod Estates. All rights reserved.
+          </p>
           <p>
             Powered by{' '}
-            <a 
-              href="https://www.devtechinnovations.co.za/" 
-              target="_blank" 
+            <a
+              href="https://www.devtechinnovations.co.za/"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:text-primary/80 transition-colors font-medium"
             >
