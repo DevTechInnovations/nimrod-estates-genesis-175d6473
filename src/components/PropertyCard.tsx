@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Bed, Bath, Square, Crown, TrendingUp } from 'lucide-react'; // Added TrendingUp
+import { MapPin, Bed, Bath, Square, Crown, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface PropertyCardProps {
@@ -38,6 +38,16 @@ const PropertyCard = ({
   exchangeRates = { USD: 1, ZAR: 18.5, AED: 3.67 },
   isAuthenticated = false,
 }: PropertyCardProps) => {
+  
+  // DEBUG: Log authentication status
+  console.log('PropertyCard authentication debug:', {
+    propertyId: id,
+    propertyTitle: title,
+    isExclusive: exclusive,
+    isAuthenticated: isAuthenticated,
+    shouldBeLocked: exclusive && !isAuthenticated
+  });
+
   const formatPrice = (p?: string, curr: 'USD' | 'ZAR' | 'AED' = 'USD') => {
     if (!p) return 'N/A';
     const num = Number(String(p).replace(/[^0-9.-]+/g, ''));
@@ -55,26 +65,13 @@ const PropertyCard = ({
   // Check if property should be blurred/locked
   const isLocked = exclusive && !isAuthenticated;
 
-  // FIX: Prioritize imageLinks over image prop
+  // DEBUG: Log locking status
+  console.log(`Property ${id} locked status:`, isLocked);
+
+  // Prioritize imageLinks over image prop
   const displayImage = imageLinks && imageLinks.length > 0 
     ? imageLinks[0] 
     : image || '';
-
-
-
-
- // DEBUG: Add this console.log here
-  console.log('PropertyCard debug:', {
-    id,
-    image,
-    imageLinks,
-    displayImage,
-    hasImageLinks: imageLinks && imageLinks.length > 0,
-    imageLinksLength: imageLinks?.length || 0
-  });
-  
-
-
 
   return (
     <div className={`group bg-card overflow-hidden shadow-lg hover-lift border border-border relative ${
@@ -170,7 +167,7 @@ const PropertyCard = ({
                 {formatPrice(price, currency)}
               </p>
             </div>
-            <Link to={isLocked ? '/login' : `/properties/${id}`}>
+            <Link to={isLocked ? '/member-auth' : `/properties/${id}`}>
               <Button 
                 variant="outline" 
                 size="sm" 

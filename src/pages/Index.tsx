@@ -19,11 +19,15 @@ interface Property {
   roi: string | null;
   images: string[];
   featured: boolean;
+  investmentOpportunity: boolean;
+  exclusive: boolean;
+  imageLinks: string[];
 }
 
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Add auth state
 
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
@@ -44,7 +48,24 @@ const Index = () => {
       }
     };
 
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsAuthenticated(!!session);
+        
+        // Listen for auth state changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+          setIsAuthenticated(!!session);
+        });
+
+        return () => subscription.unsubscribe();
+      } catch (error) {
+        console.error('Error checking auth:', error);
+      }
+    };
+
     fetchFeaturedProperties();
+    checkAuth();
   }, []);
 
   return (
@@ -63,12 +84,12 @@ const Index = () => {
         </div>
 
         <div className="relative z-10 container mx-auto px-4 text-center text-white">
-       <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in leading-tight">
-        <span className="text-gradient-gold">Luxury Real Estate</span> Investments
-        </h1>
-        <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in text-white/90 leading-relaxed">
-        Invest with confidence in exclusive properties worldwide.
-        </p>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in leading-tight">
+            <span className="text-gradient-gold">Luxury Real Estate</span> Investments
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in text-white/90 leading-relaxed">
+            Invest with confidence in exclusive properties worldwide.
+          </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
             <Link to="/properties">
@@ -142,23 +163,23 @@ const Index = () => {
             ) : (
               featuredProperties.map((property) => (
                 <PropertyCard
-  key={property.id}
-  id={property.id}
-  image={property.images?.[0] || ''}
-  imageLinks={property.imageLinks || []}
-  title={property.title}
-  location={property.location}
-  price={property.price}
-  bedrooms={property.bedrooms}
-  bathrooms={property.bathrooms}
-  area={property.area}
-  roi={property.roi}
-  investmentOpportunity={property.investmentOpportunity || false}
-  exclusive={property.exclusive || false}
-  currency="USD"
-  exchangeRates={{ USD: 1, ZAR: 18.5, AED: 3.67 }}
-  isAuthenticated={false}
-/>
+                  key={property.id}
+                  id={property.id}
+                  image={property.images?.[0] || ''}
+                  imageLinks={property.imageLinks || []}
+                  title={property.title}
+                  location={property.location}
+                  price={property.price}
+                  bedrooms={property.bedrooms}
+                  bathrooms={property.bathrooms}
+                  area={property.area}
+                  roi={property.roi}
+                  investmentOpportunity={property.investmentOpportunity || false}
+                  exclusive={property.exclusive || false}
+                  currency="USD"
+                  exchangeRates={{ USD: 1, ZAR: 18.5, AED: 3.67 }}
+                  isAuthenticated={isAuthenticated} // ← FIXED: Use actual auth state
+                />
               ))
             )}
           </div>
@@ -177,7 +198,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
+ 
    {/* Membership Tiers */}
 <section className="py-20 bg-gray-100 text-white">
   <div className="container mx-auto px-6">

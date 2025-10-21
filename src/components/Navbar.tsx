@@ -41,10 +41,12 @@ const Navbar = () => {
   const isActive = (path: string) => location.pathname === path;
   const isServicesActive = () => location.pathname.startsWith('/services');
 
+  // ✅ Dynamic colors: white before scroll, black after scroll
   const textColor = isScrolled ? 'text-black' : 'text-white';
   const hoverColor = isScrolled ? 'hover:text-primary' : 'hover:text-primary';
+  const borderColor = isScrolled ? 'border-black' : 'border-white';
 
-  // Services Dropdown - Only main categories that link to pages
+  // Services Dropdown Component
   const ServicesDropdown = () => (
     <div className="relative">
       <button
@@ -80,7 +82,7 @@ const Navbar = () => {
     </div>
   );
 
-  // Mobile Services Menu - Only main categories
+  // Mobile Services Menu
   const MobileServicesMenu = () => (
     <div className="border-t mt-4 pt-4 border-white/20">
       <div className="text-sm font-medium px-2 py-1 opacity-60 mb-2">

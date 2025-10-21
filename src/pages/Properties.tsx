@@ -107,11 +107,15 @@ const Properties = () => {
   });
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
-  useEffect(() => {
-    fetchProperties();
-    fetchExchangeRates();
-    checkAuth();
-  }, []);
+useEffect(() => {
+  fetchProperties();
+  fetchExchangeRates();
+  checkAuth();
+
+  // Refresh rates every hour
+  const interval = setInterval(fetchExchangeRates, 60 * 60 * 1000);
+  return () => clearInterval(interval);
+}, []);
 
   useEffect(() => {
     updateActiveFilters();
@@ -537,66 +541,64 @@ const Properties = () => {
           </div>
         </div>
       </section>
-
-      {/* Property Grid */}
-      <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          {loading ? (
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="h-12 w-12 animate-spin text-primary" />
-            </div>
-          ) : filteredProperties.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredProperties.map((property) => (
-            <PropertyCard
-  key={property.id}
-  id={property.id}
-  image={property.images?.[0] || ''}
-  imageLinks={property.imageLinks || []}
-  title={property.title}
-  location={property.location}
-  price={property.price}
-  bedrooms={property.bedrooms}
-  bathrooms={property.bathrooms}
-  area={property.area}
-  roi={property.roi}
-  investmentOpportunity={property.investmentOpportunity || false}
-  exclusive={property.exclusive || false}
-  currency="USD"
-  exchangeRates={{ USD: 1, ZAR: 18.5, AED: 3.67 }}
-  isAuthenticated={false}
-/>
-
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-20 bg-white rounded-2xl shadow-lg">
-              <p className="text-xl text-muted-foreground mb-4">
-                {isAuthenticated ? 'No properties found matching your criteria.' : 'No properties available. Sign in to view exclusive properties.'}
-              </p>
-              <div className="flex gap-4 justify-center">
-                <Button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setTypeFilter('All');
-                    clearAllFilters();
-                  }}
-                  className="bg-primary hover:bg-primary/90 text-white"
-                >
-                  Clear Filters
-                </Button>
-                {!isAuthenticated && (
-                  <Link to="/login">
-                    <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-50">
-                      Sign In
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </div>
+{/* Property Grid */}
+<section className="py-12 bg-gray-50">
+  <div className="container mx-auto px-4">
+    {loading ? (
+      <div className="flex justify-center items-center py-20">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    ) : filteredProperties.length > 0 ? (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {filteredProperties.map((property) => (
+          <PropertyCard
+            key={property.id}
+            id={property.id}
+            image={property.images?.[0] || ''}
+            imageLinks={property.imageLinks || []}
+            title={property.title}
+            location={property.location}
+            price={property.price}
+            bedrooms={property.bedrooms}
+            bathrooms={property.bathrooms}
+            area={property.area}
+            roi={property.roi}
+            investmentOpportunity={property.investmentOpportunity || false}
+            exclusive={property.exclusive || false}
+            currency={currency}
+            exchangeRates={exchangeRates}
+            isAuthenticated={isAuthenticated} // This is now correctly passed
+          />
+        ))}
+      </div>
+    ) : (
+      <div className="text-center py-20 bg-white rounded-2xl shadow-lg">
+        <p className="text-xl text-muted-foreground mb-4">
+          {isAuthenticated ? 'No properties found matching your criteria.' : 'No properties available. Sign in to view exclusive properties.'}
+        </p>
+        <div className="flex gap-4 justify-center">
+          <Button
+            onClick={() => {
+              setSearchTerm('');
+              setTypeFilter('All');
+              clearAllFilters();
+            }}
+            className="bg-primary hover:bg-primary/90 text-white"
+          >
+            Clear Filters
+          </Button>
+          {!isAuthenticated && (
+            <Link to="/member-auth">
+              <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-50">
+                Sign In
+              </Button>
+            </Link>
           )}
         </div>
-      </section>
+      </div>
+    )}
+  </div>
+</section>
 
       <Footer />
     </div>
