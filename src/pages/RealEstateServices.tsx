@@ -95,11 +95,13 @@ const RealEstateServices = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {services.map((service, index) => {
               const Icon = service.icon;
-              return (
-                <div
-                  key={index}
-                  className="group bg-white rounded-2xl border border-gray-200 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
-                >
+              // if this is the Property Listings service, route to /properties
+              const target = service.link === '/services/property-listings' ? '/properties' : service.link;
+               return (
+                 <div
+                   key={index}
+                   className="group bg-white rounded-2xl border border-gray-200 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
+                 >
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
@@ -132,16 +134,16 @@ const RealEstateServices = () => {
                       ))}
                     </ul>
 
-                    <Link to={service.link}>
+                    <Link to={target}>
                       <Button className="w-full bg-primary hover:bg-primary/90 text-white">
                         Learn More
                         <ArrowRight className="ml-2" size={16} />
                       </Button>
                     </Link>
-                  </div>
-                </div>
-              );
-            })}
+                   </div>
+                 </div>
+               );
+             })}
           </div>
         </div>
       </section>

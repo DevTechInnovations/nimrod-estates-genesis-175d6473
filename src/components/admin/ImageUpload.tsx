@@ -13,32 +13,28 @@ export function ImageUpload({ images, onImagesChange }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
 
+  // Increased file size limit to 20MB (you can adjust this as needed)
+  const MAX_FILE_SIZE = 100 * 1024 * 1024; // 20MB
+
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
     setUploading(true);
     const uploadedUrls: string[] = [];
+    const errors: string[] = [];
 
     try {
       for (const file of Array.from(files)) {
         // Validate file type
         if (!file.type.startsWith('image/')) {
-          toast({
-            variant: 'destructive',
-            title: 'Invalid file',
-            description: `${file.name} is not an image file`,
-          });
+          errors.push(`${file.name} is not an image file`);
           continue;
         }
 
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          toast({
-            variant: 'destructive',
-            title: 'File too large',
-            description: `${file.name} exceeds 5MB limit`,
-          });
+        // Updated file size validation - now 20MB
+        if (file.size > MAX_FILE_SIZE) {
+          errors.push(`${file.name} exceeds ${MAX_FILE_SIZE / 1024 / 1024}MB limit`);
           continue;
         }
 
@@ -54,7 +50,10 @@ export function ImageUpload({ images, onImagesChange }: ImageUploadProps) {
             upsert: false,
           });
 
-        if (error) throw error;
+        if (error) {
+          errors.push(`Failed to upload ${file.name}: ${error.message}`);
+          continue;
+        }
 
         // Get public URL
         const { data: { publicUrl } } = supabase.storage
@@ -64,11 +63,21 @@ export function ImageUpload({ images, onImagesChange }: ImageUploadProps) {
         uploadedUrls.push(publicUrl);
       }
 
+      // Show success message if any images were uploaded
       if (uploadedUrls.length > 0) {
         onImagesChange([...images, ...uploadedUrls]);
         toast({
           title: 'Success!',
           description: `${uploadedUrls.length} image(s) uploaded successfully`,
+        });
+      }
+
+      // Show error messages if any
+      if (errors.length > 0) {
+        toast({
+          variant: 'destructive',
+          title: 'Upload issues',
+          description: errors.slice(0, 3).join(', ') + (errors.length > 3 ? ` and ${errors.length - 3} more...` : ''),
         });
       }
     } catch (error: any) {
@@ -154,7 +163,7 @@ export function ImageUpload({ images, onImagesChange }: ImageUploadProps) {
           </Button>
         </label>
         <p className="text-xs text-muted-foreground mt-1">
-          Select multiple images (max 5MB each, JPG/PNG/WEBP)
+          Select multiple images (max {MAX_FILE_SIZE / 1024 / 1024}MB each, JPG/PNG/WEBP)
         </p>
       </div>
 

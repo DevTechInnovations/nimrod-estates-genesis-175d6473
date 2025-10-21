@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Loader2, MapPin, Bed, Bath, Square, TrendingUp, ArrowLeft, Crown } from 'lucide-react';
+import { Loader2, MapPin, Bed, Bath, Square, TrendingUp, ArrowLeft, Crown, ChevronLeft, ChevronRight, X, Maximize2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -32,6 +32,8 @@ const PropertyDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentImage, setCurrentImage] = useState<number>(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImageIndex, setModalImageIndex] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -77,10 +79,56 @@ const PropertyDetails = () => {
 
   const renderDescription = (text: string) => {
     if (!text) return null;
-    // split paragraphs on double line breaks, fallback to single line breaks
     const paragraphs = text.split(/\r?\n\r?\n/).map(p => p.trim()).filter(Boolean);
     return paragraphs.map((p, i) => <p key={i} className="mb-4 leading-relaxed text-base text-muted-foreground">{p}</p>);
   };
+
+  const nextImage = () => {
+    if (!property?.images) return;
+    setCurrentImage((prev) => (prev + 1) % property.images.length);
+  };
+
+  const prevImage = () => {
+    if (!property?.images) return;
+    setCurrentImage((prev) => (prev - 1 + property.images.length) % property.images.length);
+  };
+
+  const nextModalImage = () => {
+    if (!property?.images) return;
+    setModalImageIndex((prev) => (prev + 1) % property.images.length);
+  };
+
+  const prevModalImage = () => {
+    if (!property?.images) return;
+    setModalImageIndex((prev) => (prev - 1 + property.images.length) % property.images.length);
+  };
+
+  const openModal = (index: number) => {
+    setModalImageIndex(index);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isModalOpen) return;
+      
+      if (e.key === 'Escape') {
+        closeModal();
+      } else if (e.key === 'ArrowLeft') {
+        prevModalImage();
+      } else if (e.key === 'ArrowRight') {
+        nextModalImage();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
 
   return (
     <div className="min-h-screen">
@@ -128,15 +176,45 @@ const PropertyDetails = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left: Gallery */}
               <div className="lg:col-span-2">
-                <div className="bg-card rounded-lg overflow-hidden shadow">
+                <div className="bg-card rounded-lg overflow-hidden shadow relative">
                   {property.images && property.images.length > 0 ? (
                     <>
-                      <div className="w-full h-96 bg-gray-100 flex items-center justify-center overflow-hidden">
+                      <div className="w-full h-96 bg-gray-100 flex items-center justify-center overflow-hidden relative">
                         <img
                           src={property.images[currentImage]}
                           alt={`${property.title} image ${currentImage + 1}`}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover cursor-pointer"
+                          onClick={() => openModal(currentImage)}
                         />
+                        
+                        {/* Fullscreen button */}
+                        <button
+                          onClick={() => openModal(currentImage)}
+                          className="absolute top-3 right-3 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                          aria-label="View fullscreen"
+                        >
+                          <Maximize2 className="h-4 w-4" />
+                        </button>
+
+                        {/* Navigation arrows */}
+                        {property.images.length > 1 && (
+                          <>
+                            <button
+                              onClick={prevImage}
+                              className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                              aria-label="Previous image"
+                            >
+                              <ChevronLeft className="h-5 w-5" />
+                            </button>
+                            <button
+                              onClick={nextImage}
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                              aria-label="Next image"
+                            >
+                              <ChevronRight className="h-5 w-5" />
+                            </button>
+                          </>
+                        )}
                       </div>
 
                       {property.images.length > 1 && (
@@ -148,7 +226,11 @@ const PropertyDetails = () => {
                               className={`flex-shrink-0 w-24 h-16 border rounded overflow-hidden ${idx === currentImage ? 'ring-2 ring-primary' : 'opacity-80 hover:opacity-100'}`}
                               aria-label={`Show image ${idx + 1}`}
                             >
-                              <img src={img} alt={`thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                              <img 
+                                src={img} 
+                                alt={`thumbnail ${idx + 1}`} 
+                                className="w-full h-full object-cover" 
+                              />
                             </button>
                           ))}
                         </div>
@@ -268,6 +350,51 @@ const PropertyDetails = () => {
         </div>
       </section>
       <Footer />
+
+      {/* Image Modal */}
+      {isModalOpen && property?.images && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+          <button
+            onClick={closeModal}
+            className="absolute top-4 right-4 text-white p-2 hover:bg-white/10 rounded-full transition-colors"
+            aria-label="Close modal"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
+          {property.images.length > 1 && (
+            <>
+              <button
+                onClick={prevModalImage}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white p-3 hover:bg-white/10 rounded-full transition-colors"
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="h-8 w-8" />
+              </button>
+              <button
+                onClick={nextModalImage}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white p-3 hover:bg-white/10 rounded-full transition-colors"
+                aria-label="Next image"
+              >
+                <ChevronRight className="h-8 w-8" />
+              </button>
+            </>
+          )}
+
+          <div className="relative max-w-4xl max-h-full w-full h-full flex items-center justify-center">
+            <img
+              src={property.images[modalImageIndex]}
+              alt={`${property.title} image ${modalImageIndex + 1}`}
+              className="max-w-full max-h-full object-contain"
+            />
+            
+            {/* Image counter */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+              {modalImageIndex + 1} / {property.images.length}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
