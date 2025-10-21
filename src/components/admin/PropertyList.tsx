@@ -1,89 +1,3 @@
-// import { Button } from '@/components/ui/button';
-// import { Card, CardContent } from '@/components/ui/card';
-// import { Edit, Trash2 } from 'lucide-react';
-
-// interface Property {
-//   id: string;
-//   title: string;
-//   location: string;
-//   price: string;
-//   type: string;
-//   bedrooms: number;
-//   bathrooms: number;
-//   featured: boolean;
-//   images: string[];
-// }
-
-// interface PropertyListProps {
-//   properties: Property[];
-//   onEdit: (property: Property) => void;
-//   onDelete: (id: string) => void;
-// }
-
-// export function PropertyList({ properties, onEdit, onDelete }: PropertyListProps) {
-//   if (properties.length === 0) {
-//     return (
-//       <div className="text-center py-12 text-muted-foreground">
-//         No properties found. Create your first property listing above.
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-//       {properties.map((property) => (
-//         <Card key={property.id}>
-//           <CardContent className="p-4">
-//             {property.images?.[0] && (
-//               <img
-//                 src={property.images[0]}
-//                 alt={property.title}
-//                 className="w-full h-48 object-cover rounded-lg mb-4"
-//               />
-//             )}
-//             <div className="space-y-2">
-//               <div className="flex items-start justify-between">
-//                 <h3 className="font-semibold text-lg line-clamp-1">{property.title}</h3>
-//                 {property.featured && (
-//                   <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
-//                     Featured
-//                   </span>
-//                 )}
-//               </div>
-//               <p className="text-sm text-muted-foreground">{property.location}</p>
-//               <p className="text-lg font-bold text-primary">{property.price}</p>
-//               <p className="text-sm text-muted-foreground">
-//                 {property.type} • {property.bedrooms} beds • {property.bathrooms} baths
-//               </p>
-//               <div className="flex gap-2 pt-2">
-//                 <Button
-//                   variant="outline"
-//                   size="sm"
-//                   onClick={() => onEdit(property)}
-//                   className="flex-1"
-//                 >
-//                   <Edit className="mr-2 h-4 w-4" />
-//                   Edit
-//                 </Button>
-//                 <Button
-//                   variant="destructive"
-//                   size="sm"
-//                   onClick={() => onDelete(property.id)}
-//                   className="flex-1"
-//                 >
-//                   <Trash2 className="mr-2 h-4 w-4" />
-//                   Delete
-//                 </Button>
-//               </div>
-//             </div>
-//           </CardContent>
-//         </Card>
-//       ))}
-//     </div>
-//   );
-// }
-
-
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -100,6 +14,7 @@ interface Property {
   bathrooms: number;
   featured: boolean;
   images: string[];
+  imageLinks?: string[]; // Add imageLinks
 }
 
 interface PropertyListProps {
@@ -212,106 +127,113 @@ export function PropertyList({ properties, onEdit, onDelete }: PropertyListProps
               </tr>
             </thead>
             <tbody className="divide-y">
-              {currentProperties.map((property) => (
-                <tr key={property.id} className="hover:bg-muted/20 transition-colors">
-                  {/* Property Info */}
-                  <td className="p-4">
-                    <div className="flex items-center gap-3 min-w-[250px]">
-                      {property.images?.[0] ? (
-                        <img
-                          src={property.images[0]}
-                          alt={property.title}
-                          className="w-14 h-14 object-cover rounded-lg border"
-                        />
-                      ) : (
-                        <div className="w-14 h-14 bg-muted rounded-lg flex items-center justify-center">
-                          <Home className="h-6 w-6 text-muted-foreground" />
+              {currentProperties.map((property) => {
+                // Use imageLinks first, then fall back to images
+                const displayImage = property.imageLinks && property.imageLinks.length > 0 
+                  ? property.imageLinks[0] 
+                  : property.images?.[0] || '';
+
+                return (
+                  <tr key={property.id} className="hover:bg-muted/20 transition-colors">
+                    {/* Property Info */}
+                    <td className="p-4">
+                      <div className="flex items-center gap-3 min-w-[250px]">
+                        {displayImage ? (
+                          <img
+                            src={displayImage}
+                            alt={property.title}
+                            className="w-14 h-14 object-cover rounded-lg border"
+                          />
+                        ) : (
+                          <div className="w-14 h-14 bg-muted rounded-lg flex items-center justify-center">
+                            <Home className="h-6 w-6 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-foreground truncate max-w-[180px]">
+                            {property.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {/* ID: {property.id.slice(0, 8)}... */}
+                          </p>
                         </div>
+                      </div>
+                    </td>
+
+                    {/* Location */}
+                    <td className="p-4">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground max-w-[200px]">
+                        <MapPin className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{property.location}</span>
+                      </div>
+                    </td>
+
+                    {/* Type */}
+                    <td className="p-4">
+                      <Badge variant="outline" className="capitalize">
+                        {property.type}
+                      </Badge>
+                    </td>
+
+                    {/* Details */}
+                    <td className="p-4">
+                      <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-1">
+                          <Bed className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-medium">{property.bedrooms}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Bath className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-medium">{property.bathrooms}</span>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Price */}
+                    <td className="p-4">
+                      <p className="font-bold text-primary text-lg">{property.price}</p>
+                    </td>
+
+                    {/* Status */}
+                    <td className="p-4">
+                      {property.featured ? (
+                        <Badge className="bg-amber-500 hover:bg-amber-600 flex items-center gap-1 w-fit">
+                          <Star className="h-3 w-3 fill-current" />
+                          Featured
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-muted-foreground">
+                          Standard
+                        </Badge>
                       )}
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-foreground truncate max-w-[180px]">
-                          {property.title}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {/* ID: {property.id.slice(0, 8)}... */}
-                        </p>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="p-4">
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onEdit(property)}
+                          className="h-9 px-3 border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                        >
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">Edit</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onDelete(property.id)}
+                          className="h-9 px-3 border-red-200 hover:bg-red-50 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete</span>
+                        </Button>
                       </div>
-                    </div>
-                  </td>
-
-                  {/* Location */}
-                  <td className="p-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground max-w-[200px]">
-                      <MapPin className="h-4 w-4 flex-shrink-0" />
-                      <span className="truncate">{property.location}</span>
-                    </div>
-                  </td>
-
-                  {/* Type */}
-                  <td className="p-4">
-                    <Badge variant="outline" className="capitalize">
-                      {property.type}
-                    </Badge>
-                  </td>
-
-                  {/* Details */}
-                  <td className="p-4">
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Bed className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">{property.bedrooms}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Bath className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">{property.bathrooms}</span>
-                      </div>
-                    </div>
-                  </td>
-
-                  {/* Price */}
-                  <td className="p-4">
-                    <p className="font-bold text-primary text-lg">{property.price}</p>
-                  </td>
-
-                  {/* Status */}
-                  <td className="p-4">
-                    {property.featured ? (
-                      <Badge className="bg-amber-500 hover:bg-amber-600 flex items-center gap-1 w-fit">
-                        <Star className="h-3 w-3 fill-current" />
-                        Featured
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="text-muted-foreground">
-                        Standard
-                      </Badge>
-                    )}
-                  </td>
-
-                  {/* Actions */}
-                  <td className="p-4">
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onEdit(property)}
-                        className="h-9 px-3 border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-                      >
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit</span>
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onDelete(property.id)}
-                        className="h-9 px-3 border-red-200 hover:bg-red-50 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete</span>
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
