@@ -30,7 +30,7 @@ const RealEstateServices = () => {
       description: 'Maximizing property value and returns through strategic oversight of real estate portfolios and investment optimization.',
       features: ['Portfolio Optimization', 'Value Enhancement', 'Strategic Planning'],
       image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-      link: '/services/asset-management'
+      link: '/member-auth'
     }
   ];
 
