@@ -38,6 +38,36 @@ interface PropertyFormProps {
   loading: boolean;
 }
 
+// Property types array
+const propertyTypes = [
+  'Apartment',
+  'Villa',
+  'Penthouse',
+  'Townhouse',
+  'Condominium',
+  'Studio',
+  'Duplex',
+  'Triplex',
+  'Mansion',
+  'Bungalow',
+  'Cottage',
+  'Chalet',
+  'Farmhouse',
+  'Castle',
+  'Loft',
+  'Commercial Building',
+  'Office Space',
+  'Retail Space',
+  'Industrial Property',
+  'Land',
+  'Beach House',
+  'Mountain Cabin',
+  'Luxury Estate',
+  'Gated Community Home',
+  'Waterfront Property',
+  'Golf Course Property'
+];
+
 export function PropertyForm({ initialData, onSubmit, onCancel, loading }: PropertyFormProps) {
   const [formData, setFormData] = useState<PropertyFormData>({
     title: '',
@@ -303,13 +333,21 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
                     <Building className="h-4 w-4" />
                     Property Category *
                   </Label>
-                  <Input
-                    id="type"
-                    placeholder="Villa, Penthouse, Apartment"
+                  <Select
                     value={formData.type}
-                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                    required
-                  />
+                    onValueChange={(value) => setFormData({ ...formData, type: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select property category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {propertyTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
