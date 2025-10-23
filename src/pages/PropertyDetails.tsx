@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Loader2, MapPin, Bed, Bath, Square, TrendingUp, ArrowLeft, Crown, ChevronLeft, ChevronRight, X, Maximize2 } from 'lucide-react';
+import { Loader2, MapPin, Bed, Bath, Square, TrendingUp, ArrowLeft, Crown, ChevronLeft, ChevronRight, X, Maximize2, Calendar, Shield } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -17,13 +17,16 @@ interface Property {
   area: number;
   roi: string | null;
   images: string[];
-  imageLinks: string[]; // Add this line
+  imageLinks: string[];
   featured: boolean;
   exclusive: boolean;
   investmentOpportunity: boolean;
   type: string;
   video_url: string | null;
   pdf_url: string | null;
+  property_type: 'sale' | 'rental';
+  rental_period: string | null;
+  security_deposit: string | null;
 }
 
 const PropertyDetails = () => {
@@ -79,6 +82,22 @@ const PropertyDetails = () => {
       return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
     }
     return p;
+  };
+
+  const getRentalPeriodText = (period: string | null) => {
+    if (!period) return '';
+    switch (period) {
+      case 'monthly': return '/month';
+      case 'weekly': return '/week';
+      case 'daily': return '/day';
+      case 'yearly': return '/year';
+      default: return '';
+    }
+  };
+
+  const getRentalPeriodDisplay = (period: string | null) => {
+    if (!period) return '';
+    return period.charAt(0).toUpperCase() + period.slice(1);
   };
 
   const renderDescription = (text: string) => {
@@ -258,6 +277,22 @@ const PropertyDetails = () => {
                 <div className="bg-card p-6 rounded-lg shadow">
                   {/* Badges Section */}
                   <div className="flex flex-wrap gap-2 mb-4">
+                    {/* Property Type Badge */}
+                    <div className={`px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center ${
+                      property.property_type === 'rental' 
+                        ? 'bg-blue-500 text-white' 
+                        : 'bg-primary text-primary-foreground'
+                    }`}>
+                      {property.property_type === 'rental' ? (
+                        <>
+                          <Calendar size={14} className="mr-1" />
+                          For Rent
+                        </>
+                      ) : (
+                        'For Sale'
+                      )}
+                    </div>
+
                     {property.exclusive && (
                       <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center">
                         <Crown size={14} className="mr-1" />
@@ -282,7 +317,25 @@ const PropertyDetails = () => {
                     <MapPin className="h-4 w-4" /> {property.location}
                   </div>
 
-                  <div className="text-3xl font-extrabold text-foreground mb-4">{formatPrice(property.price)}</div>
+                  {/* Price Section */}
+                  <div className="mb-4">
+                    <div className="text-3xl font-extrabold text-foreground">
+                      {formatPrice(property.price)}
+                      {property.property_type === 'rental' && property.rental_period && (
+                        <span className="text-lg font-normal ml-1 text-muted-foreground">
+                          {getRentalPeriodText(property.rental_period)}
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Security Deposit for Rental */}
+                    {property.property_type === 'rental' && property.security_deposit && (
+                      <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                        <Shield className="h-4 w-4" />
+                        <span>Security Deposit: {formatPrice(property.security_deposit)}</span>
+                      </div>
+                    )}
+                  </div>
 
                   <div className="grid grid-cols-3 gap-3 mb-4 text-sm">
                     <div className="flex flex-col items-start">
@@ -317,7 +370,9 @@ const PropertyDetails = () => {
 
                   <div className="flex flex-col gap-2">
                     <Link to="/contact">
-                      <Button className="w-full">Contact Agent</Button>
+                      <Button className="w-full">
+                        {property.property_type === 'rental' ? 'Schedule Viewing' : 'Contact Agent'}
+                      </Button>
                     </Link>
 
                     {property.pdf_url && (
@@ -338,6 +393,18 @@ const PropertyDetails = () => {
                   <div className="font-medium mb-2">Property Details</div>
                   <div className="flex flex-col gap-2">
                     <div><span className="text-muted-foreground">Type: </span>{property.type}</div>
+                    <div><span className="text-muted-foreground">Listing Type: </span>
+                      <span className={`font-medium ${
+                        property.property_type === 'rental' ? 'text-blue-600' : 'text-primary'
+                      }`}>
+                        {property.property_type === 'rental' ? 'For Rent' : 'For Sale'}
+                      </span>
+                    </div>
+                    {property.property_type === 'rental' && property.rental_period && (
+                      <div><span className="text-muted-foreground">Rental Period: </span>
+                        <span className="font-medium">{getRentalPeriodDisplay(property.rental_period)}</span>
+                      </div>
+                    )}
                     <div><span className="text-muted-foreground">Location: </span>{property.location}</div>
                     <div><span className="text-muted-foreground">Status: </span>{property.featured ? 'Featured' : 'Standard'}</div>
                     {property.exclusive && (
@@ -346,8 +413,29 @@ const PropertyDetails = () => {
                     {property.investmentOpportunity && (
                       <div><span className="text-muted-foreground">Category: </span>Investment Property</div>
                     )}
+                    {property.property_type === 'rental' && property.security_deposit && (
+                      <div><span className="text-muted-foreground">Security Deposit: </span>
+                        <span className="font-medium">{formatPrice(property.security_deposit)}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
+
+                {/* Rental Specific Information */}
+                {property.property_type === 'rental' && (
+                  <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Calendar className="h-5 w-5 text-blue-600" />
+                      <h3 className="font-semibold text-blue-900">Rental Information</h3>
+                    </div>
+                    <div className="text-sm text-blue-800 space-y-1">
+                      <p>• Minimum lease: 12 months</p>
+                      <p>• Utilities not included</p>
+                      <p>• Available for immediate occupancy</p>
+                      <p>• Pet-friendly (with additional deposit)</p>
+                    </div>
+                  </div>
+                )}
               </aside>
             </div>
           )}

@@ -19,6 +19,9 @@ interface Property {
   roi: string | null;
   images: string[];
   featured: boolean;
+  property_type?: 'sale' | 'rental';
+  rental_period?: string | null;
+  security_deposit?: string | null;
   investmentOpportunity: boolean;
   exclusive: boolean;
   imageLinks: string[];
@@ -27,7 +30,7 @@ interface Property {
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Add auth state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
@@ -178,7 +181,11 @@ const Index = () => {
                   exclusive={property.exclusive || false}
                   currency="USD"
                   exchangeRates={{ USD: 1, ZAR: 18.5, AED: 3.67 }}
-                  isAuthenticated={isAuthenticated} // ← FIXED: Use actual auth state
+                  isAuthenticated={isAuthenticated}
+                  // ADDED: Rental property props
+                  propertyType={property.property_type || 'sale'}
+                  rentalPeriod={property.rental_period || ''}
+                  securityDeposit={property.security_deposit || ''}
                 />
               ))
             )}
@@ -198,163 +205,164 @@ const Index = () => {
           </div>
         </div>
       </section>
- 
-   {/* Membership Tiers */}
-<section className="py-20 bg-gray-100 text-white">
-  <div className="container mx-auto px-6">
-    <div className="text-center mb-16">
-      <h2 className="text-4xl font-bold mb-4 tracking-tight">
-        <span className="text-black">Exclusive</span>{" "}
-        <span className="text-yellow-500"> Membership Tiers</span>
-      </h2>
-      <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed font-medium">
-        Join our community of elite investors and unlock premium benefits
-      </p>
-    </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto">
-      {/* Gold Tier */}
-      <div className="bg-secondary border-2 border-gray-800 hover:border-primary transition-all duration-300 hover:-translate-y-2 shadow-xl group relative overflow-hidden p-10 flex flex-col h-full">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
-        <div className="relative z-10 flex-1">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/20 group-hover:bg-primary/30 transition-colors">
-            <Trophy size={28} className="text-primary" />
+      {/* Membership Tiers */}
+      <section className="py-20 bg-gray-100 text-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4 tracking-tight">
+              <span className="text-black">Exclusive</span>{" "}
+              <span className="text-yellow-500"> Membership Tiers</span>
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed font-medium">
+              Join our community of elite investors and unlock premium benefits
+            </p>
           </div>
-          <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Gold</h3>
-          <div className="flex items-baseline mb-2">
-            <span className="text-3xl font-bold text-primary tracking-tight">$500</span>
-            <span className="text-gray-400 ml-2 font-medium">/month</span>
-          </div>
-          <div className="text-sm text-gray-400 mb-6 font-medium">
-            Investment Range: $100K - $500K
-          </div>
-          <ul className="space-y-4 mb-8">
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Access to premium property listings</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Monthly market insights & reports</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Priority email support</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Basic investment consultation</span>
-            </li>
-          </ul>
-        </div>
-        <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
-          Join Gold
-        </Button>
-      </div>
 
-      {/* Silver Tier - Featured */}
-      <div className="bg-secondary border-2 border-primary shadow-2xl transform md:scale-105 transition-all duration-300 p-10 relative group overflow-hidden flex flex-col h-full">
-        <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 text-sm font-semibold flex items-center rounded-none">
-          <Zap size={14} className="mr-1" /> Most Popular
-        </div>
-        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/15 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
-        <div className="relative z-10 flex-1">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/30 group-hover:bg-primary/40 transition-colors">
-            <Award size={28} className="text-primary" />
-          </div>
-          <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Silver</h3>
-          <div className="flex items-baseline mb-2">
-            <span className="text-3xl font-bold text-primary tracking-tight">$1,000</span>
-            <span className="text-gray-400 ml-2 font-medium">/month</span>
-          </div>
-          <div className="text-sm text-gray-400 mb-6 font-medium">
-            Investment Range: $500K - $1M
-          </div>
-          <ul className="space-y-4 mb-8">
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">All Gold benefits</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Exclusive off-market properties</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Personal investment advisor</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Priority phone & email support</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Custom portfolio analysis</span>
-            </li>
-          </ul>
-        </div>
-        <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
-          Join Silver
-        </Button>
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto">
+            {/* Gold Tier */}
+            <div className="bg-secondary border-2 border-gray-800 hover:border-primary transition-all duration-300 hover:-translate-y-2 shadow-xl group relative overflow-hidden p-10 flex flex-col h-full">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
+              <div className="relative z-10 flex-1">
+                <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/20 group-hover:bg-primary/30 transition-colors">
+                  <Trophy size={28} className="text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Gold</h3>
+                <div className="flex items-baseline mb-2">
+                  <span className="text-3xl font-bold text-primary tracking-tight">$500</span>
+                  <span className="text-gray-400 ml-2 font-medium">/month</span>
+                </div>
+                <div className="text-sm text-gray-400 mb-6 font-medium">
+                  Investment Range: $100K - $500K
+                </div>
+                <ul className="space-y-4 mb-8">
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Access to premium property listings</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Monthly market insights & reports</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Priority email support</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Basic investment consultation</span>
+                  </li>
+                </ul>
+              </div>
+              <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
+                Join Gold
+              </Button>
+            </div>
 
-      {/* Platinum Tier */}
-      <div className="bg-secondary border-2 border-gray-800 hover:border-primary transition-all duration-300 hover:-translate-y-2 shadow-xl group relative overflow-hidden p-10 flex flex-col h-full">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
-        <div className="relative z-10 flex-1">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/20 group-hover:bg-primary/30 transition-colors">
-            <Crown size={28} className="text-primary" />
-          </div>
-          <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Platinum</h3>
-          <div className="flex items-baseline mb-2">
-            <span className="text-3xl font-bold text-primary tracking-tight">$2,000</span>
-            <span className="text-gray-400 ml-2 font-medium">/month</span>
-          </div>
-          <div className="text-sm text-gray-400 mb-6 font-medium">
-            Investment Range: $1M - $1B
-          </div>
-          <ul className="space-y-4 mb-8">
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">All Silver benefits</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">First access to premium developments</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Dedicated wealth management team</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">24/7 executive concierge</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Global investment opportunities</span>
-            </li>
-            <li className="flex items-start">
-              <Check size={18} className="text-primary mr-3 mt-0.5" />
-              <span className="text-gray-300 font-medium">Private deal structuring</span>
-            </li>
-          </ul>
-        </div>
-        <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
-          Join Platinum
-        </Button>
-      </div>
-    </div>
+            {/* Silver Tier - Featured */}
+            <div className="bg-secondary border-2 border-primary shadow-2xl transform md:scale-105 transition-all duration-300 p-10 relative group overflow-hidden flex flex-col h-full">
+              <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 text-sm font-semibold flex items-center rounded-none">
+                <Zap size={14} className="mr-1" /> Most Popular
+              </div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/15 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
+              <div className="relative z-10 flex-1">
+                <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/30 group-hover:bg-primary/40 transition-colors">
+                  <Award size={28} className="text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Silver</h3>
+                <div className="flex items-baseline mb-2">
+                  <span className="text-3xl font-bold text-primary tracking-tight">$1,000</span>
+                  <span className="text-gray-400 ml-2 font-medium">/month</span>
+                </div>
+                <div className="text-sm text-gray-400 mb-6 font-medium">
+                  Investment Range: $500K - $1M
+                </div>
+                <ul className="space-y-4 mb-8">
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">All Gold benefits</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Exclusive off-market properties</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Personal investment advisor</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Priority phone & email support</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Custom portfolio analysis</span>
+                  </li>
+                </ul>
+              </div>
+              <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
+                Join Silver
+              </Button>
+            </div>
 
-    {/* Additional Info */}
-    <div className="text-center mt-12">
-      <p className="text-gray-400 font-medium flex items-center justify-center">
-        <Sparkles size={16} className="mr-2 text-primary" />
-        All plans include personalized onboarding and dedicated support
-      </p>
-    </div>
-  </div>
-</section>
+            {/* Platinum Tier */}
+            <div className="bg-secondary border-2 border-gray-800 hover:border-primary transition-all duration-300 hover:-translate-y-2 shadow-xl group relative overflow-hidden p-10 flex flex-col h-full">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -translate-y-14 translate-x-14 group-hover:scale-110 transition-transform duration-300"></div>
+              <div className="relative z-10 flex-1">
+                <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/20 group-hover:bg-primary/30 transition-colors">
+                  <Crown size={28} className="text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Platinum</h3>
+                <div className="flex items-baseline mb-2">
+                  <span className="text-3xl font-bold text-primary tracking-tight">$2,000</span>
+                  <span className="text-gray-400 ml-2 font-medium">/month</span>
+                </div>
+                <div className="text-sm text-gray-400 mb-6 font-medium">
+                  Investment Range: $1M - $1B
+                </div>
+                <ul className="space-y-4 mb-8">
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">All Silver benefits</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">First access to premium developments</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Dedicated wealth management team</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">24/7 executive concierge</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Global investment opportunities</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={18} className="text-primary mr-3 mt-0.5" />
+                    <span className="text-gray-300 font-medium">Private deal structuring</span>
+                  </li>
+                </ul>
+              </div>
+              <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
+                Join Platinum
+              </Button>
+            </div>
+          </div>
+
+          {/* Additional Info */}
+          <div className="text-center mt-12">
+            <p className="text-gray-400 font-medium flex items-center justify-center">
+              <Sparkles size={16} className="mr-2 text-primary" />
+              All plans include personalized onboarding and dedicated support
+            </p>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

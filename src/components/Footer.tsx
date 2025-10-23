@@ -81,6 +81,11 @@ const Footer = () => {
                   Business Setup
                 </Link>
               </li>
+               <li>
+                <Link to="/services/business-setup" className="hover:text-primary transition-colors">
+                  Property Development
+                </Link>
+              </li>
             </ul>
           </div>
 
