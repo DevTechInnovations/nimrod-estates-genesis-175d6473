@@ -30,6 +30,7 @@ const Navbar = () => {
     { name: 'Wealth & Investment', path: '/services/wealth-investment' },
     { name: 'Business Consulting', path: '/services/business-consulting' },
     { name: 'Business Setup', path: '/services/business-setup' },
+    { name: 'Property Development', path: '/services/property-development' },
   ];
 
   const getNavLinks = () => {
@@ -70,7 +71,7 @@ const Navbar = () => {
       </button>
 
       {isServicesDropdownOpen && (
-        <div className={`absolute top-full left-0 mt-2 w-56 border rounded-lg shadow-lg py-2 z-50 ${dropdownBg} ${dropdownBorder}`}>
+        <div className={`absolute top-full left-0 mt-2 w-64 border rounded-lg shadow-lg py-2 z-50 ${dropdownBg} ${dropdownBorder}`}>
           {mainServiceCategories.map((category, index) => (
             <Link
               key={index}

@@ -81,7 +81,7 @@ const BusinessSetup = () => {
               Setup <span className="text-primary">Services</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Comprehensive business setup solutions for entrepreneurs and established companies
+              Complete business setup solutions for startups and established firms
             </p>
           </div>
 
