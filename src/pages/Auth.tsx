@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft } from 'lucide-react';
+import backgroundImage from '@/assets/3d-house-model-with-modern-architecture-auth.jpg'; // Adjust the path to your image
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -72,8 +74,18 @@ export default function Auth() {
   // Show loading state while checking auth or redirecting
   if (loading || (user && isAdmin)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen flex items-center justify-center p-4 relative">
+        {/* Background Image with Overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-fixed"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-primary/20"></div>
+        </div>
+        
+        <Card className="w-full max-w-md rounded-none border-2 border-white/20 bg-white/95 backdrop-blur-sm shadow-2xl z-10">
           <CardContent className="pt-6">
             <div className="text-center">
               <p>Signing in... Redirecting to admin dashboard</p>
@@ -85,11 +97,32 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-fixed"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-primary/20"></div>
+      </div>
+
+      {/* Back Button */}
+      <Link 
+        to="/" 
+        className="absolute top-6 left-6 flex items-center gap-2 text-white hover:text-primary transition-colors z-10"
+      >
+        <ArrowLeft size={20} />
+        <span className="font-medium">Back to Home</span>
+      </Link>
+
+      <Card className="w-full max-w-md rounded-none border-2 border-white/20 bg-white/95 backdrop-blur-sm shadow-2xl z-10">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-serif gradient-text">Nimrod Estates</CardTitle>
-          <CardDescription>Admin Portal Access</CardDescription>
+          <CardTitle className="font-heading text-4xl font-bold mb-2">
+            Nimrod <span className="text-primary">Estates</span>
+          </CardTitle>
+          <CardDescription className="text-gray-600">Admin Portal Access</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">

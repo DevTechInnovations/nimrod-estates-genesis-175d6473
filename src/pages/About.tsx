@@ -2,30 +2,31 @@ import { Users, Globe2, Award, TrendingUp } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import heroImage from '@/assets/3d-electric-car-building.jpg';
+import davidImage from '@/assets/david-nimrod.jpg';
 
 const About = () => {
-  // const team = [
-  //   {
-  //     name: 'David Nimrod',
-  //     title: 'Founder & CEO',
-  //     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop',
-  //   },
-  //   {
-  //     name: 'Sarah Mitchell',
-  //     title: 'Head of Investment',
-  //     image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop',
-  //   },
-  //   {
-  //     name: 'James Chen',
-  //     title: 'Global Operations Director',
-  //     image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop',
-  //   },
-  //   {
-  //     name: 'Emma Rodriguez',
-  //     title: 'Wealth Advisory Lead',
-  //     image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&auto=format&fit=crop',
-  //   },
-  // ];
+  const team = [
+    {
+      name: 'David Nimrod',
+      title: 'Founder & CEO',
+      image:  davidImage,
+    },
+    // {
+    //   name: 'Sarah Mitchell',
+    //   title: 'Head of Investment',
+    //   image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop',
+    // },
+    // {
+    //   name: 'James Chen',
+    //   title: 'Global Operations Director',
+    //   image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop',
+    // },
+    // {
+    //   name: 'Emma Rodriguez',
+    //   title: 'Wealth Advisory Lead',
+    //   image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&auto=format&fit=crop',
+    // },
+  ];
 
   return (
     <div className="min-h-screen">
@@ -134,6 +135,61 @@ const About = () => {
   </div>
 </section>
 
+      {/* Leadership Team */}
+<section className="py-20 bg-white">
+  <div className="container mx-auto px-4">
+    <div className="text-center mb-12">
+      <h2 className="font-heading text-4xl font-bold mb-4">
+        Leadership <span className="text-primary">Team</span>
+      </h2>
+      <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        Meet the experienced professionals guiding Nimrod Estates to new heights
+      </p>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {team.map((member, index) => (
+        <div key={index} className="group bg-white overflow-hidden shadow-lg hover-lift border-2 border-gray-100 relative">
+          {/* Image Container - Increased Height */}
+          <div className="relative overflow-hidden h-96">
+            <img
+              src={member.image}
+              alt={member.name}
+               className="w-full h-full object-cover object-top transition-all duration-500 group-hover:scale-105"
+            />
+            
+            {/* Name and Title - Always Visible at Bottom of Image */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+              <h3 className="font-heading text-lg font-semibold text-white mb-1">
+                {member.name}
+              </h3>
+              <p className="text-primary text-sm font-medium">
+                {member.title}
+              </p>
+            </div>
+          </div>
+
+          {/* Details Overlay - Appears on Hover */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
+            <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+              <h3 className="font-heading text-xl font-semibold mb-2 text-white">
+                {member.name}
+              </h3>
+              <p className="text-primary text-sm font-medium mb-4">
+                {member.title}
+              </p>
+              <div className="pt-4 border-t border-primary/30">
+                <p className="text-white/80 text-sm leading-relaxed">
+                  Experienced professional with expertise in luxury real estate investment and portfolio management.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
 
       <Footer />
     </div>

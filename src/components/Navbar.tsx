@@ -41,10 +41,14 @@ const Navbar = () => {
   const isActive = (path: string) => location.pathname === path;
   const isServicesActive = () => location.pathname.startsWith('/services');
 
-  // ✅ Dynamic colors: white before scroll, black after scroll
   const textColor = isScrolled ? 'text-black' : 'text-white';
   const hoverColor = isScrolled ? 'hover:text-primary' : 'hover:text-primary';
   const borderColor = isScrolled ? 'border-black' : 'border-white';
+  
+  const dropdownBg = isScrolled ? 'bg-white' : 'bg-black/90 backdrop-blur-md';
+  const dropdownTextColor = isScrolled ? 'text-gray-800' : 'text-white';
+  const dropdownHoverBg = isScrolled ? 'hover:bg-gray-100' : 'hover:bg-white/20';
+  const dropdownBorder = isScrolled ? 'border-gray-200' : 'border-white/20';
 
   // Services Dropdown Component
   const ServicesDropdown = () => (
@@ -66,12 +70,12 @@ const Navbar = () => {
       </button>
 
       {isServicesDropdownOpen && (
-        <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+        <div className={`absolute top-full left-0 mt-2 w-56 border rounded-lg shadow-lg py-2 z-50 ${dropdownBg} ${dropdownBorder}`}>
           {mainServiceCategories.map((category, index) => (
             <Link
               key={index}
               to={category.path}
-              className="flex items-center px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+              className={`flex items-center px-4 py-2 text-sm transition-colors ${dropdownTextColor} ${dropdownHoverBg}`}
               onClick={() => setIsServicesDropdownOpen(false)}
             >
               {category.name}
@@ -170,12 +174,12 @@ const Navbar = () => {
               </button>
 
               {isLoginDropdownOpen && (
-                <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+                <div className={`absolute top-full left-0 mt-2 w-48 border rounded-lg shadow-lg py-2 z-50 ${dropdownBg} ${dropdownBorder}`}>
                   {user ? (
                     <>
                       <Link
                         to="/dashboard"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${dropdownTextColor} ${dropdownHoverBg}`}
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <LayoutDashboard className="h-4 w-4" />
@@ -183,16 +187,16 @@ const Navbar = () => {
                       </Link>
                       <Link
                         to="/settings"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${dropdownTextColor} ${dropdownHoverBg}`}
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <User className="h-4 w-4" />
                         <span>My Profile</span>
                       </Link>
-                      <div className="border-t border-gray-200 my-1"></div>
+                      <div className={`border-t my-1 ${isScrolled ? 'border-gray-200' : 'border-white/20'}`}></div>
                       <Link
                         to="/auth"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${dropdownTextColor} ${dropdownHoverBg}`}
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <Shield className="h-4 w-4" />
@@ -203,7 +207,7 @@ const Navbar = () => {
                     <>
                       <Link
                         to="/member-auth"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${dropdownTextColor} ${dropdownHoverBg}`}
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <User className="h-4 w-4" />
@@ -211,7 +215,7 @@ const Navbar = () => {
                       </Link>
                       <Link
                         to="/auth"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${dropdownTextColor} ${dropdownHoverBg}`}
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <Shield className="h-4 w-4" />
