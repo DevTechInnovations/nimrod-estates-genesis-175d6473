@@ -139,36 +139,6 @@ const BusinessSetup = () => {
         </div>
       </section>
 
-      {/* Locations Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl font-bold mb-4 text-gray-900">
-              Strategic <span className="text-primary">Locations</span>
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Business setup in prime jurisdictions with favorable regulatory environments
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {setupLocations.map((location, index) => (
-              <div key={index} className="bg-white rounded-2xl p-6 shadow-lg">
-                <h3 className="font-heading text-xl font-bold text-gray-900 mb-4">{location.country}</h3>
-                <ul className="space-y-2">
-                  {location.benefits.map((benefit, benefitIndex) => (
-                    <li key={benefitIndex} className="flex items-center text-gray-600">
-                      <CheckCircle className="text-primary mr-2" size={16} />
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 bg-primary/10">
         <div className="container mx-auto px-6 text-center">
