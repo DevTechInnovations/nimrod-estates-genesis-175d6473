@@ -106,7 +106,7 @@ const About = () => {
     {/* Image - Now first on mobile, left on desktop */}
     <div className="md:w-1/2">
       <img
-        src="src/assets/3d-house-model-with-modern-architecture (1).jpg" 
+        src="src\assets\3d-house-model-with-modern-architecture-about.jpg" 
         alt="Luxury Real Estate"
         className="w-full h-auto shadow-lg object-cover"
       />
