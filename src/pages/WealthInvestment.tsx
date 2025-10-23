@@ -126,26 +126,6 @@ const WealthInvestment = () => {
         </div>
       </section>
 
-      {/* Investment Areas */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl font-bold mb-4 text-gray-900">
-              Investment <span className="text-primary">Focus Areas</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {investmentAreas.map((area, index) => (
-              <div key={index} className="flex items-center p-4 bg-white rounded-xl shadow-lg">
-                <LineChart className="text-primary mr-3" size={20} />
-                <span className="font-medium text-gray-900">{area}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 bg-primary/10">
         <div className="container mx-auto px-6 text-center">
