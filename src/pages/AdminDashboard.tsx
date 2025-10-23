@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, LogOut, Plus, Users, Home } from 'lucide-react';
+import { Loader2, LogOut, Plus, Users, Home, Building } from 'lucide-react';
 import { PropertyForm } from '@/components/admin/PropertyForm';
 import { PropertyList } from '@/components/admin/PropertyList';
 import { UserManagement } from '@/components/admin/UserManagement';
@@ -19,6 +19,7 @@ export default function AdminDashboard() {
   const [properties, setProperties] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState<any>(null);
+  const [propertyTypeFilter, setPropertyTypeFilter] = useState<'all' | 'sale' | 'rental'>('all');
 
   useEffect(() => {
     if (!authLoading && (!user || !isAdmin)) {
@@ -129,6 +130,12 @@ export default function AdminDashboard() {
     setEditingProperty(null);
   };
 
+  // Filter properties based on type
+  const filteredProperties = properties.filter(property => {
+    if (propertyTypeFilter === 'all') return true;
+    return property.property_type === propertyTypeFilter;
+  });
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -167,17 +174,50 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="properties">
-            <div className="mb-6">
-              <Button
-                onClick={() => {
-                  setShowForm(!showForm);
-                  setEditingProperty(null);
-                }}
-                className="mb-4"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                {showForm ? 'View All Properties' : 'Add New Property'}
-              </Button>
+            <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="flex items-center gap-4">
+                <Button
+                  onClick={() => {
+                    setShowForm(!showForm);
+                    setEditingProperty(null);
+                  }}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  {showForm ? 'View All Properties' : 'Add New Property'}
+                </Button>
+                
+                {!showForm && (
+                  <div className="flex gap-2">
+                    <Button
+                      variant={propertyTypeFilter === 'all' ? 'default' : 'outline'}
+                      onClick={() => setPropertyTypeFilter('all')}
+                      size="sm"
+                    >
+                      All Properties
+                    </Button>
+                    <Button
+                      variant={propertyTypeFilter === 'sale' ? 'default' : 'outline'}
+                      onClick={() => setPropertyTypeFilter('sale')}
+                      size="sm"
+                    >
+                      For Sale
+                    </Button>
+                    <Button
+                      variant={propertyTypeFilter === 'rental' ? 'default' : 'outline'}
+                      onClick={() => setPropertyTypeFilter('rental')}
+                      size="sm"
+                    >
+                      For Rent
+                    </Button>
+                  </div>
+                )}
+              </div>
+              
+              {!showForm && (
+                <div className="text-sm text-muted-foreground">
+                  Showing {filteredProperties.length} of {properties.length} properties
+                </div>
+              )}
             </div>
 
             {showForm ? (
@@ -205,7 +245,7 @@ export default function AdminDashboard() {
               <div>
                 <h2 className="text-2xl font-semibold mb-6">Manage Properties</h2>
                 <PropertyList
-                  properties={properties}
+                  properties={filteredProperties}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                 />

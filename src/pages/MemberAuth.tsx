@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { ArrowLeft } from 'lucide-react';
+import backgroundImage from '@/assets/3d-house-model-with-modern-architectures.jpg'; // Adjust the path to your image
 
 // Define the membership tier type
 type MembershipTier = 'silver' | 'gold' | 'platinum';
@@ -77,11 +79,32 @@ export default function MemberAuth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-fixed"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-primary/20"></div>
+      </div>
+
+      {/* Back Button */}
+      <Link 
+        to="/" 
+        className="absolute top-6 left-6 flex items-center gap-2 text-white hover:text-primary transition-colors z-10"
+      >
+        <ArrowLeft size={20} />
+        <span className="font-medium">Back to Home</span>
+      </Link>
+
+      <Card className="w-full max-w-md rounded-none border-2 border-white/20 bg-white/95 backdrop-blur-sm shadow-2xl z-10">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-serif gradient-text">Nimrod Estates</CardTitle>
-          <CardDescription>Member Portal Access</CardDescription>
+          <CardTitle className="font-heading text-4xl font-bold mb-2">
+            Nimrod <span className="text-primary">Estates</span>
+          </CardTitle>
+          <CardDescription className="text-gray-600">Member Portal Access</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
@@ -120,10 +143,10 @@ export default function MemberAuth() {
 
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
+                    <span className="w-full border-t border-gray-300" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                    <span className="bg-white/95 px-2 text-muted-foreground">Or continue with</span>
                   </div>
                 </div>
 
@@ -227,10 +250,10 @@ export default function MemberAuth() {
 
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
+                    <span className="w-full border-t border-gray-300" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                    <span className="bg-white/95 px-2 text-muted-foreground">Or continue with</span>
                   </div>
                 </div>
 

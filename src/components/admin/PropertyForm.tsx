@@ -7,6 +7,7 @@ import { Loader2, Building, MapPin, DollarSign, Bed, Bath, Square, Crown, Trendi
 import { ImageUpload } from './ImageUpload';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface PropertyFormData {
   title: string;
@@ -24,7 +25,10 @@ interface PropertyFormData {
   video_url: string;
   pdf_url: string;
   images: string[];
-  imageLinks: string[]; // Now included since column exists
+  imageLinks: string[];
+  propertyType: 'sale' | 'rental';
+  rentalPeriod: string;
+  securityDeposit: string;
 }
 
 interface PropertyFormProps {
@@ -51,7 +55,10 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
     video_url: '',
     pdf_url: '',
     images: [],
-    imageLinks: [], // Initialize empty array
+    imageLinks: [],
+    propertyType: 'sale',
+    rentalPeriod: '',
+    securityDeposit: ''
   });
 
   const [newImageLink, setNewImageLink] = useState('');
@@ -74,7 +81,10 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
         video_url: initialData.video_url || '',
         pdf_url: initialData.pdf_url || '',
         images: initialData.images || [],
-        imageLinks: initialData.imageLinks || [], // Initialize from existing data
+        imageLinks: initialData.imageLinks || [],
+        propertyType: initialData.property_type || 'sale',
+        rentalPeriod: initialData.rental_period || '',
+        securityDeposit: initialData.security_deposit || ''
       });
     }
   }, [initialData]);
@@ -104,10 +114,13 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
       video_url: formData.video_url || null,
       pdf_url: formData.pdf_url || null,
       images: formData.images,
-      imageLinks: formData.imageLinks, // Include the imageLinks array
+      imageLinks: formData.imageLinks,
+      property_type: formData.propertyType,
+      rental_period: formData.propertyType === 'rental' ? formData.rentalPeriod : null,
+      security_deposit: formData.propertyType === 'rental' ? formData.securityDeposit : null
     };
 
-    console.log('Submitting data:', submitData); // Debug log
+    console.log('Submitting data:', submitData);
     await onSubmit(submitData);
   };
 
@@ -184,6 +197,59 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
             {/* Basic Information Section */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Basic Information</h3>
+              
+              {/* Property Type Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="propertyType" className="flex items-center gap-2">
+                  <Building className="h-4 w-4" />
+                  Property Type *
+                </Label>
+                <Select
+                  value={formData.propertyType}
+                  onValueChange={(value: 'sale' | 'rental') => setFormData({ ...formData, propertyType: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select property type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sale">For Sale</SelectItem>
+                    <SelectItem value="rental">For Rent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Rental-specific fields */}
+              {formData.propertyType === 'rental' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="space-y-2">
+                    <Label htmlFor="rentalPeriod">Rental Period *</Label>
+                    <Select
+                      value={formData.rentalPeriod}
+                      onValueChange={(value) => setFormData({ ...formData, rentalPeriod: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select period" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="yearly">Yearly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="securityDeposit">Security Deposit</Label>
+                    <Input
+                      id="securityDeposit"
+                      placeholder="e.g., $2,000"
+                      value={formData.securityDeposit}
+                      onChange={(e) => setFormData({ ...formData, securityDeposit: e.target.value })}
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="title" className="flex items-center gap-2">
@@ -217,10 +283,15 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
                   <Label htmlFor="price" className="flex items-center gap-2">
                     <DollarSign className="h-4 w-4" />
                     Price *
+                    {formData.propertyType === 'rental' && (
+                      <span className="text-sm text-muted-foreground ml-1">
+                        ({formData.rentalPeriod || 'per period'})
+                      </span>
+                    )}
                   </Label>
                   <Input
                     id="price"
-                    placeholder="$8,950,000"
+                    placeholder={formData.propertyType === 'rental' ? "$5,000" : "$8,950,000"}
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     required
@@ -230,7 +301,7 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
                 <div className="space-y-2">
                   <Label htmlFor="type" className="flex items-center gap-2">
                     <Building className="h-4 w-4" />
-                    Type *
+                    Property Category *
                   </Label>
                   <Input
                     id="type"

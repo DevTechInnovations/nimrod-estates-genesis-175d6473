@@ -21,6 +21,7 @@ import RealEstateServices from './pages/RealEstateServices';
 import WealthInvestment from './pages/WealthInvestment';
 import BusinessConsulting from './pages/BusinessConsulting';
 import BusinessSetup from './pages/BusinessSetup';
+import PropertyDevelopment from './pages/PropertyDevelopment';
 
 const queryClient = new QueryClient();
 
@@ -45,10 +46,10 @@ const App = () => (
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/services/real-estate" element={<RealEstateServices />} />
-            <Route path="/services/wealth-investment" element={<WealthInvestment />} />
-            <Route path="/services/business-consulting" element={<BusinessConsulting />} />
-            <Route path="/services/business-setup" element={<BusinessSetup />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+<Route path="/services/wealth-investment" element={<WealthInvestment />} />
+<Route path="/services/business-consulting" element={<BusinessConsulting />} />
+<Route path="/services/business-setup" element={<BusinessSetup />} />
+<Route path="/services/property-development" element={<PropertyDevelopment />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
