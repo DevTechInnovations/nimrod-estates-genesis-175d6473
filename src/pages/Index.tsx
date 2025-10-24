@@ -230,7 +230,7 @@ const Index = () => {
                 <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Gold</h3>
                 <div className="flex items-baseline mb-2">
                   <span className="text-3xl font-bold text-primary tracking-tight">$500</span>
-                  <span className="text-gray-400 ml-2 font-medium">/month</span>
+                  <span className="text-gray-400 ml-2 font-medium">/6 months</span>
                 </div>
                 <div className="text-sm text-gray-400 mb-6 font-medium">
                   Investment Range: $100K - $500K
@@ -272,7 +272,7 @@ const Index = () => {
                 <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Silver</h3>
                 <div className="flex items-baseline mb-2">
                   <span className="text-3xl font-bold text-primary tracking-tight">$1,000</span>
-                  <span className="text-gray-400 ml-2 font-medium">/month</span>
+                  <span className="text-gray-400 ml-2 font-medium">/6 months</span>
                 </div>
                 <div className="text-sm text-gray-400 mb-6 font-medium">
                   Investment Range: $500K - $1M
@@ -315,7 +315,7 @@ const Index = () => {
                 <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Platinum</h3>
                 <div className="flex items-baseline mb-2">
                   <span className="text-3xl font-bold text-primary tracking-tight">$2,000</span>
-                  <span className="text-gray-400 ml-2 font-medium">/month</span>
+                  <span className="text-gray-400 ml-2 font-medium">/6 months</span>
                 </div>
                 <div className="text-sm text-gray-400 mb-6 font-medium">
                   Investment Range: $1M - $1B

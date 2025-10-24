@@ -7,7 +7,7 @@ import davidImage from '@/assets/david-nimrod.jpg';
 const About = () => {
   const team = [
     {
-      name: 'David Nimrod',
+      name: 'Nimrod Gumede',
       title: 'Founder & CEO',
       image:  davidImage,
     },
@@ -69,7 +69,7 @@ const About = () => {
   <p className="text-lg text-muted-foreground">
     By leveraging strategic partnerships and a deep understanding of international markets, 
     we empower our clients to invest with confidence and success. At Nimrod Estates, we don’t 
-    just connect clients with properties — we connect them with possibilities.
+    just connect clients with properties we connect them with possibilities.
   </p>
 </div>
 
@@ -172,15 +172,15 @@ const About = () => {
           {/* Details Overlay - Appears on Hover */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
             <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
-              <h3 className="font-heading text-xl font-semibold mb-2 text-white">
+              {/* <h3 className="font-heading text-xl font-semibold mb-2 text-white">
                 {member.name}
-              </h3>
-              <p className="text-primary text-sm font-medium mb-4">
+              </h3> */}
+              {/* <p className="text-primary text-sm font-medium mb-4">
                 {member.title}
-              </p>
+              </p> */}
               <div className="pt-4 border-t border-primary/30">
                 <p className="text-white/80 text-sm leading-relaxed">
-                  Experienced professional with expertise in luxury real estate investment and portfolio management.
+                Nimrod Gumede is the Founder and Chief Executive Officer of Nimrod Estates. He holds MBA in Credential of Readiness , Financial Accounting, and Electrical Engineering, having studied at Harvard University, Harvard Business School, and Berea Technical College. As a seasoned entrepreneur, he has successfully managed and led companies with international operations, establishing himself as a global business leader with expertise across real estate, finance, and engineering.
                 </p>
               </div>
             </div>
