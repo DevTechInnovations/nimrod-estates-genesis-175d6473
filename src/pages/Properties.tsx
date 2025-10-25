@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, Loader2, Filter, X } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -110,11 +110,19 @@ const Properties = () => {
   });
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [locationLoading, setLocationLoading] = useState(true);
+  // ADD: Track manual currency selection
+  const [isManualCurrency, setIsManualCurrency] = useState(false);
+  const detectionCompleted = useRef(false);
 
   useEffect(() => {
     fetchProperties();
     checkAuth();
-    detectUserLocation();
+    
+    // Only run auto-detection once on mount
+    if (!detectionCompleted.current) {
+      detectUserLocation();
+      detectionCompleted.current = true;
+    }
 
     // Refresh rates every 24 hours
     const interval = setInterval(fetchExchangeRates, 24 * 60 * 60 * 1000);
@@ -125,59 +133,91 @@ const Properties = () => {
     updateActiveFilters();
   }, [filters]);
 
+  // ADD: Debug currency changes
+  useEffect(() => {
+    console.log('Currency changed to:', currency, 'Manual mode:', isManualCurrency);
+  }, [currency, isManualCurrency]);
+
+  // ADD: Manual currency setter
+  const setCurrencyManual = (newCurrency: 'USD' | 'ZAR' | 'AED' | 'EUR' | 'GBP') => {
+    setCurrency(newCurrency);
+    setIsManualCurrency(true);
+    console.log(`Currency manually set to: ${newCurrency}`);
+  };
+
   const detectUserLocation = async () => {
+    // Skip if currency was manually set
+    if (isManualCurrency) {
+      console.log('Skipping auto-detection - currency was manually set');
+      setLocationLoading(false);
+      return;
+    }
+
     try {
       setLocationLoading(true);
+      console.log('Starting auto-detection...');
       
-      // Method 1: Try IP-based geolocation first (more reliable)
-      const ipResponse = await fetch('https://ipapi.co/json/');
-      if (ipResponse.ok) {
-        const ipData = await ipResponse.json();
-        const countryCode = ipData.country_code;
-        
-        if (countryCode && countryCurrencyMap[countryCode]) {
-          setCurrency(countryCurrencyMap[countryCode]);
-          console.log(`Currency set to ${countryCurrencyMap[countryCode]} based on IP location (${ipData.country_name})`);
+      let detectedCurrency: 'USD' | 'ZAR' | 'AED' | 'EUR' | 'GBP' | null = null;
+
+      // Method 1: Try IP-based geolocation first
+      try {
+        const ipResponse = await fetch('https://ipapi.co/json/');
+        if (ipResponse.ok) {
+          const ipData = await ipResponse.json();
+          const countryCode = ipData.country_code;
+          
+          if (countryCode && countryCurrencyMap[countryCode]) {
+            detectedCurrency = countryCurrencyMap[countryCode];
+            console.log(`IP detection: ${detectedCurrency} for ${ipData.country_name}`);
+          }
+        }
+      } catch (ipError) {
+        console.log('IP detection failed:', ipError);
+      }
+
+      // Method 2: Fallback to browser geolocation
+      if (!detectedCurrency && navigator.geolocation) {
+        try {
+          const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+          });
+          
+          const { latitude, longitude } = position.coords;
+          const response = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+          );
+          
+          if (response.ok) {
+            const locationData = await response.json();
+            const countryCode = locationData.countryCode;
+            
+            if (countryCode && countryCurrencyMap[countryCode]) {
+              detectedCurrency = countryCurrencyMap[countryCode];
+              console.log(`GPS detection: ${detectedCurrency} for ${locationData.countryName}`);
+            }
+          }
+        } catch (gpsError) {
+          console.log('GPS detection failed:', gpsError);
         }
       }
-      
-      // Method 2: Fallback to browser geolocation for more precise location
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            try {
-              const { latitude, longitude } = position.coords;
-              const response = await fetch(
-                `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
-              );
-              
-              if (response.ok) {
-                const locationData = await response.json();
-                const countryCode = locationData.countryCode;
-                
-                if (countryCode && countryCurrencyMap[countryCode]) {
-                  setCurrency(countryCurrencyMap[countryCode]);
-                  console.log(`Currency set to ${countryCurrencyMap[countryCode]} based on GPS location (${locationData.countryName})`);
-                }
-              }
-            } catch (error) {
-              console.log('GPS-based location detection failed, using IP-based detection');
-            }
-          },
-          (error) => {
-            console.log('Browser geolocation not available or denied, using IP-based detection');
-          },
-          { timeout: 5000 }
-        );
+
+      // Set detected currency or fallback to USD
+      if (detectedCurrency && !isManualCurrency) {
+        setCurrency(detectedCurrency);
+        console.log(`Final auto-detected currency: ${detectedCurrency}`);
+      } else if (!isManualCurrency) {
+        setCurrency('USD');
+        console.log('No detection method worked, falling back to USD');
       }
       
-      // Fetch exchange rates after determining location
+      // Fetch exchange rates
       await fetchExchangeRates();
       
     } catch (error) {
-      console.error('Error detecting user location:', error);
-      // Fallback to USD if detection fails
-      setCurrency('USD');
+      console.error('Error in location detection:', error);
+      if (!isManualCurrency) {
+        setCurrency('USD');
+      }
     } finally {
       setLocationLoading(false);
     }
@@ -185,33 +225,29 @@ const Properties = () => {
 
   const fetchExchangeRates = async () => {
     try {
-      // Try to get rates from your Supabase function first
-      const { data, error } = await supabase.functions.invoke('currency-rates');
-      
-      if (!error && data) {
-        setExchangeRates(prev => ({ ...prev, ...data }));
-        console.log('Live exchange rates loaded:', data);
-        return;
-      }
-      
-      // Fallback to a free exchange rate API
-      console.log('Using fallback exchange rate API');
+      // Try direct API call first (bypass Supabase function due to CORS)
+      console.log('Fetching exchange rates directly...');
       const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
       
       if (response.ok) {
         const rateData = await response.json();
-        setExchangeRates({
+        const newRates = {
           USD: 1,
           ZAR: rateData.rates.ZAR || 18.5,
           AED: rateData.rates.AED || 3.67,
           EUR: rateData.rates.EUR || 0.92,
           GBP: rateData.rates.GBP || 0.79
-        });
-        console.log('Fallback exchange rates loaded');
+        };
+        setExchangeRates(newRates);
+        console.log('Direct exchange rates loaded:', newRates);
+        return;
       }
+      
+      throw new Error('Direct API failed');
+      
     } catch (error) {
-      console.error('Error fetching exchange rates:', error);
-      // Use default rates as last resort
+      console.error('Error fetching exchange rates, using fallback:', error);
+      // Use reliable fallback rates
       setExchangeRates({ 
         USD: 1, 
         ZAR: 18.5, 
@@ -363,9 +399,56 @@ const Properties = () => {
     }
   };
 
+  // Get currency name for display
+  const getCurrencyName = () => {
+    switch (currency) {
+      case 'USD': return 'US Dollars';
+      case 'ZAR': return 'South African Rand';
+      case 'AED': return 'UAE Dirham';
+      case 'EUR': return 'Euros';
+      case 'GBP': return 'British Pounds';
+      default: return 'US Dollars';
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <Navbar />
+
+      {/* ADD: Test Currency Selector */}
+      <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg border z-50 max-w-xs">
+        <h4 className="font-semibold mb-2 text-sm">🧪 Test Currencies</h4>
+        <div className="flex flex-wrap gap-1 mb-2">
+          {[
+            { code: 'US', name: 'USA', currency: 'USD' },
+            { code: 'ZA', name: 'South Africa', currency: 'ZAR' },
+            { code: 'AE', name: 'UAE', currency: 'AED' },
+            { code: 'DE', name: 'Germany', currency: 'EUR' },
+            { code: 'GB', name: 'UK', currency: 'GBP' }
+          ].map((country) => (
+            <button
+              key={country.code}
+              onClick={() => setCurrencyManual(country.currency as any)}
+              className="px-2 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded border transition-colors"
+            >
+              {country.code}
+            </button>
+          ))}
+        </div>
+        <div className="text-xs space-y-1">
+          <div><strong>Current:</strong> {currency} ({getCurrencySymbol()})</div>
+          <div><strong>Mode:</strong> {isManualCurrency ? 'Manual' : 'Auto'}</div>
+          <button 
+            onClick={() => {
+              setIsManualCurrency(false);
+              detectUserLocation();
+            }}
+            className="text-blue-500 hover:text-blue-700 underline text-xs"
+          >
+            Reset to Auto-detect
+          </button>
+        </div>
+      </div>
 
       {/* Hero Section */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
@@ -382,23 +465,41 @@ const Properties = () => {
           <h1 className="font-heading text-5xl md:text-6xl font-bold mb-6">
             Luxury <span className="text-gradient-gold">Property</span> Listings
           </h1>
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto text-white/90">
-            Discover exceptional investment opportunities around the world
-            {locationLoading ? (
-              <span className="block text-sm mt-2 text-amber-300">
-                Detecting your location...
-              </span>
-            ) : (
-              <span className="block text-sm mt-2 text-amber-300">
-                Prices displayed in {currency} ({getCurrencySymbol()})
-              </span>
-            )}
-            {!isAuthenticated && (
-              <span className="block text-sm mt-2 text-amber-300">
-                Sign in to access exclusive properties
-              </span>
-            )}
-          </p>
+          <div className="text-xl md:text-2xl max-w-3xl mx-auto text-white/90">
+            <p>Discover exceptional investment opportunities around the world</p>
+            
+            {/* IMPROVED: Currency display */}
+            <div className="mt-4 space-y-2">
+              {locationLoading ? (
+                <div className="flex items-center justify-center gap-2 text-amber-300">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">Detecting your location and currency...</span>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <div className="text-sm text-amber-300 bg-amber-900/30 px-3 py-2 rounded-lg inline-block">
+                    <strong>Prices in {getCurrencyName()}</strong> ({getCurrencySymbol()})
+                    {isManualCurrency && (
+                      <span className="block text-xs text-amber-200 mt-1">
+                        Manually selected • <button 
+                          onClick={() => setIsManualCurrency(false)}
+                          className="underline hover:text-white"
+                        >
+                          Reset to auto
+                        </button>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {!isAuthenticated && (
+                <div className="text-sm text-amber-300">
+                  Sign in to access exclusive properties
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -418,18 +519,25 @@ const Properties = () => {
               />
             </div>
 
-            {/* Currency Display (Read-only) */}
-            <div className="w-full md:w-40 flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md bg-gray-50">
-              <div className="text-sm font-medium text-gray-700">
+            {/* IMPROVED: Currency Display */}
+            <div className="w-full md:w-48 flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50">
+              <div className="text-center">
                 {locationLoading ? (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 text-gray-600">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Detecting...</span>
+                    <span className="text-sm">Detecting...</span>
                   </div>
                 ) : (
-                  <div className="text-center">
-                    <div className="font-semibold">{currency}</div>
-                    <div className="text-xs text-muted-foreground">{getCurrencySymbol()}</div>
+                  <div>
+                    <div className="font-bold text-gray-800">{currency}</div>
+                    <div className="text-xs text-gray-600 flex items-center justify-center gap-1">
+                      <span>{getCurrencySymbol()}</span>
+                      <span>•</span>
+                      <span>{getCurrencyName()}</span>
+                      {isManualCurrency && (
+                        <span title="Manually selected" className="text-orange-500">●</span>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

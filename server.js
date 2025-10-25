@@ -10,13 +10,26 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// SMTP transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,      
+  secure: false,                     
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+
+
 app.use(express.json());
 app.use(
   cors({
     origin: [
-      "http://localhost:5173", // local dev
-      "https://autofirstmechanicalaid.co.za",
-      "https://www.autofirstmechanicalaid.co.za",
+      "http://localhost:8080", // local dev
+      "https://nimrodestates.com",
+      "https://nimrodestates.com/",
     ],
     methods: ["GET", "POST", "OPTIONS"],
   })
@@ -113,212 +126,57 @@ app.post("/api/payfast/notify", (req, res) => {
   res.sendStatus(200);
 });
 
+
 // ✅ Email Route
-app.post("/send-email", async (req, res) => {
-  const {
-    fullName,
-    contactNumber,
-    email,
-    vehicleMake,
-    vehicleModel,
-    vehicleYear,
-    issueDescription,
-    pickupLocation,
-    preferredDate,
-    preferredTime,
-    serviceType,
-    urgency,
-  } = req.body;
-
-  try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: process.env.SMTP_PORT == 465,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-
-    // Email to admin
-    await transporter.sendMail({
-      from: `"Auto First Bookings" <${process.env.SMTP_USER}>`,
-      to: process.env.RECEIVER_EMAIL,
-      subject: `New Service Booking - ${serviceType.toUpperCase()}`,
-      html: `
-        <h2>New Service Request</h2>
-        <p><b>Name:</b> ${fullName}</p>
-        <p><b>Contact:</b> ${contactNumber}</p>
-        <p><b>Email:</b> ${email}</p>
-        <hr />
-        <p><b>Vehicle:</b> ${vehicleMake} ${vehicleModel} (${vehicleYear || "N/A"})</p>
-        <p><b>Issue:</b> ${issueDescription}</p>
-        <hr />
-        <p><b>Pickup Location:</b> ${pickupLocation}</p>
-        <p><b>Preferred Date:</b> ${preferredDate}</p>
-        <p><b>Preferred Time:</b> ${preferredTime || "Anytime"}</p>
-        <p><b>Service Type:</b> ${serviceType}</p>
-        <p><b>Urgency:</b> ${urgency}</p>
-      `,
-    });
-
-    // Email to customer
-    await transporter.sendMail({
-      from: `"Auto First Bookings" <${process.env.SMTP_USER}>`,
-      to: email,
-      subject: `Booking Confirmation - ${serviceType}`,
-      html: `
-        <h2>Hi ${fullName},</h2>
-        <p>Thank you for booking your ${serviceType} service with us!</p>
-        <p><b>Pickup Location:</b> ${pickupLocation}</p>
-        <p><b>Preferred Date & Time:</b> ${preferredDate} ${preferredTime || "Anytime"}</p>
-        <p>We will contact you shortly to confirm the details.</p>
-        <p>Regards,<br/>Auto First Team</p>
-        <img src="https://i.ibb.co/kszWcWpn/auto-first.png" alt="Auto First Logo" style="width:150px; margin-bottom: 20px;"/>
-      `,
-    });
-
-    res.status(200).json({ success: true, message: "Booking email sent!" });
-  } catch (error) {
-    console.error("Email sending failed:", error);
-    res.status(500).json({ success: false, message: "Email sending failed" });
-  }
-});
-
-
-// ✅ EMAIL ROUTE - for checkout form
-app.post("/send-checkout-email", async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    idNumber,
-    email,
-    phone,
-    address,
-    city,
-    postalCode,
-  } = req.body;
-
-  try {
-    // Use a different transporter for admin
-    const adminTransporter = nodemailer.createTransport({
-      host: process.env.SMTP_ADMIN_HOST,
-      port: Number(process.env.SMTP_ADMIN_PORT) || 587,
-      secure: process.env.SMTP_ADMIN_PORT == 465,
-      auth: {
-        user: process.env.SMTP_ADMIN_USER,
-        pass: process.env.SMTP_ADMIN_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-
-await adminTransporter.sendMail({
-  from: `"Auto First Checkout" <${process.env.SMTP_ADMIN_USER}>`,
-  to: process.env.ADMIN_RECEIVER_EMAIL,
-  subject: "New Checkout Submission",
-  html: `
-    <h2>New Checkout Submission</h2>
-    <p><b>First Name:</b> ${firstName}</p>
-    <p><b>Last Name:</b> ${lastName}</p>
-    <p><b>ID Number:</b> ${idNumber}</p>
-    <p><b>Email:</b> ${email}</p>
-    <p><b>Phone:</b> ${phone}</p>
-    <p><b>Address:</b> ${address}</p>
-    <p><b>City:</b> ${city}</p>
-    <p><b>Postal Code:</b> ${postalCode}</p>
-    <br/>
-    <span style="color: red; font-weight: bold;">
-      YOU AS THE OWNER SHOULD ALWAYS DOUBLE CHECK ON PAYFAST IF A TRANSACTION WENT THROUGH BEFORE RENDERING ANY SERVICES!
-    </span>
-    <p>
-      <b>NB:</b> YOU AND THE POTENTIAL CUSTOMER/USER WILL GET AN INVOICE FROM PAYFAST DIRECTLY ONCE THE TRANSACTION GOES THROUGH.
-    </p>
-  `,
-});
-
-
-    // ✅ Optional: Send confirmation to the customer too
-    await adminTransporter.sendMail({
-      from: `"Auto First" <${process.env.SMTP_ADMIN_USER}>`,
-      to: email,
-      subject: "Checkout Confirmation",
-      html: `
-        <h2>Hi ${firstName},</h2>
-        <p>Wellcome onboard and thank you for choosing Auto First Mechanical Aid!</p>
-        <p>We’ve received your details and will be in touch soon.</p>
-        <p>Regards,<br/>Auto First Team</p>
-        <img src="https://i.ibb.co/kszWcWpn/auto-first.png" alt="Auto First Logo" style="width:150px; margin-top:10px;"/>
-      `,
-    });
-
-    res.status(200).json({ success: true, message: "Checkout email sent!" });
-  } catch (error) {
-    console.error("Checkout Email Error:", error);
-    res.status(500).json({ success: false, message: "Checkout email failed" });
-  }
-});
-
-
-// ✅ Contact Form Email Route
-app.post("/api/contact", async (req, res) => {
+app.post('/api/contact', async (req, res) => {
   const { firstName, lastName, email, phone, subject, message } = req.body;
 
+  const companyMailOptions = {
+    from: `"Nimrod Estates" <${process.env.SMTP_USER}>`,
+    replyTo: email,
+    to: process.env.CONTACT_RECEIVER,
+    subject,
+    text: `
+      Name: ${firstName} ${lastName}
+      Email: ${email}
+      subject: ${subject}
+      Phone: ${phone || 'N/A'}
+      Message: ${message}
+    `,
+  };
+
+  const userMailOptions = {
+    from: `"Nimrod Estates" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject: 'Thank you for contacting Nimrod Estates!',
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
+        <h2>Hello ${firstName},</h2>
+        <p>Thank you for reaching out to Nimrod Estates. We have received your message and will get back to you as soon as possible.</p>
+        <p><strong>Your message:</strong></p>
+        <p>${message}</p>
+        <p>Best regards,<br />Nimrod Estates Team</p>
+         <img src="https://drive.google.com/uc?export=view&id=13daKou4JFP1lpxRdgZONnIBxHl551nW6" 
+           alt="Nimrod Estates Logo" 
+           style="margin-top:5px; width:150px; height:auto;" />
+    </div>
+  `,
+  };
+
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_ADMIN_HOST,
-      port: Number(process.env.SMTP_ADMIN_PORT) || 587,
-      secure: process.env.SMTP_ADMIN_PORT == 465,
-      auth: {
-        user: process.env.SMTP_ADMIN_USER,
-        pass: process.env.SMTP_ADMIN_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
+    console.log('Sending company email...');
+    await transporter.sendMail(companyMailOptions);
 
-    // Send to admin
-    await transporter.sendMail({
-      from: `"Auto First Contact" <${process.env.SMTP_ADMIN_USER}>`,
-      to: process.env.ADMIN_RECEIVER_EMAIL,
-      subject: `New Contact Form Submission: ${subject}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><b>First Name:</b> ${firstName}</p>
-        <p><b>Last Name:</b> ${lastName}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Phone:</b> ${phone || "N/A"}</p>
-        <p><b>Subject:</b> ${subject}</p>
-        <p><b>Message:</b><br/>${message}</p>
-      `,
-    });
+    console.log('Sending auto-reply to user...');
+    await transporter.sendMail(userMailOptions);
 
-    // ✅ Optional: Send confirmation to user
-    await transporter.sendMail({
-      from: `"Auto First" <${process.env.SMTP_ADMIN_USER}>`,
-      to: email,
-      subject: "We Received Your Message",
-      html: `
-        <h2>Hi ${firstName},</h2>
-        <p>Thank you for reaching out to us. We have received your message:</p>
-        <p>Our team will get back to you shortly.</p>
-         <p>Regards,<br/>Auto First Team</p>
-        <img src="https://i.ibb.co/kszWcWpn/auto-first.png" alt="Auto First Logo" style="width:150px; margin-top:10px;"/>
-      `,
-    });
-
-    res.status(200).json({ success: true, message: "Contact email sent!" });
-  } catch (error) {
-    console.error("Contact Email Error:", error);
-    res.status(500).json({ success: false, message: "Contact email failed" });
+    res.status(200).json({ success: true, message: 'Emails sent successfully!' });
+  } catch (err) {
+    console.error('Email sending error:', err);
+    res.status(500).json({ success: false, message: 'Failed to send emails.' });
   }
 });
+
 
 
 

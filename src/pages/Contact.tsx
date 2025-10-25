@@ -1,5 +1,6 @@
-import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Send, X, CheckCircle, AlertCircle } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import { useState } from 'react';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,9 +8,88 @@ import { Textarea } from '@/components/ui/textarea';
 import heroImage from '@/assets/neo-brutalism-inspired-building.jpg';
 
 const Contact = () => {
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState<{ show: boolean; type: 'success' | 'error'; message: string }>({
+    show: false,
+    type: 'success',
+    message: ''
+  });
+
+  const showAlert = (type: 'success' | 'error', message: string) => {
+    setAlert({ show: true, type, message });
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+      setAlert(prev => ({ ...prev, show: false }));
+    }, 5000);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = {
+      firstName: (e.target as any).firstName.value,
+      lastName: (e.target as any).lastName.value,
+      email: (e.target as any).email.value,
+      phone: (e.target as any).phone.value,
+      subject: (e.target as any).subject.value,
+      message: (e.target as any).message.value,
+    };
+
+    try {
+      const res = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        showAlert('success', 'Message sent successfully! We will get back to you within 24 hours.');
+        (e.target as HTMLFormElement).reset();
+      } else {
+        showAlert('error', 'Failed to send message. Please try again or contact us directly.');
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('error', 'Network error. Please check your connection and try again.');
+    }
+
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen">
       <Navbar />
+
+      {/* Beautiful Alert Notification */}
+      {alert.show && (
+        <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-right duration-300">
+          <div className={`flex items-center p-4 rounded-2xl shadow-lg border-2 max-w-md ${
+            alert.type === 'success' 
+              ? 'bg-green-50 border-green-200 text-green-800' 
+              : 'bg-red-50 border-red-200 text-red-800'
+          }`}>
+            <div className="flex-shrink-0">
+              {alert.type === 'success' ? (
+                <CheckCircle className="h-6 w-6 text-green-600" />
+              ) : (
+                <AlertCircle className="h-6 w-6 text-red-600" />
+              )}
+            </div>
+            <div className="ml-3 flex-1">
+              <p className="text-sm font-medium">{alert.message}</p>
+            </div>
+            <button
+              onClick={() => setAlert(prev => ({ ...prev, show: false }))}
+              className="ml-4 flex-shrink-0 rounded-lg p-1 hover:bg-black/10 transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
@@ -41,28 +121,30 @@ const Contact = () => {
               <h2 className="font-heading text-3xl font-bold mb-6 text-gray-900">
                 Send Us a Message
               </h2>
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2 text-gray-700">
                       First Name *
                     </label>
-                    <Input
-                      type="text"
-                      placeholder="John"
-                      required
-                      className="border-gray-300"
+                    <Input 
+                      type="text" 
+                      name="firstName" 
+                      placeholder="John" 
+                      required 
+                      className="border-gray-300 focus:border-primary transition-colors" 
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2 text-gray-700">
                       Last Name *
                     </label>
-                    <Input
-                      type="text"
-                      placeholder="Doe"
-                      required
-                      className="border-gray-300"
+                    <Input 
+                      type="text" 
+                      name="lastName" 
+                      placeholder="Doe" 
+                      required 
+                      className="border-gray-300 focus:border-primary transition-colors" 
                     />
                   </div>
                 </div>
@@ -71,11 +153,12 @@ const Contact = () => {
                   <label className="block text-sm font-medium mb-2 text-gray-700">
                     Email Address *
                   </label>
-                  <Input
-                    type="email"
-                    placeholder="john.doe@example.com"
-                    required
-                    className="border-gray-300"
+                  <Input 
+                    type="email" 
+                    name="email" 
+                    placeholder="john.doe@gmail.com" 
+                    required 
+                    className="border-gray-300 focus:border-primary transition-colors" 
                   />
                 </div>
 
@@ -83,10 +166,11 @@ const Contact = () => {
                   <label className="block text-sm font-medium mb-2 text-gray-700">
                     Phone Number
                   </label>
-                  <Input
-                    type="tel"
-                    placeholder="+1 (555) 123-4567"
-                    className="border-gray-300"
+                  <Input 
+                    type="tel" 
+                    name="phone" 
+                    placeholder="+27 79 123 4567" 
+                    className="border-gray-300 focus:border-primary transition-colors" 
                   />
                 </div>
 
@@ -94,11 +178,12 @@ const Contact = () => {
                   <label className="block text-sm font-medium mb-2 text-gray-700">
                     Subject *
                   </label>
-                  <Input
-                    type="text"
-                    placeholder="Investment Inquiry"
-                    required
-                    className="border-gray-300"
+                  <Input 
+                    type="text" 
+                    name="subject" 
+                    placeholder="Investment Enquiry" 
+                    required 
+                    className="border-gray-300 focus:border-primary transition-colors" 
                   />
                 </div>
 
@@ -106,21 +191,32 @@ const Contact = () => {
                   <label className="block text-sm font-medium mb-2 text-gray-700">
                     Message *
                   </label>
-                  <Textarea
-                    rows={6}
-                    placeholder="Tell us about your investment goals and how we can help..."
-                    required
-                    className="border-gray-300"
+                  <Textarea 
+                    name="message" 
+                    rows={6} 
+                    placeholder="Tell us about your investment goals..." 
+                    required 
+                    className="border-gray-300 focus:border-primary transition-colors resize-none" 
                   />
                 </div>
 
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full bg-primary hover:bg-primary/90 text-white"
+                <Button 
+                  type="submit" 
+                  size="lg" 
+                  className="w-full bg-primary hover:bg-primary/90 text-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]" 
+                  disabled={loading}
                 >
-                  <Send className="mr-2" size={20} />
-                  Send Message
+                  {loading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Sending...
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Send className="mr-2" size={20} />
+                      Send Message
+                    </div>
+                  )}
                 </Button>
               </form>
             </div>
@@ -183,24 +279,23 @@ const Contact = () => {
                   </div>
                 </div>
 
-               <div className="flex items-start space-x-4 p-6 rounded-3xl bg-secondary border-2 border-gray-800 hover:border-primary hover:-translate-y-1 transition-all duration-300 shadow-xl">
-  <div className="flex-shrink-0 w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
-    <Clock className="text-primary" size={24} />
-  </div>
-  <div>
-    <h3 className="font-semibold mb-1 text-white">
-      Business Hours
-    </h3>
-    <p className="text-gray-300 text-sm">
-      <span className="font-semibold text-primary">Monday - Saturday:</span> 7:00 AM - 8:00 PM<br />
-      <span className="font-semibold text-primary">Sunday:</span> Closed
-    </p>
-  </div>
-</div>
-
+                <div className="flex items-start space-x-4 p-6 rounded-3xl bg-secondary border-2 border-gray-800 hover:border-primary hover:-translate-y-1 transition-all duration-300 shadow-xl">
+                  <div className="flex-shrink-0 w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                    <Clock className="text-primary" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1 text-white">
+                      Business Hours
+                    </h3>
+                    <p className="text-gray-300 text-sm">
+                      <span className="font-semibold text-primary">Monday - Saturday:</span> 7:00 AM - 8:00 PM<br />
+                      <span className="font-semibold text-primary">Sunday:</span> Closed
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              {/* Map Placeholder - Updated with matching background */}
+              {/* Map Placeholder */}
               <div className="p-6 rounded-3xl bg-secondary border-2 border-gray-800 hover:border-primary hover:-translate-y-1 transition-all duration-300 shadow-xl">
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
