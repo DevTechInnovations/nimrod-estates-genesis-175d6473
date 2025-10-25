@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2, DollarSign, Filter, X } from 'lucide-react';
+import { Search, Loader2, Filter, X } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PropertyCard from '@/components/PropertyCard';
@@ -7,13 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Sheet,
   SheetContent,
@@ -64,13 +57,44 @@ interface Filters {
   features: string[];
 }
 
+interface ExchangeRates {
+  USD: number;
+  ZAR: number;
+  AED: number;
+  EUR?: number;
+  GBP?: number;
+}
+
+// Country to currency mapping
+const countryCurrencyMap: { [key: string]: 'USD' | 'ZAR' | 'AED' | 'EUR' | 'GBP' } = {
+  'US': 'USD',
+  'ZA': 'ZAR',
+  'AE': 'AED',
+  'SA': 'AED', // Saudi Arabia often uses AED
+  'QA': 'AED', // Qatar often uses AED
+  'EU': 'EUR',
+  'DE': 'EUR', // Germany
+  'FR': 'EUR', // France
+  'IT': 'EUR', // Italy
+  'ES': 'EUR', // Spain
+  'GB': 'GBP', // United Kingdom
+  'UK': 'GBP',
+  // Add more country codes as needed
+};
+
 const Properties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
-  const [currency, setCurrency] = useState<'USD' | 'ZAR' | 'AED'>('USD');
-  const [exchangeRates, setExchangeRates] = useState({ USD: 1, ZAR: 18.5, AED: 3.67 });
+  const [currency, setCurrency] = useState<'USD' | 'ZAR' | 'AED' | 'EUR' | 'GBP'>('USD');
+  const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({ 
+    USD: 1, 
+    ZAR: 18.5, 
+    AED: 3.67,
+    EUR: 0.92,
+    GBP: 0.79
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [filters, setFilters] = useState<Filters>({
     bedrooms: [],
@@ -85,20 +109,118 @@ const Properties = () => {
     features: []
   });
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [locationLoading, setLocationLoading] = useState(true);
 
   useEffect(() => {
     fetchProperties();
-    fetchExchangeRates();
     checkAuth();
+    detectUserLocation();
 
-    // Refresh rates every hour
-    const interval = setInterval(fetchExchangeRates, 60 * 60 * 1000);
+    // Refresh rates every 24 hours
+    const interval = setInterval(fetchExchangeRates, 24 * 60 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     updateActiveFilters();
   }, [filters]);
+
+  const detectUserLocation = async () => {
+    try {
+      setLocationLoading(true);
+      
+      // Method 1: Try IP-based geolocation first (more reliable)
+      const ipResponse = await fetch('https://ipapi.co/json/');
+      if (ipResponse.ok) {
+        const ipData = await ipResponse.json();
+        const countryCode = ipData.country_code;
+        
+        if (countryCode && countryCurrencyMap[countryCode]) {
+          setCurrency(countryCurrencyMap[countryCode]);
+          console.log(`Currency set to ${countryCurrencyMap[countryCode]} based on IP location (${ipData.country_name})`);
+        }
+      }
+      
+      // Method 2: Fallback to browser geolocation for more precise location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            try {
+              const { latitude, longitude } = position.coords;
+              const response = await fetch(
+                `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+              );
+              
+              if (response.ok) {
+                const locationData = await response.json();
+                const countryCode = locationData.countryCode;
+                
+                if (countryCode && countryCurrencyMap[countryCode]) {
+                  setCurrency(countryCurrencyMap[countryCode]);
+                  console.log(`Currency set to ${countryCurrencyMap[countryCode]} based on GPS location (${locationData.countryName})`);
+                }
+              }
+            } catch (error) {
+              console.log('GPS-based location detection failed, using IP-based detection');
+            }
+          },
+          (error) => {
+            console.log('Browser geolocation not available or denied, using IP-based detection');
+          },
+          { timeout: 5000 }
+        );
+      }
+      
+      // Fetch exchange rates after determining location
+      await fetchExchangeRates();
+      
+    } catch (error) {
+      console.error('Error detecting user location:', error);
+      // Fallback to USD if detection fails
+      setCurrency('USD');
+    } finally {
+      setLocationLoading(false);
+    }
+  };
+
+  const fetchExchangeRates = async () => {
+    try {
+      // Try to get rates from your Supabase function first
+      const { data, error } = await supabase.functions.invoke('currency-rates');
+      
+      if (!error && data) {
+        setExchangeRates(prev => ({ ...prev, ...data }));
+        console.log('Live exchange rates loaded:', data);
+        return;
+      }
+      
+      // Fallback to a free exchange rate API
+      console.log('Using fallback exchange rate API');
+      const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+      
+      if (response.ok) {
+        const rateData = await response.json();
+        setExchangeRates({
+          USD: 1,
+          ZAR: rateData.rates.ZAR || 18.5,
+          AED: rateData.rates.AED || 3.67,
+          EUR: rateData.rates.EUR || 0.92,
+          GBP: rateData.rates.GBP || 0.79
+        });
+        console.log('Fallback exchange rates loaded');
+      }
+    } catch (error) {
+      console.error('Error fetching exchange rates:', error);
+      // Use default rates as last resort
+      setExchangeRates({ 
+        USD: 1, 
+        ZAR: 18.5, 
+        AED: 3.67,
+        EUR: 0.92,
+        GBP: 0.79
+      });
+    }
+  };
 
   const checkAuth = async () => {
     try {
@@ -115,21 +237,6 @@ const Properties = () => {
     }
   };
 
-  const fetchExchangeRates = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke('currency-rates');
-      
-      if (error) throw error;
-      
-      if (data) {
-        setExchangeRates(data);
-        console.log('Live exchange rates loaded:', data);
-      }
-    } catch (error) {
-      console.error('Error fetching exchange rates:', error);
-    }
-  };
-
   const fetchProperties = async () => {
     try {
       const { data, error } = await supabase
@@ -140,7 +247,6 @@ const Properties = () => {
       if (error) throw error;
       setProperties(data || []);
       
-      // Set initial filter ranges based on actual data
       if (data && data.length > 0) {
         const prices = data.map(p => parseFloat(p.price.replace(/[^0-9.-]+/g, "")) || 0);
         const areas = data.map(p => p.area || 0);
@@ -228,17 +334,14 @@ const Properties = () => {
     
     const matchesType = typeFilter === 'All' || property.type === typeFilter;
     
-    // Filter out exclusive properties if not authenticated
     if (property.exclusive && !isAuthenticated) {
       return false;
     }
 
-    // Numeric filters
     const price = parseFloat(property.price.replace(/[^0-9.-]+/g, "")) || 0;
     const matchesPrice = price >= filters.minPrice && price <= filters.maxPrice;
     const matchesArea = property.area >= filters.minArea && property.area <= filters.maxArea;
     
-    // Array filters
     const matchesBedrooms = filters.bedrooms.length === 0 || filters.bedrooms.includes(property.bedrooms);
     const matchesBathrooms = filters.bathrooms.length === 0 || filters.bathrooms.includes(property.bathrooms);
     const matchesGarage = filters.garage.length === 0 || filters.garage.includes(property.garage || 0);
@@ -247,6 +350,18 @@ const Properties = () => {
     return matchesSearch && matchesType && matchesPrice && matchesArea && 
            matchesBedrooms && matchesBathrooms && matchesGarage && matchesParking;
   });
+
+  // Get currency symbol for display
+  const getCurrencySymbol = () => {
+    switch (currency) {
+      case 'USD': return '$';
+      case 'ZAR': return 'R';
+      case 'AED': return 'د.إ';
+      case 'EUR': return '€';
+      case 'GBP': return '£';
+      default: return '$';
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -269,6 +384,15 @@ const Properties = () => {
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto text-white/90">
             Discover exceptional investment opportunities around the world
+            {locationLoading ? (
+              <span className="block text-sm mt-2 text-amber-300">
+                Detecting your location...
+              </span>
+            ) : (
+              <span className="block text-sm mt-2 text-amber-300">
+                Prices displayed in {currency} ({getCurrencySymbol()})
+              </span>
+            )}
             {!isAuthenticated && (
               <span className="block text-sm mt-2 text-amber-300">
                 Sign in to access exclusive properties
@@ -294,19 +418,21 @@ const Properties = () => {
               />
             </div>
 
-            {/* Currency Selector */}
-            <div className="w-full md:w-40">
-              <Select value={currency} onValueChange={(value: 'USD' | 'ZAR' | 'AED') => setCurrency(value)}>
-                <SelectTrigger className="w-full">
-                  <DollarSign className="mr-2 h-4 w-4" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="USD">USD ($)</SelectItem>
-                  <SelectItem value="ZAR">ZAR (R)</SelectItem>
-                  <SelectItem value="AED">AED (د.إ)</SelectItem>
-                </SelectContent>
-              </Select>
+            {/* Currency Display (Read-only) */}
+            <div className="w-full md:w-40 flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md bg-gray-50">
+              <div className="text-sm font-medium text-gray-700">
+                {locationLoading ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Detecting...</span>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <div className="font-semibold">{currency}</div>
+                    <div className="text-xs text-muted-foreground">{getCurrencySymbol()}</div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Advanced Filters */}
@@ -330,7 +456,7 @@ const Properties = () => {
                 <div className="space-y-6 mt-6">
                   {/* Price Range */}
                   <div>
-                    <h4 className="font-semibold mb-3">Price Range</h4>
+                    <h4 className="font-semibold mb-3">Price Range ({currency})</h4>
                     <div className="space-y-4">
                       <Slider
                         value={[filters.minPrice, filters.maxPrice]}
@@ -341,8 +467,8 @@ const Properties = () => {
                         className="my-4"
                       />
                       <div className="flex justify-between text-sm text-muted-foreground">
-                        <span>${filters.minPrice.toLocaleString()}</span>
-                        <span>${filters.maxPrice.toLocaleString()}</span>
+                        <span>{getCurrencySymbol()}{filters.minPrice.toLocaleString()}</span>
+                        <span>{getCurrencySymbol()}{filters.maxPrice.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
@@ -497,10 +623,7 @@ const Properties = () => {
                   {filter}
                   <X 
                     className="h-3 w-3 cursor-pointer" 
-                    onClick={() => {
-                      // This is a simplified clear - you might want to implement individual filter clearing
-                      clearAllFilters();
-                    }}
+                    onClick={() => clearAllFilters()}
                   />
                 </Badge>
               ))}
@@ -548,7 +671,6 @@ const Properties = () => {
                   currency={currency}
                   exchangeRates={exchangeRates}
                   isAuthenticated={isAuthenticated}
-                  // ADDED: Rental property props
                   propertyType={property.property_type || 'sale'}
                   rentalPeriod={property.rental_period || ''}
                   securityDeposit={property.security_deposit || ''}
