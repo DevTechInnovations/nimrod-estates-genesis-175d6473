@@ -122,7 +122,7 @@ const PropertyCard = ({
             {/* Property Type Badge */}
             <div className={`px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center w-fit ${
               propertyType === 'rental' 
-                ? 'bg-blue-500 text-white border border-blue-300' 
+                ? 'bg-primary text-white border border-primary' 
                 : 'bg-primary text-primary-foreground border border-primary/20'
             }`}>
               {propertyType === 'rental' ? (
@@ -140,7 +140,7 @@ const PropertyCard = ({
 
             {/* Exclusive Badge */}
             {exclusive && (
-              <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center w-fit border border-amber-300">
+              <div className="bg-primary from-amber-500 to-amber-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center w-fit border border-amber-300">
                 <Crown size={14} className="mr-1.5" />
                 Exclusive
               </div>
@@ -151,7 +151,7 @@ const PropertyCard = ({
           <div className="flex flex-col gap-2 items-end">
             {/* ROI Badge */}
             {roi && (
-              <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-green-300">
+              <div className="bg-primary from-green-500 to-green-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-primary">
                 <TrendingUp size={14} className="mr-1.5" />
                 {roi} ROI
               </div>
@@ -159,7 +159,7 @@ const PropertyCard = ({
 
             {/* Investment Opportunity Badge */}
             {investmentOpportunity && (
-              <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-purple-300">
+              <div className="bg-primary from-purple-500 to-purple-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-primary">
                 <TrendingUp size={14} className="mr-1.5" />
                 Investment
               </div>
@@ -167,7 +167,7 @@ const PropertyCard = ({
 
             {/* Rental Period Badge */}
             {propertyType === 'rental' && rentalPeriod && (
-              <div className="bg-blue-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-blue-400">
+              <div className="bg-primary text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-primary">
                 <Calendar size={14} className="mr-1.5" />
                 {getRentalPeriodBadge(rentalPeriod)}
               </div>
@@ -204,22 +204,22 @@ const PropertyCard = ({
           </h3>
 
           <div className="flex items-center text-white/90 mb-4">
-            <MapPin size={16} className="mr-2 text-blue-300" />
+            <MapPin size={16} className="mr-2 text-primary" />
             <span className="text-sm">{location}</span>
           </div>
 
           <div className="flex items-center justify-between mb-4 text-sm text-white/90">
             <div className="flex items-center space-x-4">
               <span className="flex items-center bg-white/20 px-2 py-1 rounded-lg">
-                <Bed size={16} className="mr-1.5 text-blue-300" /> 
+                <Bed size={16} className="mr-1.5 text-primary" /> 
                 <span className="font-semibold">{bedrooms}</span>
               </span>
               <span className="flex items-center bg-white/20 px-2 py-1 rounded-lg">
-                <Bath size={16} className="mr-1.5 text-blue-300" /> 
+                <Bath size={16} className="mr-1.5 text-primary" /> 
                 <span className="font-semibold">{bathrooms}</span>
               </span>
               <span className="flex items-center bg-white/20 px-2 py-1 rounded-lg">
-                <Square size={16} className="mr-1.5 text-blue-300" /> 
+                <Square size={16} className="mr-1.5 text-primary" /> 
                 <span className="font-semibold">{area} m²</span>
               </span>
             </div>
@@ -227,9 +227,9 @@ const PropertyCard = ({
 
           {/* Security Deposit for Rental Properties */}
           {propertyType === 'rental' && securityDeposit && (
-            <div className="mb-4 p-3 bg-blue-500/30 rounded-lg border border-blue-400/30">
+            <div className="mb-4 p-3 bg-primary rounded-lg border border-primary">
               <div className="flex items-center text-white/90 text-sm">
-                <Shield size={16} className="mr-2 text-blue-300" />
+                <Shield size={16} className="mr-2 text-white" />
                 <span className="font-medium">Security Deposit: </span>
                 <span className="ml-1 font-semibold">{formatPrice(securityDeposit, currency)}</span>
               </div>
@@ -296,8 +296,8 @@ const PropertyCard = ({
 
         {/* Security Deposit for Static View */}
         {propertyType === 'rental' && securityDeposit && (
-          <div className="mb-3 p-2 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-center text-blue-800 text-xs">
+          <div className="mb-3 p-2 bg-primary rounded-lg border border-primary">
+            <div className="flex items-center text-white text-xs">
               <Shield size={12} className="mr-1.5 flex-shrink-0" />
               <span className="font-medium">Deposit: </span>
               <span className="ml-1 font-semibold">{formatPrice(securityDeposit, currency)}</span>

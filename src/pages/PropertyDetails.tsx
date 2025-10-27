@@ -280,7 +280,7 @@ const PropertyDetails = () => {
                     {/* Property Type Badge */}
                     <div className={`px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center ${
                       property.property_type === 'rental' 
-                        ? 'bg-blue-500 text-white' 
+                        ? 'bg-primary text-white' 
                         : 'bg-primary text-primary-foreground'
                     }`}>
                       {property.property_type === 'rental' ? (
@@ -294,7 +294,7 @@ const PropertyDetails = () => {
                     </div>
 
                     {property.exclusive && (
-                      <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center">
+                      <div className="bg-primary from-amber-500 to-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center">
                         <Crown size={14} className="mr-1" />
                         Exclusive
                       </div>
@@ -423,12 +423,12 @@ const PropertyDetails = () => {
 
                 {/* Rental Specific Information */}
                 {property.property_type === 'rental' && (
-                  <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                  <div className="bg-primary border border-primary p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
-                      <Calendar className="h-5 w-5 text-blue-600" />
-                      <h3 className="font-semibold text-blue-900">Rental Information</h3>
+                      <Calendar className="h-5 w-5 text-white" />
+                      <h3 className="font-semibold text-white">Rental Information</h3>
                     </div>
-                    <div className="text-sm text-blue-800 space-y-1">
+                    <div className="text-sm text-white space-y-1">
                       <p>• Minimum lease: 12 months</p>
                       <p>• Utilities not included</p>
                       <p>• Available for immediate occupancy</p>
