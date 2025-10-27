@@ -280,7 +280,7 @@ const PropertyDetails = () => {
                     {/* Property Type Badge */}
                     <div className={`px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center ${
                       property.property_type === 'rental' 
-                        ? 'bg-blue-500 text-white' 
+                        ? 'bg-primary text-white' 
                         : 'bg-primary text-primary-foreground'
                     }`}>
                       {property.property_type === 'rental' ? (
@@ -294,7 +294,7 @@ const PropertyDetails = () => {
                     </div>
 
                     {property.exclusive && (
-                      <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center">
+                      <div className="bg-primary from-amber-500 to-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center">
                         <Crown size={14} className="mr-1" />
                         Exclusive
                       </div>
