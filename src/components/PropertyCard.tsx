@@ -122,7 +122,7 @@ const PropertyCard = ({
             {/* Property Type Badge */}
             <div className={`px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center w-fit ${
               propertyType === 'rental' 
-                ? 'bg-blue-500 text-white border border-blue-300' 
+                ? 'bg-primary text-white border border-primary' 
                 : 'bg-primary text-primary-foreground border border-primary/20'
             }`}>
               {propertyType === 'rental' ? (
@@ -140,7 +140,7 @@ const PropertyCard = ({
 
             {/* Exclusive Badge */}
             {exclusive && (
-              <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center w-fit border border-amber-300">
+              <div className="bg-primary from-amber-500 to-amber-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center w-fit border border-amber-300">
                 <Crown size={14} className="mr-1.5" />
                 Exclusive
               </div>
@@ -151,7 +151,7 @@ const PropertyCard = ({
           <div className="flex flex-col gap-2 items-end">
             {/* ROI Badge */}
             {roi && (
-              <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-green-300">
+              <div className="bg-primary from-green-500 to-green-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-primary">
                 <TrendingUp size={14} className="mr-1.5" />
                 {roi} ROI
               </div>
@@ -159,7 +159,7 @@ const PropertyCard = ({
 
             {/* Investment Opportunity Badge */}
             {investmentOpportunity && (
-              <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-purple-300">
+              <div className="bg-primary from-purple-500 to-purple-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-primary">
                 <TrendingUp size={14} className="mr-1.5" />
                 Investment
               </div>
@@ -167,7 +167,7 @@ const PropertyCard = ({
 
             {/* Rental Period Badge */}
             {propertyType === 'rental' && rentalPeriod && (
-              <div className="bg-blue-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-blue-400">
+              <div className="bg-primary text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg flex items-center border border-primary">
                 <Calendar size={14} className="mr-1.5" />
                 {getRentalPeriodBadge(rentalPeriod)}
               </div>
