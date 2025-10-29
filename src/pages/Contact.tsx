@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import heroImage from '@/assets/neo-brutalism-inspired-building.jpg';
+import { Helmet } from "react-helmet-async";
 
 const Contact = () => {
   const [loading, setLoading] = useState(false);
@@ -61,6 +62,80 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen">
+            {/* SEO Section */}
+<Helmet>
+  <title>Contact Us | Nimrod Property Estates | Luxury Real Estate Experts</title>
+  <meta
+    name="description"
+    content="Contact Nimrod Property Estates for luxury real estate investments and property opportunities in South Africa, Dubai, and Monaco. Speak directly with our expert team today."
+  />
+  <meta
+    name="keywords"
+    content="Property for rent, Property investment in South Africa, Property investment in Dubai, Property investment in Monaco, Property development, Property to buy, Real estate investments, Luxury properties, Nimrod Property Estates"
+  />
+  <meta property="og:title" content="Contact Nimrod Property Estates | Global Property Experts" />
+  <meta
+    property="og:description"
+    content="Get in touch with Nimrod Property Estates — leaders in luxury property investment and development across Monaco, Dubai, and South Africa."
+  />
+  <meta property="og:image" content="https://nimrodestates.com/logo.png" />
+  <meta property="og:url" content="https://nimrodestates.com/contact" />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://nimrodestates.com/contact" />
+
+  <script type="application/ld+json">
+    {`
+      {
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        "name": "Contact Nimrod Property Estates",
+        "url": "https://nimrodestates.com/contact",
+        "about": {
+          "@type": "Organization",
+          "name": "Nimrod Property Estates",
+          "url": "https://nimrodestates.com",
+          "logo": "https://nimrodestates.com/logo.png",
+          "sameAs": [
+            "https://www.facebook.com/nimrodestates",
+            "https://www.instagram.com/nimrodestates",
+            "https://www.linkedin.com/company/nimrodestates"
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+971 58 305 1460",
+            "contactType": "Customer Service",
+            "areaServed": ["Dubai", "Monaco", "South Africa"],
+            "availableLanguage": ["English"]
+          }
+        },
+        "mainEntity": {
+          "@type": "Organization",
+          "name": "Nimrod Property Estates",
+          "address": [
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "Monte Carlo Sun, Bd d'Italie 74",
+              "addressLocality": "Monaco",
+              "postalCode": "98000"
+            },
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "Emirates Towers",
+              "addressLocality": "Dubai",
+              "addressCountry": "UAE"
+            },
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "96 Rivonia Road, Sandton",
+              "addressLocality": "Gauteng",
+              "addressCountry": "South Africa"
+            }
+          ]
+        }
+      }
+    `}
+  </script>
+</Helmet>
       <Navbar />
 
       {/* Beautiful Alert Notification */}

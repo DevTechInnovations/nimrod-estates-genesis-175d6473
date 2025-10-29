@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Helmet } from "react-helmet-async";
 import { Search, Loader2, Filter, X } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -413,8 +414,52 @@ const Properties = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
+      {/* SEO Section */}
+      <Helmet>
+  <title>Luxury Properties | Global Property Listings | Nimrod Property Estates</title>
+  <meta 
+    name="description" 
+    content="Discover premium properties for rent and investment in South Africa, Dubai, and Monaco. Explore luxury real estate opportunities with Nimrod Property Estates — your trusted global property partner." 
+  />
+  <meta 
+    name="keywords" 
+    content="Property for rent, Property investment in South Africa, Property investment in Dubai, Property investment in Monaco, Property development, Property to buy, Real estate investments, Luxury properties, Nimrod Property Estates" 
+  />
+  <meta property="og:title" content="Luxury Properties | Nimrod Property Estates" />
+  <meta 
+    property="og:description" 
+    content="Browse exclusive properties and investment opportunities around the world with Nimrod Property Estates." 
+  />
+  <meta property="og:image" content="https://nimrodestates.com/logo.png" />
+  <meta property="og:url" content="https://nimrodestates.com/properties" />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://nimrodestates.com/properties" />
 
+  <script type="application/ld+json">
+    {`
+      {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "Nimrod Property Estates",
+        "url": "https://nimrodestates.com/properties",
+        "logo": "https://nimrodestates.com/logo.png",
+        "sameAs": [
+          "https://www.facebook.com/nimrodestates",
+          "https://www.instagram.com/nimrodestates",
+          "https://www.linkedin.com/company/nimrodestates"
+        ],
+        "description": "Luxury properties and international real estate investments in South Africa, Dubai, and Monaco.",
+        "areaServed": [
+          "South Africa",
+          "Dubai",
+          "Monaco"
+        ],
+        "serviceType": "Luxury Real Estate Listings"
+      }
+    `}
+  </script>
+</Helmet>
+      <Navbar />
       {/* ADD: Test Currency Selector */}
       <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg border z-50 max-w-xs">
         <h4 className="font-semibold mb-2 text-sm">🧪 Test Currencies</h4>

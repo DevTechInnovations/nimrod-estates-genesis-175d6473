@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import heroImage from '@/assets/3d-electric-car-building.jpg';
 import davidImage from '@/assets/david-nimrod.jpg';
+import { Helmet } from 'react-helmet-async'; 
 
 const About = () => {
   const team = [
@@ -30,8 +31,51 @@ const About = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
+            {/* SEO Section */}
+      <Helmet>
+  <title>About Nimrod Estates | Luxury Real Estate & Global Property Investment</title>
+  <meta
+    name="description"
+    content="Discover Nimrod Estates — a premier firm specializing in luxury properties, property investment in South Africa, Dubai, and Monaco, as well as exclusive real estate development opportunities for global investors."
+  />
+  <meta
+    name="keywords"
+    content="Property for rent, Property investment in South Africa, Property investment in Dubai, Property investment in Monaco, Property development, Property to buy, Real estate investments, Luxury properties, Nimrod Property Estates"
+  />
+  <meta name="author" content="Nimrod Property Estates" />
 
+  <link rel="canonical" href="https://nimrodestates.com/about" />
+
+  <meta property="og:title" content="About Nimrod Estates | Global Luxury Real Estate Experts" />
+  <meta
+    property="og:description"
+    content="Explore Nimrod Estates — connecting global investors with exclusive luxury properties and development opportunities across South Africa, Dubai, and Monaco."
+  />
+  <meta property="og:image" content="https://nimrodestates.com/assets/3d-electric-car-building.jpg" />
+  <meta property="og:url" content="https://nimrodestates.com/about" />
+  <meta property="og:type" content="website" />
+
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Nimrod Property Estates",
+      url: "https://nimrodestates.com",
+      logo: "https://nimrodestates.com/assets/logo.png",
+      description:
+        "Nimrod Estates is a global leader in luxury property investment, connecting clients to premium estates in South Africa, Dubai, Monaco, and beyond.",
+      founder: {
+        "@type": "Person",
+        name: "Nimrod Gumede",
+      },
+      sameAs: [
+        "https://www.linkedin.com/company/nimrodestates",
+        "https://www.instagram.com/nimrodestates",
+      ],
+    })}
+  </script>
+</Helmet>
+      <Navbar />
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div

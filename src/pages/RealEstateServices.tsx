@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import heroImage from '@/assets/ai-generated-house-design.jpg';
+import { Helmet } from 'react-helmet-async';
 
 const RealEstateServices = () => {
   const services = [
@@ -43,6 +44,64 @@ const RealEstateServices = () => {
 
   return (
     <div className="min-h-screen">
+        <Helmet>
+      <title>
+        Real Estate Services & Property Investment | Nimrod Property Estates
+      </title>
+      <meta
+        name="description"
+        content="Explore real estate services from Nimrod Property Estates, including property for rent, property to buy, and luxury properties. Maximize your property investment in South Africa, Dubai, and Monaco with our expert solutions."
+      />
+      <meta
+        name="keywords"
+        content="Property for rent, Property investment in South Africa, Property investment in Dubai, Property investment in Monaco, Property development, Property to buy, Real estate investments, Luxury properties, Nimrod Property Estates"
+      />
+       <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "RealEstateAgent",
+          "name": "Nimrod Property Estates",
+          "url": "https://www.nimrodpropertyestates.com",
+          "logo": "https://www.nimrodpropertyestates.com/logo.png",
+          "image": "https://www.nimrodpropertyestates.com/assets/ai-generated-house-design.jpg",
+          "description": "Expert real estate services including property for rent, property to buy, luxury properties, and property investment in South Africa, Dubai, and Monaco.",
+          "areaServed": [
+            {
+              "@type": "Country",
+              "name": "South Africa"
+            },
+            {
+              "@type": "Country",
+              "name": "United Arab Emirates"
+            },
+            {
+              "@type": "Country",
+              "name": "Monaco"
+            }
+          ],
+          "serviceType": [
+            "Property Listings",
+            "Property Management",
+            "Asset Management",
+            "Property Investment Consultation",
+            "Luxury Property Development"
+          ],
+          "sameAs": [
+            "https://www.facebook.com/NimrodPropertyEstates",
+            "https://twitter.com/NimrodEstates",
+            "https://www.linkedin.com/company/nimrod-property-estates"
+          ],
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "telephone": "+27-11-123-4567",
+              "contactType": "customer service",
+              "areaServed": "ZA"
+            }
+          ]
+        })}
+      </script>
+    </Helmet>
       <Navbar />
 
       {/* Hero Section */}

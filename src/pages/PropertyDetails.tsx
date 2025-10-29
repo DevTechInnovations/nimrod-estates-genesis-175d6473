@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+import { Helmet } from 'react-helmet-async';
 
 interface Property {
   id: string;
@@ -155,7 +156,70 @@ const PropertyDetails = () => {
 
   return (
     <div className="min-h-screen">
+       {/* SEO Metadata */}
+<Helmet>
+  <title>{property ? `${property.title} | Nimrod Property Estates` : 'Property Details | Nimrod Property Estates'}</title>
+  <meta
+    name="description"
+    content={property
+      ? `${property.title} in ${property.location}. ${property.description.slice(0, 160)}`
+      : 'Explore detailed property listings including features, images, pricing, and investment opportunities at Nimrod Property Estates.'}
+  />
+  <meta
+    name="keywords"
+    content={property
+      ? `property for rent, property to buy, real estate investments, luxury properties, ${property.location}, Nimrod Property Estates`
+      : 'property for rent, property to buy, real estate investments, luxury properties, Nimrod Property Estates'}
+  />
+  <meta property="og:title" content={property ? `${property.title} | Nimrod Property Estates` : 'Property Details | Nimrod Property Estates'} />
+  <meta
+    property="og:description"
+    content={property
+      ? `${property.title} located in ${property.location}. Check images, details, and investment opportunities.`
+      : 'Explore detailed property listings including features, images, pricing, and investment opportunities at Nimrod Property Estates.'}
+  />
+  <meta property="og:type" content="website" />
+  {property?.images?.[0] && <meta property="og:image" content={property.images[0]} />}
+
+  {/* JSON-LD Structured Data */}
+  {property && (
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SingleFamilyResidence",
+        "name": property.title,
+        "description": property.description,
+        "image": property.images || property.imageLinks || [],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": property.location,
+          "addressCountry": "South Africa" // adjust dynamically if needed
+        },
+        "floorSize": {
+          "@type": "QuantitativeValue",
+          "value": property.area,
+          "unitText": "m²"
+        },
+        "numberOfRooms": property.bedrooms,
+        "numberOfBathroomsTotal": property.bathrooms,
+        "offers": {
+          "@type": "Offer",
+          "price": Number(property.price.replace(/[^0-9.-]+/g, "")) || 0,
+          "priceCurrency": "USD",
+          "availability": property.property_type === 'rental' ? "https://schema.org/ForRent" : "https://schema.org/ForSale",
+          "url": window.location.href
+        },
+        "seller": {
+          "@type": "RealEstateAgent",
+          "name": "Nimrod Property Estates",
+          "url": "https://www.nimrodpropertyestates.com"
+        }
+      })}
+    </script>
+  )}
+</Helmet>
       <Navbar />
+      
       <section className="pt-24 pb-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="mb-6 flex items-center justify-between">

@@ -1,10 +1,10 @@
-// src/pages/services/BusinessSetup.tsx
 import { Briefcase, FileText, Globe, Settings, ArrowRight, CheckCircle } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import heroImage from '@/assets/ai-generated-house-design.jpg';
+import { Helmet } from 'react-helmet-async';
 
 const BusinessSetup = () => {
   const services = [
@@ -50,6 +50,60 @@ const BusinessSetup = () => {
 
   return (
     <div className="min-h-screen">
+        {/* SEO Metadata */}
+    <Helmet>
+      {/* Standard SEO */}
+      <title>Business Setup Services | Nimrod Estates</title>
+      <meta
+        name="description"
+        content="Complete business setup and compliance solutions in South Africa, Dubai, and Mauritius. Company registration, licensing, customs, and import/export support."
+      />
+      <meta
+        name="keywords"
+        content="business setup, company registration, business licensing, import export, Nimrod Estates"
+      />
+      <meta property="og:title" content="Business Setup Services | Nimrod Estates" />
+      <meta property="og:description" content="Complete business setup and compliance solutions in South Africa, Dubai, and Mauritius." />
+      <meta property="og:type" content="website" />
+
+      {/* JSON-LD Structured Data */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ProfessionalService",
+          "name": "Nimrod Estates",
+          "url": "https://www.nimrodpropertyestates.com",
+          "logo": "https://www.nimrodpropertyestates.com/logo.png",
+          "image": "https://www.nimrodpropertyestates.com/assets/ai-generated-house-design.jpg",
+          "description": "Complete business setup and compliance solutions in South Africa, Dubai, and Mauritius. Company registration, licensing, customs, and import/export support.",
+          "areaServed": [
+            { "@type": "Country", "name": "South Africa" },
+            { "@type": "Country", "name": "United Arab Emirates" },
+            { "@type": "Country", "name": "Mauritius" }
+          ],
+          "serviceType": [
+            "Business Registration",
+            "Business Licensing",
+            "Customs Clearance & Licensing",
+            "Import & Export Licensing",
+            "Compliance & Legal Advisory"
+          ],
+          "sameAs": [
+            "https://www.facebook.com/NimrodPropertyEstates",
+            "https://twitter.com/NimrodEstates",
+            "https://www.linkedin.com/company/nimrod-property-estates"
+          ],
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "telephone": "+27-11-123-4567",
+              "contactType": "customer service",
+              "areaServed": "ZA"
+            }
+          ]
+        })}
+      </script>
+    </Helmet>
       <Navbar />
 
       {/* Hero Section */}
