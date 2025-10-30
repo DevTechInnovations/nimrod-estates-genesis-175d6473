@@ -78,7 +78,7 @@ const Contact = () => {
     property="og:description"
     content="Get in touch with Nimrod Property Estates — leaders in luxury property investment and development across Monaco, Dubai, and South Africa."
   />
-  <meta property="og:image" content="https://nimrodestates.com/logo.png" />
+  <meta property="og:image" content="https://nimrodestates.com/NM.png" />
   <meta property="og:url" content="https://nimrodestates.com/contact" />
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://nimrodestates.com/contact" />

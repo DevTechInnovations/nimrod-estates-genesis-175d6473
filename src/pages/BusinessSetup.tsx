@@ -72,9 +72,9 @@ const BusinessSetup = () => {
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
           "name": "Nimrod Estates",
-          "url": "https://www.nimrodpropertyestates.com",
-          "logo": "https://www.nimrodpropertyestates.com/logo.png",
-          "image": "https://www.nimrodpropertyestates.com/assets/ai-generated-house-design.jpg",
+          "url": "https://nimrodestates.com",
+          "logo": "https://nimrodestates.com/NM.png",
+          "image": "https://nimrodestates.com/assets",
           "description": "Complete business setup and compliance solutions in South Africa, Dubai, and Mauritius. Company registration, licensing, customs, and import/export support.",
           "areaServed": [
             { "@type": "Country", "name": "South Africa" },
@@ -89,16 +89,17 @@ const BusinessSetup = () => {
             "Compliance & Legal Advisory"
           ],
           "sameAs": [
-            "https://www.facebook.com/NimrodPropertyEstates",
-            "https://twitter.com/NimrodEstates",
+            "https://www.facebook.com/Nimrodestates",
+            "https://twitter.com/Nimrodestates",
             "https://www.linkedin.com/company/nimrod-property-estates"
           ],
           "contactPoint": [
             {
-              "@type": "ContactPoint",
-              "telephone": "+27-11-123-4567",
-              "contactType": "customer service",
-              "areaServed": "ZA"
+            "@type": "ContactPoint",
+            "telephone": "+971 58 305 1460",
+            "contactType": "Customer Service",
+            "areaServed": ["Dubai", "Monaco", "South Africa"],
+            "availableLanguage": ["English"]
             }
           ]
         })}

@@ -51,7 +51,7 @@ const About = () => {
     property="og:description"
     content="Explore Nimrod Estates — connecting global investors with exclusive luxury properties and development opportunities across South Africa, Dubai, and Monaco."
   />
-  <meta property="og:image" content="https://nimrodestates.com/assets/3d-electric-car-building.jpg" />
+  <meta property="og:image" content="https://nimrodestates.com/assets" />
   <meta property="og:url" content="https://nimrodestates.com/about" />
   <meta property="og:type" content="website" />
 
@@ -61,7 +61,7 @@ const About = () => {
       "@type": "Organization",
       name: "Nimrod Property Estates",
       url: "https://nimrodestates.com",
-      logo: "https://nimrodestates.com/assets/logo.png",
+      logo: "https://nimrodestates.com/NM.png",
       description:
         "Nimrod Estates is a global leader in luxury property investment, connecting clients to premium estates in South Africa, Dubai, Monaco, and beyond.",
       founder: {

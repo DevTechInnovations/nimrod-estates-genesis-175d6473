@@ -76,7 +76,7 @@ const Index = () => {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
     "name": "Nimrod Property Estates",
-    "url": "https://www.nimrodpropertyestates.com",
+    "url": "https://nimrodestates.com/",
     "description": "Luxury properties, real estate investments, and property development opportunities in South Africa, Dubai, and Monaco.",
     "areaServed": ["South Africa", "Dubai", "Monaco"],
     "serviceType": [
