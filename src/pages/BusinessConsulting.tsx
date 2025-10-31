@@ -11,7 +11,7 @@ const BusinessConsulting = () => {
     {
       icon: Users,
       title: 'Consulting Services',
-      description: 'Expert guidance in wealth structuring, real estate investment, and cross-border business expansion strategies.',
+      description: 'Expert guidance in wealth structuring, real estate investment, and cross border business expansion strategies.',
       features: ['Wealth Structuring', 'Investment Strategy', 'Business Expansion'],
       image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
       link: '/services/consulting'
