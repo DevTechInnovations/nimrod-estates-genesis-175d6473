@@ -94,7 +94,7 @@ const About = () => {
           <p className="text-xl md:text-2xl max-w-3xl mx-auto text-white/90">
             {/* Empowering investors with real estate opportunities since 2003 */}
             Nimrod Estates is an exclusive luxury real estate firm specializing in serving 
-            Ultra-High-Net-Worth Individuals, distinguished family offices, and global investors 
+            ultra high net worth Individuals, distinguished family offices, and global investors 
             seeking exceptional properties worldwide.
           </p>
         </div>

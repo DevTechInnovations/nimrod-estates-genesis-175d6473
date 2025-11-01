@@ -290,9 +290,11 @@ const Index = () => {
                   </li>
                 </ul>
               </div>
+               <Link to="/member-auth">
               <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
                 Join Gold
               </Button>
+              </Link>
             </div>
 
             {/* Silver Tier - Featured */}
@@ -336,9 +338,11 @@ const Index = () => {
                   </li>
                 </ul>
               </div>
+              <Link to="/member-auth">
               <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
                 Join Silver
               </Button>
+              </Link>
             </div>
 
             {/* Platinum Tier */}
@@ -383,9 +387,11 @@ const Index = () => {
                   </li>
                 </ul>
               </div>
+              <Link to="/member-auth">
               <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
                 Join Platinum
               </Button>
+              </Link>
             </div>
           </div>
 

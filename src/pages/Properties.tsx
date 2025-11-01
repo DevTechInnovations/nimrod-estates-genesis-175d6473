@@ -435,32 +435,7 @@ const Properties = () => {
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://nimrodestates.com/properties" />
 
-  <script type="application/ld+json">
-    {`
-      {
-        "@context": "https://schema.org",
-        "@type": "RealEstateAgent",
-        "name": "Nimrod Property Estates",
-        "url": "https://nimrodestates.com/properties",
-        "logo": "https://nimrodestates.com/logo.png",
-        "sameAs": [
-          "https://www.facebook.com/nimrodestates",
-          "https://www.instagram.com/nimrodestates",
-          "https://www.linkedin.com/company/nimrodestates"
-        ],
-        "description": "Luxury properties and international real estate investments in South Africa, Dubai, and Monaco.",
-        "areaServed": [
-          "South Africa",
-          "Dubai",
-          "Monaco"
-        ],
-        "serviceType": "Luxury Real Estate Listings"
-      }
-    `}
-  </script>
-</Helmet>
-      <Navbar />
-      {/* ADD: Test Currency Selector */}
+      {/* ADD: Test Currency Selector
       <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg border z-50 max-w-xs">
         <h4 className="font-semibold mb-2 text-sm">🧪 Test Currencies</h4>
         <div className="flex flex-wrap gap-1 mb-2">
@@ -493,7 +468,7 @@ const Properties = () => {
             Reset to Auto-detect
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Hero Section */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">

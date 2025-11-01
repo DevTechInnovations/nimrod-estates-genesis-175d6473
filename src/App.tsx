@@ -22,6 +22,7 @@ import WealthInvestment from './pages/WealthInvestment';
 import BusinessConsulting from './pages/BusinessConsulting';
 import BusinessSetup from './pages/BusinessSetup';
 import PropertyDevelopment from './pages/PropertyDevelopment';
+import DevelopmentForm from "./pages/DevelopmentForm";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
 <Route path="/services/business-consulting" element={<BusinessConsulting />} />
 <Route path="/services/business-setup" element={<BusinessSetup />} />
 <Route path="/services/property-development" element={<PropertyDevelopment />} />
+<Route path="/DevelopmentForm" element={<DevelopmentForm />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

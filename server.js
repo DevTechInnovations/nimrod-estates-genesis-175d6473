@@ -179,6 +179,71 @@ app.post('/api/contact', async (req, res) => {
 
 
 
+// ✅ Email Route Property Development
+app.post('/api/PropertyDevelopment', async (req, res) => {
+  const { packageType, fullName, email, phone, budgetRange, projectDescription, propertyType, timeline, location, plotSize, currentStage } = req.body;
+
+  // Extract first name from fullName for personalization
+  const firstName = fullName.split(' ')[0];
+  const subject = `New Property Development Inquiry: ${packageType} - ${fullName}`;
+
+  const companyMailOptions = {
+    from: `"Nimrod Estates" <${process.env.SMTP_USER}>`,
+    replyTo: email,
+    to: process.env.CONTACT_RECEIVER,
+    subject: subject,
+    text: `
+      Package Type: ${packageType}
+      Name: ${fullName}
+      Email: ${email}
+      Phone: ${phone}
+      Budget: ${budgetRange}
+      Property Type: ${propertyType}
+      Location: ${location}
+      Plot Size: ${plotSize}
+      Current Stage: ${currentStage}
+      Timeline: ${timeline}
+      Project Description: ${projectDescription}
+    `,
+  };
+
+  const userMailOptions = {
+    from: `"Nimrod Estates" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject: 'Thank you for contacting Nimrod Estates',
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
+        <h2>Hello ${firstName},</h2>
+        <p>Thank you for reaching out to Nimrod Estates regarding your ${packageType} project. We have received your inquiry and will get back to you as soon as possible.</p>
+        <p><strong>Your project details:</strong></p>
+        <ul>
+          <li><strong>Package:</strong> ${packageType}</li>
+          <li><strong>Budget Range:</strong> ${budgetRange}</li>
+          <li><strong>Property Type:</strong> ${propertyType}</li>
+          <li><strong>Timeline:</strong> ${timeline}</li>
+        </ul>
+        <p>We will review your requirements and contact you within 24 hours to discuss next steps.</p>
+        <p>Best regards,<br />Nimrod Estates Team</p>
+         <img src="https://drive.google.com/uc?export=view&id=13daKou4JFP1lpxRdgZONnIBxHl551nW6" 
+           alt="Nimrod Estates Logo" 
+           style="margin-top:5px; width:150px; height:auto;" />
+      </div>
+    `,
+  };
+
+  try {
+    console.log('Sending company email...');
+    await transporter.sendMail(companyMailOptions);
+
+    console.log('Sending auto-reply to user...');
+    await transporter.sendMail(userMailOptions);
+
+    res.status(200).json({ success: true, message: 'Emails sent successfully!' });
+  } catch (err) {
+    console.error('Email sending error:', err);
+    res.status(500).json({ success: false, message: 'Failed to send emails.' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

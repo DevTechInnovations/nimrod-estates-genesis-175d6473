@@ -45,16 +45,6 @@ const PropertyCard = ({
   securityDeposit = '',
 }: PropertyCardProps) => {
   
-  console.log('PropertyCard authentication debug:', {
-    propertyId: id,
-    propertyTitle: title,
-    isExclusive: exclusive,
-    isAuthenticated: isAuthenticated,
-    shouldBeLocked: exclusive && !isAuthenticated,
-    propertyType,
-    rentalPeriod
-  });
-
   const formatPrice = (p?: string, curr: 'USD' | 'ZAR' | 'AED' = 'USD') => {
     if (!p) return 'N/A';
     const num = Number(String(p).replace(/[^0-9.-]+/g, ''));
@@ -196,8 +186,7 @@ const PropertyCard = ({
       </div>
 
       {/* Details Overlay - Appears on Hover */}
-      <div className={`absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6 
-      }`}>
+      <div className={`absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6`}>
         <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
           <h3 className="font-heading text-xl font-semibold mb-3 text-white">
             {title}
@@ -237,15 +226,17 @@ const PropertyCard = ({
           )}
 
           <div className="flex items-center justify-between pt-4 border-t border-white/30">
-            <div>
-              <p className="text-2xl font-heading font-bold text-white">
-                {formatPrice(price, currency)}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline gap-1 min-h-[2.5rem]">
+                <p className="text-2xl font-heading font-bold text-white truncate">
+                  {formatPrice(price, currency)}
+                </p>
                 {propertyType === 'rental' && rentalPeriod && (
-                  <span className="text-lg font-normal ml-1.5 text-white/80">
+                  <span className="text-lg font-normal text-white/80 whitespace-nowrap flex-shrink-0">
                     {getRentalPeriodText(rentalPeriod)}
                   </span>
                 )}
-              </p>
+              </div>
               {propertyType === 'rental' && !rentalPeriod && (
                 <p className="text-sm text-white/80 mt-1 flex items-center">
                   <Calendar size={14} className="mr-1" />
@@ -253,11 +244,11 @@ const PropertyCard = ({
                 </p>
               )}
             </div>
-            <Link to={isLocked ? '/member-auth' : `/properties/${id}`}>
+            <Link to={isLocked ? '/member-auth' : `/properties/${id}`} className="flex-shrink-0 ml-3">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="border-white text-white bg-transparent hover:bg-white hover:text-black hover:border-white transition-all duration-300 shadow-lg hover:shadow-white/25 font-semibold"
+                className="border-white text-white bg-transparent hover:bg-white hover:text-black hover:border-white transition-all duration-300 shadow-lg hover:shadow-white/25 font-semibold whitespace-nowrap"
               >
                 {isLocked ? 'Sign In to View' : 'View Details'}
               </Button>
@@ -294,27 +285,34 @@ const PropertyCard = ({
           </div>
         </div>
 
-        {/* Security Deposit for Static View */}
-        {propertyType === 'rental' && securityDeposit && (
-          <div className="mb-3 p-2 bg-primary rounded-lg border border-primary">
-            <div className="flex items-center text-white text-xs">
-              <Shield size={12} className="mr-1.5 flex-shrink-0" />
-              <span className="font-medium">Deposit: </span>
-              <span className="ml-1 font-semibold">{formatPrice(securityDeposit, currency)}</span>
+        {/* FIXED: Consistent height for all cards */}
+        <div className="min-h-[3rem] flex items-center">
+          {propertyType === 'rental' && securityDeposit ? (
+            <div className="w-full p-2 bg-primary rounded-lg border border-primary">
+              <div className="flex items-center text-white text-xs">
+                <Shield size={12} className="mr-1.5 flex-shrink-0" />
+                <span className="font-medium">Deposit: </span>
+                <span className="ml-1 font-semibold">{formatPrice(securityDeposit, currency)}</span>
+              </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="w-full opacity-0 pointer-events-none">Spacer</div>
+          )}
+        </div>
 
+        {/* Price section - Now consistently positioned */}
         <div className="flex items-center justify-between pt-4 border-t border-border">
           <div className="flex-1 min-w-0">
-            <p className="text-2xl font-heading font-bold text-foreground truncate">
-              {formatPrice(price, currency)}
+            <div className="flex items-baseline gap-1">
+              <p className="text-2xl font-heading font-bold text-foreground truncate">
+                {formatPrice(price, currency)}
+              </p>
               {propertyType === 'rental' && rentalPeriod && (
-                <span className="text-lg font-normal ml-1.5 text-muted-foreground">
+                <span className="text-lg font-normal text-muted-foreground whitespace-nowrap flex-shrink-0">
                   {getRentalPeriodText(rentalPeriod)}
                 </span>
               )}
-            </p>
+            </div>
             {propertyType === 'rental' && !rentalPeriod && (
               <p className="text-sm text-muted-foreground mt-1 flex items-center">
                 <Calendar size={14} className="mr-1" />
