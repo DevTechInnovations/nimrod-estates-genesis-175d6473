@@ -434,6 +434,7 @@ const Properties = () => {
   <meta property="og:url" content="https://nimrodestates.com/properties" />
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://nimrodestates.com/properties" />
+  </Helmet>
 
       {/* ADD: Test Currency Selector
       <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg border z-50 max-w-xs">
