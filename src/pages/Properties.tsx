@@ -415,7 +415,7 @@ const Properties = () => {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* ADD: Test Currency Selector */}
+      {/* ADD: Test Currency Selector
       <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg border z-50 max-w-xs">
         <h4 className="font-semibold mb-2 text-sm">🧪 Test Currencies</h4>
         <div className="flex flex-wrap gap-1 mb-2">
@@ -448,7 +448,7 @@ const Properties = () => {
             Reset to Auto-detect
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Hero Section */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">

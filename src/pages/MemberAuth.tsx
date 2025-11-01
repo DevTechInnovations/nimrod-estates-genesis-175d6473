@@ -221,19 +221,21 @@ export default function MemberAuth() {
                   <Label>Membership Tier</Label>
                   <RadioGroup value={membershipTier} onValueChange={(value: MembershipTier) => setMembershipTier(value)}>
                     <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors">
-                      <RadioGroupItem value="silver" id="silver" />
-                      <Label htmlFor="silver" className="flex-1 cursor-pointer">
-                        <div className="font-semibold">Silver - $1,000 /6 Months</div>
-                        <div className="text-sm text-muted-foreground">Basic membership benefits</div>
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors">
                       <RadioGroupItem value="gold" id="gold" />
                       <Label htmlFor="gold" className="flex-1 cursor-pointer">
                         <div className="font-semibold">Gold - $500 /6 Months</div>
                         <div className="text-sm text-muted-foreground">Enhanced benefits and priority access</div>
                       </Label>
                     </div>
+
+                    <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors">
+                      <RadioGroupItem value="silver" id="silver" />
+                      <Label htmlFor="silver" className="flex-1 cursor-pointer">
+                        <div className="font-semibold">Silver - $1,000 /6 Months</div>
+                        <div className="text-sm text-muted-foreground">Basic membership benefits</div>
+                      </Label>
+                    </div>
+                    
                     <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors">
                       <RadioGroupItem value="platinum" id="platinum" />
                       <Label htmlFor="platinum" className="flex-1 cursor-pointer">

@@ -214,14 +214,14 @@ const Navbar = () => {
                         <User className="h-4 w-4" />
                         <span>Member Login</span>
                       </Link>
-                      <Link
+                      {/* <Link
                         to="/auth"
                         className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${dropdownTextColor} ${dropdownHoverBg}`}
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <Shield className="h-4 w-4" />
                         <span>Admin Login</span>
-                      </Link>
+                      </Link> */}
                     </>
                   )}
                 </div>
@@ -278,14 +278,14 @@ const Navbar = () => {
                 <User className="h-4 w-4" />
                 <span>Member Login</span>
               </Link>
-              <Link
+              {/* <Link
                 to="/auth"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex items-center gap-3 py-2 text-sm transition-colors hover:text-primary"
               >
                 <Shield className="h-4 w-4" />
                 <span>Admin Login</span>
-              </Link>
+              </Link> */}
             </div>
           </div>
         )}

@@ -329,9 +329,11 @@ const PropertyDevelopment = () => {
             </li>
           </ul>
         </div>
-        <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
-          Get Started
-        </Button>
+      <Link to="/DevelopmentForm?package=starter">
+  <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
+    Get Started
+  </Button>
+</Link>
       </div>
 
       {/* Mid-Range Package */}
@@ -368,9 +370,11 @@ const PropertyDevelopment = () => {
             </li>
           </ul>
         </div>
-        <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
-          Get Started
-        </Button>
+       <Link to="/DevelopmentForm?package=mid-range">
+  <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
+    Get Started
+  </Button>
+</Link>
       </div>
 
       {/* Luxury Package */}
@@ -407,9 +411,11 @@ const PropertyDevelopment = () => {
             </li>
           </ul>
         </div>
-        <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
-          Get Started
-        </Button>
+       <Link to="/DevelopmentForm?package=luxury">
+  <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
+    Get Started
+  </Button>
+</Link>
       </div>
 
       {/* Enterprise Package */}
@@ -446,9 +452,11 @@ const PropertyDevelopment = () => {
             </li>
           </ul>
         </div>
-        <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
-          Get Started
-        </Button>
+      <Link to="/DevelopmentForm?package=enterprise">
+  <Button className="w-full border border-primary text-primary bg-transparent hover:bg-primary hover:text-white font-semibold py-3 transition-all duration-300 mt-auto">
+    Get Started
+  </Button>
+</Link>
       </div>
     </div>
   </div>

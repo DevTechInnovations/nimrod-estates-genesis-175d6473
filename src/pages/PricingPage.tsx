@@ -21,7 +21,7 @@ interface LocationState {
 const pricingPlans = {
   silver: {
     name: 'Silver',
-    price: '$29',
+    price: '$1,000',
     period: '/month',
     description: 'Perfect for getting started',
     features: [
@@ -33,7 +33,7 @@ const pricingPlans = {
   },
   gold: {
     name: 'Gold',
-    price: '$79',
+    price: '$500',
     period: '/month',
     description: 'Great for active members',
     features: [
@@ -46,7 +46,7 @@ const pricingPlans = {
   },
   platinum: {
     name: 'Platinum',
-    price: '$199',
+    price: '$2,000',
     period: '/month',
     description: 'Ultimate membership experience',
     features: [
