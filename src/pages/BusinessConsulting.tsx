@@ -1,10 +1,10 @@
-// src/pages/services/BusinessConsulting.tsx
 import { Users, Globe, Key, ArrowRight, CheckCircle } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import heroImage from '@/assets/ai-generated-house-design.jpg';
+import { Helmet } from 'react-helmet-async';
 
 const BusinessConsulting = () => {
   const services = [
@@ -36,6 +36,45 @@ const BusinessConsulting = () => {
 
   return (
     <div className="min-h-screen">
+         {/* SEO Metadata */}
+      <Helmet>
+        <title>Business Consulting Services | Nimrod Property Estates</title>
+        <meta
+          name="description"
+          content="Explore Nimrod Property Estates' Business Consulting Services. Expert guidance on wealth structuring, real estate investment, international expansion, and investor visas."
+        />
+        <meta
+          name="keywords"
+          content="Business Consulting, Investment Advisory, Wealth Structuring, International Expansion, Real Estate Investment, Nimrod Property Estates"
+        />
+        <link rel="canonical" href="https://nimrodestates.com/services/business-consulting" />
+
+        {/* Open Graph / Social Sharing */}
+        <meta property="og:title" content="Business Consulting Services | Nimrod Property Estates" />
+        <meta property="og:description" content="Expert guidance on wealth structuring, international investment, and business growth with Nimrod Property Estates." />
+        <meta property="og:image" content="https://nimrodestates.com/assets/ai-generated-house-design.jpg" />
+        <meta property="og:url" content="https://nimrodestates.com/services/business-consulting" />
+        <meta property="og:type" content="website" />
+
+        <script type="application/ld+json">
+          {`
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "serviceType": "Business Consulting",
+            "provider": {
+              "@type": "Organization",
+              "name": "Nimrod Property Estates",
+              "url": "https://nimrodestates.com",
+              "logo": "https://nimrodestates.com/logo.png"
+            },
+            "areaServed": "Global",
+            "description": "Expert guidance in wealth structuring, real estate investment, international expansion, and visa/residency services.",
+            "url": "https://nimrodestates.com/services/business-consulting"
+          }
+          `}
+        </script>
+      </Helmet>
       <Navbar />
 
       {/* Hero Section */}

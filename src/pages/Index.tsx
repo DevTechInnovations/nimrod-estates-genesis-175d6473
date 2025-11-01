@@ -7,6 +7,7 @@ import PropertyCard from '@/components/PropertyCard';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-luxury-estate.jpg';
+import { Helmet } from 'react-helmet-async';
 
 interface Property {
   id: string;
@@ -71,10 +72,45 @@ const Index = () => {
     checkAuth();
   }, []);
 
+    const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Nimrod Property Estates",
+    "url": "https://nimrodestates.com/",
+    "description": "Luxury properties, real estate investments, and property development opportunities in South Africa, Dubai, and Monaco.",
+    "areaServed": ["South Africa", "Dubai", "Monaco"],
+    "serviceType": [
+      "Property for rent",
+      "Property to buy",
+      "Property development",
+      "Real estate investments",
+      "Luxury properties"
+    ],
+  };
+
   return (
     <div className="min-h-screen">
+            {/* SEO Section */}
+      <Helmet>
+        <title>Luxury Property Investments | Nimrod Property Estates</title>
+        <meta
+          name="description"
+          content="Explore luxury properties, real estate investments, and property development opportunities with Nimrod Property Estates. Featuring premium properties for rent and investment in South Africa, Dubai, and Monaco."
+        />
+        <meta
+          name="keywords"
+          content="Property for rent, Property investment in South Africa, Property investment in Dubai, Property investment in Monaco, Property development, Property to buy, Real estate investments, Luxury properties, Nimrod Property Estates"
+        />
+        <meta property="og:title" content="Luxury Real Estate & Investments | Nimrod Property Estates" />
+        <meta property="og:description" content="Discover exclusive luxury properties and investment opportunities in South Africa, Dubai, and Monaco." />
+        <meta property="og:image" content={heroImage} />
+        <meta property="og:url" content="https://nimrodestates.com/" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+      </Helmet>
+      
       <Navbar />
-
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div

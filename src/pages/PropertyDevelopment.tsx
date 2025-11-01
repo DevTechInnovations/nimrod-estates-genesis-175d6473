@@ -1,4 +1,3 @@
-// src/pages/services/PropertyDevelopment.tsx
 import { Home, Building, Hammer, ArrowRight, CheckCircle, DollarSign, FileText, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import heroImage from '@/assets/ai-generated-house-design.jpg';
 import { useState, useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 const PropertyDevelopment = () => {
   const services = [
@@ -177,6 +177,20 @@ const PropertyDevelopment = () => {
 
   return (
     <div className="min-h-screen">
+      {/* SEO Metadata */}
+        <Helmet>
+      <title>
+        Property Development & Luxury Properties | Nimrod Property Estates
+      </title>
+      <meta
+        name="description"
+        content="Discover property development, property for rent, and property to buy with Nimrod Property Estates. Explore real estate investments, luxury properties, and property investment opportunities in South Africa, Dubai, and Monaco."
+      />
+      <meta
+        name="keywords"
+        content="Property for rent, Property investment in South Africa, Property investment in Dubai, Property investment in Monaco, Property development, Property to buy, Real estate investments, Luxury properties, Nimrod Property Estates"
+      />
+    </Helmet>
       <Navbar />
 
       {/* Hero Section */}
