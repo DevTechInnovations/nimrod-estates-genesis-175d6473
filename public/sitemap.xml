@@ -1,0 +1,99 @@
+
+  <?xml version="1.0" encoding="UTF-8"?>
+  <urlset xmlns="https://nimrodestates.com/schemas/sitemap/0.9">
+    
+        <url>
+          <loc>https://nimrodestates.com/</loc>
+          <priority>1.0</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/about</loc>
+          <priority>0.8</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/services</loc>
+          <priority>0.8</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/properties</loc>
+          <priority>0.8</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/properties/:id</loc>
+          <priority>0.6</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/contact</loc>
+          <priority>0.8</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/auth</loc>
+          <priority>0.5</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/member-auth</loc>
+          <priority>0.5</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/dashboard</loc>
+          <priority>0.7</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/settings</loc>
+          <priority>0.7</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/admin</loc>
+          <priority>0.7</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/pricing</loc>
+          <priority>0.8</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/services/real-estate</loc>
+          <priority>0.7</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/services/wealth-investment</loc>
+          <priority>0.7</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/services/business-consulting</loc>
+          <priority>0.7</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/services/business-setup</loc>
+          <priority>0.7</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/services/property-development</loc>
+          <priority>0.7</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/DevelopmentForm</loc>
+          <priority>0.6</priority>
+        </url>
+
+        <url>
+          <loc>https://nimrodestates.com/404</loc>
+          <priority>0.1</priority>
+        </url>
+  </urlset>

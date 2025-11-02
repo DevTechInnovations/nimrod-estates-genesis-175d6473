@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
+import heroImage from '@/assets/neo-brutalism-inspired-building.jpg';
 
 const DevelopmentForm = () => {
   const location = useLocation();
@@ -119,7 +120,7 @@ const DevelopmentForm = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/PropertyDevelopment', {
+      const response = await fetch('https://back-end.nimrodestates.com/api/PropertyDevelopment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -175,29 +176,53 @@ const DevelopmentForm = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-
+{/* 
       {/* Header */}
-      <div className="bg-white border-b">
-        <div className="container mx-auto px-6 py-8">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/services/property-development')}
-            className="mb-6"
-          >
-            <ArrowLeft className="mr-2" size={16} />
-            Back to Property Development
-          </Button>
-          
-          <div className="text-center">
-            <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-              Start Your <span className="text-primary">Project</span>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Tell us about your development project and we'll get back to you with a customized proposal
-            </p>
-          </div>
-        </div>
-      </div>
+{/* Hero Section */}
+<section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+  <div
+    className="absolute inset-0 bg-cover bg-center"
+    style={{
+      backgroundImage: `url(${heroImage})`, // Ensure heroImage is a valid variable
+    }}
+  >
+    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
+  </div>
+
+  <div className="relative z-10 container mx-auto px-4 text-center text-white">
+    <h1 className="font-heading text-5xl md:text-6xl font-bold mb-6">
+      Get in <span className="text-gradient-gold">Touch</span>
+    </h1>
+    <p className="text-xl md:text-2xl max-w-3xl mx-auto text-white/90">
+     Tell us about your development project and we'll get back to you with a customized proposal
+    </p>
+     <div className="text-center">
+      <div>
+  </div>
+  </div>
+  </div>
+</section>
+
+
+  <div className="container mx-auto px-6 py-8">
+    <Button
+      variant="ghost"
+      onClick={() => navigate('/services/property-development')}
+      className="mb-6"
+    >
+      {/* Uncomment if you want to show the back button icon */}
+      {/* <ArrowLeft className="mr-2" size={16} /> */}
+      {/* Back to Property Development */}
+    </Button>
+
+    <div className="text-center">
+     
+      
+    </div>
+  </div>
+
+
+
 
       <div className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
