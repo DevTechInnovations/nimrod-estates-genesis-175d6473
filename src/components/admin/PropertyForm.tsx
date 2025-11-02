@@ -38,6 +38,28 @@ interface PropertyFormProps {
   loading: boolean;
 }
 
+// Currency options for admin
+const currencyOptions = [
+  { value: 'USD', label: 'US Dollars ($)', symbol: '$' },
+  { value: 'ZAR', label: 'South African Rand (R)', symbol: 'R' },
+  { value: 'AED', label: 'UAE Dirham (د.إ)', symbol: 'د.إ' },
+  { value: 'EUR', label: 'Euros (€)', symbol: '€' },
+  { value: 'GBP', label: 'British Pounds (£)', symbol: '£' },
+];
+
+// Function to detect currency from price string
+const detectCurrencyFromPrice = (price: string): string => {
+  if (!price) return 'USD';
+  
+  if (price.includes('R') && !price.includes('د.إ')) return 'ZAR';
+  if (price.includes('د.إ')) return 'AED';
+  if (price.includes('€')) return 'EUR';
+  if (price.includes('£')) return 'GBP';
+  if (price.includes('$')) return 'USD';
+  
+  return 'USD'; // Default to USD
+};
+
 export function PropertyForm({ initialData, onSubmit, onCancel, loading }: PropertyFormProps) {
   const [formData, setFormData] = useState<PropertyFormData>({
     title: '',
@@ -62,9 +84,12 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
   });
 
   const [newImageLink, setNewImageLink] = useState('');
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
 
   useEffect(() => {
     if (initialData) {
+      const detectedCurrency = detectCurrencyFromPrice(initialData.price);
+      
       setFormData({
         title: initialData.title || '',
         description: initialData.description || '',
@@ -86,6 +111,10 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
         rentalPeriod: initialData.rental_period || '',
         securityDeposit: initialData.security_deposit || ''
       });
+
+      // Set the detected currency
+      setSelectedCurrency(detectedCurrency);
+      console.log('Detected currency from price:', detectedCurrency, 'Price:', initialData.price);
     }
   }, [initialData]);
 
@@ -97,12 +126,27 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
       return;
     }
 
+    // Format the price with the selected currency symbol
+    const formatPriceWithCurrency = (price: string, currency: string) => {
+      // Remove any existing currency symbols and extra spaces
+      const cleanPrice = price.replace(/[^\d.,]/g, '').trim();
+      
+      // Get the currency symbol
+      const currencyObj = currencyOptions.find(opt => opt.value === currency);
+      const symbol = currencyObj?.symbol || '$';
+      
+      // Return formatted price with currency symbol
+      return `${symbol} ${cleanPrice}`;
+    };
+
+    const formattedPrice = formatPriceWithCurrency(formData.price, selectedCurrency);
+
     // Prepare the data exactly as the database expects it
     const submitData = {
       title: formData.title,
       description: formData.description,
       location: formData.location,
-      price: formData.price,
+      price: formattedPrice, // Use the formatted price with currency symbol
       bedrooms: parseInt(formData.bedrooms),
       bathrooms: parseInt(formData.bathrooms),
       area: parseFloat(formData.area),
@@ -117,7 +161,8 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
       imageLinks: formData.imageLinks,
       property_type: formData.propertyType,
       rental_period: formData.propertyType === 'rental' ? formData.rentalPeriod : null,
-      security_deposit: formData.propertyType === 'rental' ? formData.securityDeposit : null
+      security_deposit: formData.propertyType === 'rental' ? formData.securityDeposit : null,
+      listing_currency: selectedCurrency // Store the currency for future reference
     };
 
     console.log('Submitting data:', submitData);
@@ -177,6 +222,33 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
     });
   };
 
+  // Get current currency symbol for placeholder
+  const getCurrencySymbol = () => {
+    const currency = currencyOptions.find(opt => opt.value === selectedCurrency);
+    return currency?.symbol || '$';
+  };
+
+  // Get price placeholder based on property type and currency
+  const getPricePlaceholder = () => {
+    const symbol = getCurrencySymbol();
+    if (formData.propertyType === 'rental') {
+      return `5,000`;
+    }
+    return `8,950,000`;
+  };
+
+  // Get security deposit placeholder based on currency
+  const getSecurityDepositPlaceholder = () => {
+    return `2,000`;
+  };
+
+  // Handle price input change - remove any currency symbols when typing
+  const handlePriceChange = (value: string) => {
+    // Remove any currency symbols and extra spaces for clean input
+    const cleanValue = value.replace(/[^\d.,]/g, '');
+    setFormData({ ...formData, price: cleanValue });
+  };
+
   // All images for preview (uploaded + links)
   const allImages = [...formData.images, ...formData.imageLinks];
 
@@ -218,6 +290,32 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
                 </Select>
               </div>
 
+              {/* Currency Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="currency" className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4" />
+                  Currency *
+                </Label>
+                <Select
+                  value={selectedCurrency}
+                  onValueChange={setSelectedCurrency}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyOptions.map((currency) => (
+                      <SelectItem key={currency.value} value={currency.value}>
+                        {currency.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Select the currency for this property listing. Prices will be automatically converted for users in different regions.
+                </p>
+              </div>
+
               {/* Rental-specific fields */}
               {formData.propertyType === 'rental' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
@@ -240,12 +338,20 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="securityDeposit">Security Deposit</Label>
-                    <Input
-                      id="securityDeposit"
-                      placeholder="e.g., $2,000"
-                      value={formData.securityDeposit}
-                      onChange={(e) => setFormData({ ...formData, securityDeposit: e.target.value })}
-                    />
+                    <div className="flex gap-2">
+                      <div className="flex-shrink-0 w-12">
+                        <div className="h-10 px-2 border border-r-0 rounded-l-md bg-gray-50 flex items-center justify-center text-sm font-medium text-gray-700">
+                          {getCurrencySymbol()}
+                        </div>
+                      </div>
+                      <Input
+                        id="securityDeposit"
+                        placeholder={getSecurityDepositPlaceholder()}
+                        value={formData.securityDeposit.replace(/[^\d.,]/g, '')}
+                        onChange={(e) => setFormData({ ...formData, securityDeposit: e.target.value })}
+                        className="flex-1 rounded-l-none"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -289,13 +395,29 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
                       </span>
                     )}
                   </Label>
-                  <Input
-                    id="price"
-                    placeholder={formData.propertyType === 'rental' ? "$5,000" : "$8,950,000"}
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    required
-                  />
+                  <div className="flex gap-2">
+                    <div className="flex-shrink-0 w-20">
+                      <div className="h-10 px-3 border border-r-0 rounded-l-md bg-gray-50 flex items-center justify-center text-sm font-medium text-gray-700">
+                        {getCurrencySymbol()}
+                      </div>
+                    </div>
+                    <Input
+                      id="price"
+                      placeholder={getPricePlaceholder()}
+                      value={formData.price.replace(/[^\d.,]/g, '')}
+                      onChange={(e) => handlePriceChange(e.target.value)}
+                      className="flex-1 rounded-l-none"
+                      required
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Enter amount in {selectedCurrency}. Users will see prices converted to their local currency.
+                    {initialData && (
+                      <span className="block text-green-600 font-medium">
+                        Current price: {initialData.price}
+                      </span>
+                    )}
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -314,6 +436,7 @@ export function PropertyForm({ initialData, onSubmit, onCancel, loading }: Prope
               </div>
             </div>
 
+            {/* Rest of the form remains the same... */}
             {/* Property Details Section */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Property Details</h3>

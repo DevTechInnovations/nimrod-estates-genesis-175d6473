@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, TrendingUp, Globe, Star, Trophy, Award, Crown, Check, Zap, Sparkles } from 'lucide-react';
 import Navbar from '@/components/Navbar';
@@ -28,10 +28,45 @@ interface Property {
   imageLinks: string[];
 }
 
+interface ExchangeRates {
+  USD: number;
+  ZAR: number;
+  AED: number;
+  EUR?: number;
+  GBP?: number;
+}
+
+// Country to currency mapping
+const countryCurrencyMap: { [key: string]: 'USD' | 'ZAR' | 'AED' | 'EUR' | 'GBP' } = {
+  'US': 'USD',
+  'ZA': 'ZAR',
+  'AE': 'AED',
+  'SA': 'AED', // Saudi Arabia often uses AED
+  'QA': 'AED', // Qatar often uses AED
+  'EU': 'EUR',
+  'DE': 'EUR', // Germany
+  'FR': 'EUR', // France
+  'IT': 'EUR', // Italy
+  'ES': 'EUR', // Spain
+  'GB': 'GBP', // United Kingdom
+  'UK': 'GBP',
+};
+
 const Index = () => {
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currency, setCurrency] = useState<'USD' | 'ZAR' | 'AED' | 'EUR' | 'GBP'>('USD');
+  const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({ 
+    USD: 1, 
+    ZAR: 18.5, 
+    AED: 3.67,
+    EUR: 0.92,
+    GBP: 0.79
+  });
+  const [locationLoading, setLocationLoading] = useState(true);
+  const [isManualCurrency, setIsManualCurrency] = useState(false);
+  const detectionCompleted = useRef(false);
 
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
@@ -68,11 +103,176 @@ const Index = () => {
       }
     };
 
+    // Only run auto-detection once on mount
+    if (!detectionCompleted.current) {
+      detectUserLocation();
+      detectionCompleted.current = true;
+    }
+
     fetchFeaturedProperties();
     checkAuth();
+
+    // Refresh rates every 24 hours
+    const interval = setInterval(fetchExchangeRates, 24 * 60 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
-    const structuredData = {
+  // ADD: Manual currency setter
+  const setCurrencyManual = (newCurrency: 'USD' | 'ZAR' | 'AED' | 'EUR' | 'GBP') => {
+    setCurrency(newCurrency);
+    setIsManualCurrency(true);
+    console.log(`Currency manually set to: ${newCurrency}`);
+  };
+
+  const detectUserLocation = async () => {
+    // Skip if currency was manually set
+    if (isManualCurrency) {
+      console.log('Skipping auto-detection - currency was manually set');
+      setLocationLoading(false);
+      return;
+    }
+
+    try {
+      setLocationLoading(true);
+      console.log('Starting auto-detection...');
+      
+      let detectedCurrency: 'USD' | 'ZAR' | 'AED' | 'EUR' | 'GBP' | null = null;
+
+      // Method 1: Try IP-based geolocation first
+      try {
+        const ipResponse = await fetch('https://ipapi.co/json/');
+        if (ipResponse.ok) {
+          const ipData = await ipResponse.json();
+          const countryCode = ipData.country_code;
+          
+          if (countryCode && countryCurrencyMap[countryCode]) {
+            detectedCurrency = countryCurrencyMap[countryCode];
+            console.log(`IP detection: ${detectedCurrency} for ${ipData.country_name}`);
+          }
+        }
+      } catch (ipError) {
+        console.log('IP detection failed:', ipError);
+      }
+
+      // Method 2: Fallback to browser geolocation
+      if (!detectedCurrency && navigator.geolocation) {
+        try {
+          const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+          });
+          
+          const { latitude, longitude } = position.coords;
+          const response = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+          );
+          
+          if (response.ok) {
+            const locationData = await response.json();
+            const countryCode = locationData.countryCode;
+            
+            if (countryCode && countryCurrencyMap[countryCode]) {
+              detectedCurrency = countryCurrencyMap[countryCode];
+              console.log(`GPS detection: ${detectedCurrency} for ${locationData.countryName}`);
+            }
+          }
+        } catch (gpsError) {
+          console.log('GPS detection failed:', gpsError);
+        }
+      }
+
+      // Set detected currency or fallback to USD
+      if (detectedCurrency && !isManualCurrency) {
+        setCurrency(detectedCurrency);
+        console.log(`Final auto-detected currency: ${detectedCurrency}`);
+      } else if (!isManualCurrency) {
+        setCurrency('USD');
+        console.log('No detection method worked, falling back to USD');
+      }
+      
+      // Fetch exchange rates
+      await fetchExchangeRates();
+      
+    } catch (error) {
+      console.error('Error in location detection:', error);
+      if (!isManualCurrency) {
+        setCurrency('USD');
+      }
+    } finally {
+      setLocationLoading(false);
+    }
+  };
+
+  const fetchExchangeRates = async () => {
+    try {
+      // Try direct API call first (bypass Supabase function due to CORS)
+      console.log('Fetching exchange rates directly...');
+      const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+      
+      if (response.ok) {
+        const rateData = await response.json();
+        const newRates = {
+          USD: 1,
+          ZAR: rateData.rates.ZAR || 18.5,
+          AED: rateData.rates.AED || 3.67,
+          EUR: rateData.rates.EUR || 0.92,
+          GBP: rateData.rates.GBP || 0.79
+        };
+        setExchangeRates(newRates);
+        console.log('Direct exchange rates loaded:', newRates);
+        return;
+      }
+      
+      throw new Error('Direct API failed');
+      
+    } catch (error) {
+      console.error('Error fetching exchange rates, using fallback:', error);
+      // Use reliable fallback rates
+      setExchangeRates({ 
+        USD: 1, 
+        ZAR: 18.5, 
+        AED: 3.67,
+        EUR: 0.92,
+        GBP: 0.79
+      });
+    }
+  };
+
+  // Get currency symbol for display
+  const getCurrencySymbol = () => {
+    switch (currency) {
+      case 'USD': return '$';
+      case 'ZAR': return 'R';
+      case 'AED': return 'د.إ';
+      case 'EUR': return '€';
+      case 'GBP': return '£';
+      default: return '$';
+    }
+  };
+
+  // Get currency name for display
+  const getCurrencyName = () => {
+    switch (currency) {
+      case 'USD': return 'US Dollars';
+      case 'ZAR': return 'South African Rand';
+      case 'AED': return 'UAE Dirham';
+      case 'EUR': return 'Euros';
+      case 'GBP': return 'British Pounds';
+      default: return 'US Dollars';
+    }
+  };
+
+  // Format membership prices based on currency
+  const formatMembershipPrice = (usdPrice: number) => {
+    const convertedAmount = usdPrice * exchangeRates[currency];
+    
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      maximumFractionDigits: 0,
+    }).format(convertedAmount);
+  };
+
+  const structuredData = {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
     "name": "Nimrod Property Estates",
@@ -90,7 +290,43 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-            {/* SEO Section */}
+      {/* Currency Test Panel
+      <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg border z-50 max-w-xs">
+        <h4 className="font-semibold mb-2 text-sm">🧪 Test Currencies</h4>
+        <div className="flex flex-wrap gap-1 mb-2">
+          {[
+            { code: 'US', name: 'USA', currency: 'USD' },
+            { code: 'ZA', name: 'South Africa', currency: 'ZAR' },
+            { code: 'AE', name: 'UAE', currency: 'AED' },
+            { code: 'DE', name: 'Germany', currency: 'EUR' },
+            { code: 'GB', name: 'UK', currency: 'GBP' }
+          ].map((country) => (
+            <button
+              key={country.code}
+              onClick={() => setCurrencyManual(country.currency as any)}
+              className="px-2 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded border transition-colors"
+            >
+              {country.code}
+            </button>
+          ))}
+        </div>
+        <div className="text-xs space-y-1">
+          <div><strong>Current:</strong> {currency} ({getCurrencySymbol()})</div>
+          <div><strong>Mode:</strong> {isManualCurrency ? 'Manual' : 'Auto'}</div>
+          <button 
+            onClick={() => {
+              setIsManualCurrency(false);
+              detectUserLocation();
+            }}
+            className="text-blue-500 hover:text-blue-700 underline text-xs"
+          >
+            Reset to Auto-detect
+          </button>
+        </div>
+      </div>
+      */}
+
+      {/* SEO Section */}
       <Helmet>
         <title>Luxury Property Investments | Nimrod Property Estates</title>
         <meta
@@ -111,6 +347,7 @@ const Index = () => {
       </Helmet>
       
       <Navbar />
+      
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div
@@ -129,6 +366,30 @@ const Index = () => {
           <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in text-white/90 leading-relaxed">
             Invest with confidence in exclusive properties worldwide.
           </p>
+
+          {/* Currency Display */}
+          <div className="mb-6 animate-fade-in">
+            {locationLoading ? (
+              <div className="flex items-center justify-center gap-2 text-amber-300">
+                <div className="w-4 h-4 border-2 border-amber-300 border-t-transparent rounded-full animate-spin" />
+                <span className="text-sm">Detecting your currency...</span>
+              </div>
+            ) : (
+              <div className="text-sm text-amber-300 bg-amber-900/30 px-4 py-2 rounded-lg inline-block">
+                <strong>Prices displayed in {getCurrencyName()}</strong> ({getCurrencySymbol()})
+                {isManualCurrency && (
+                  <span className="block text-xs text-amber-200 mt-1">
+                    Manually selected • <button 
+                      onClick={() => setIsManualCurrency(false)}
+                      className="underline hover:text-white"
+                    >
+                      Reset to auto
+                    </button>
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
             <Link to="/properties">
@@ -167,7 +428,9 @@ const Index = () => {
               <div className="text-muted-foreground font-medium">Global Locations</div>
             </div>
             <div className="animate-fade-in">
-              <div className="text-4xl font-bold text-gradient-gold mb-2 tracking-tight">$2.5B+</div>
+              <div className="text-4xl font-bold text-gradient-gold mb-2 tracking-tight">
+                {getCurrencySymbol()}2.5B+
+              </div>
               <div className="text-muted-foreground font-medium">Assets Managed</div>
             </div>
             <div className="animate-fade-in">
@@ -215,10 +478,9 @@ const Index = () => {
                   roi={property.roi}
                   investmentOpportunity={property.investmentOpportunity || false}
                   exclusive={property.exclusive || false}
-                  currency="USD"
-                  exchangeRates={{ USD: 1, ZAR: 18.5, AED: 3.67 }}
+                  currency={currency}
+                  exchangeRates={exchangeRates}
                   isAuthenticated={isAuthenticated}
-                  // ADDED: Rental property props
                   propertyType={property.property_type || 'sale'}
                   rentalPeriod={property.rental_period || ''}
                   securityDeposit={property.security_deposit || ''}
@@ -265,11 +527,13 @@ const Index = () => {
                 </div>
                 <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Gold</h3>
                 <div className="flex items-baseline mb-2">
-                  <span className="text-3xl font-bold text-primary tracking-tight">$500</span>
+                  <span className="text-3xl font-bold text-primary tracking-tight">
+                    {formatMembershipPrice(500)}
+                  </span>
                   <span className="text-gray-400 ml-2 font-medium">/6 months</span>
                 </div>
                 <div className="text-sm text-gray-400 mb-6 font-medium">
-                  Investment Range: $100K - $500K
+                  Investment Range: {getCurrencySymbol()}100K - {getCurrencySymbol()}500K
                 </div>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
@@ -309,11 +573,13 @@ const Index = () => {
                 </div>
                 <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Silver</h3>
                 <div className="flex items-baseline mb-2">
-                  <span className="text-3xl font-bold text-primary tracking-tight">$1,000</span>
+                  <span className="text-3xl font-bold text-primary tracking-tight">
+                    {formatMembershipPrice(1000)}
+                  </span>
                   <span className="text-gray-400 ml-2 font-medium">/6 months</span>
                 </div>
                 <div className="text-sm text-gray-400 mb-6 font-medium">
-                  Investment Range: $500K - $1M
+                  Investment Range: {getCurrencySymbol()}500K - {getCurrencySymbol()}1M
                 </div>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
@@ -354,11 +620,13 @@ const Index = () => {
                 </div>
                 <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">Platinum</h3>
                 <div className="flex items-baseline mb-2">
-                  <span className="text-3xl font-bold text-primary tracking-tight">$2,000</span>
+                  <span className="text-3xl font-bold text-primary tracking-tight">
+                    {formatMembershipPrice(2000)}
+                  </span>
                   <span className="text-gray-400 ml-2 font-medium">/6 months</span>
                 </div>
                 <div className="text-sm text-gray-400 mb-6 font-medium">
-                  Investment Range: $1M - $1B
+                  Investment Range: {getCurrencySymbol()}1M - {getCurrencySymbol()}1B
                 </div>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
