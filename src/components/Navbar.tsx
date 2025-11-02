@@ -194,15 +194,15 @@ const Navbar = () => {
                         <User className="h-4 w-4" />
                         <span>My Profile</span>
                       </Link>
-                      <div className={`border-t my-1 ${isScrolled ? 'border-gray-200' : 'border-white/20'}`}></div>
-                      <Link
+                      {/* <div className={`border-t my-1 ${isScrolled ? 'border-gray-200' : 'border-white/20'}`}></div> */}
+                      {/* <Link
                         to="/auth"
                         className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${dropdownTextColor} ${dropdownHoverBg}`}
                         onClick={() => setIsLoginDropdownOpen(false)}
                       >
                         <Shield className="h-4 w-4" />
                         <span>Admin Panel</span>
-                      </Link>
+                      </Link> */}
                     </>
                   ) : (
                     <>

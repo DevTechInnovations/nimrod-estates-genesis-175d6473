@@ -83,6 +83,8 @@ const countryCurrencyMap: { [key: string]: 'USD' | 'ZAR' | 'AED' | 'EUR' | 'GBP'
   // Add more country codes as needed
 };
 
+
+
 const Properties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
@@ -414,6 +416,7 @@ const Properties = () => {
 
   return (
     <div className="min-h-screen">
+      <Navbar />
       {/* SEO Section */}
       <Helmet>
   <title>Luxury Properties | Global Property Listings | Nimrod Property Estates</title>
