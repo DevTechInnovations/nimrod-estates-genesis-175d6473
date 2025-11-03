@@ -28,6 +28,7 @@ interface Property {
   property_type: 'sale' | 'rental';
   rental_period: string | null;
   security_deposit: string | null;
+  listing_currency: 'USD' | 'ZAR' | 'AED'; // Updated from 'currency' to 'listing_currency'
 }
 
 const PropertyDetails = () => {
@@ -60,6 +61,7 @@ const PropertyDetails = () => {
           return;
         }
         
+        console.log('Fetched property data:', data); // Debug log
         setProperty(data as Property);
         setCurrentImage(0);
       } catch (err: any) {
@@ -76,13 +78,19 @@ const PropertyDetails = () => {
   // Combine images and Imagelinks for display
   const allImages = property ? [...(property.images || []), ...(property.imageLinks || [])] : [];
 
-  const formatPrice = (p?: string) => {
+  const formatPrice = (p?: string, currency: 'USD' | 'ZAR' | 'AED' = 'USD') => {
     if (!p) return 'N/A';
-    const num = Number(p.replace(/[^0-9.-]+/g, ''));
-    if (Number.isFinite(num)) {
-      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
-    }
-    return p;
+    
+    // Extract numeric value from price string
+    const num = Number(String(p).replace(/[^0-9.-]+/g, ''));
+    if (!Number.isFinite(num)) return p;
+    
+    // Use the price as-is without conversion to maintain original currency
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      maximumFractionDigits: 0,
+    }).format(num);
   };
 
   const getRentalPeriodText = (period: string | null) => {
@@ -156,68 +164,69 @@ const PropertyDetails = () => {
 
   return (
     <div className="min-h-screen">
-       {/* SEO Metadata */}
-<Helmet>
-  <title>{property ? `${property.title} | Nimrod Property Estates` : 'Property Details | Nimrod Property Estates'}</title>
-  <meta
-    name="description"
-    content={property
-      ? `${property.title} in ${property.location}. ${property.description.slice(0, 160)}`
-      : 'Explore detailed property listings including features, images, pricing, and investment opportunities at Nimrod Property Estates.'}
-  />
-  <meta
-    name="keywords"
-    content={property
-      ? `property for rent, property to buy, real estate investments, luxury properties, ${property.location}, Nimrod Property Estates`
-      : 'property for rent, property to buy, real estate investments, luxury properties, Nimrod Property Estates'}
-  />
-  <meta property="og:title" content={property ? `${property.title} | Nimrod Property Estates` : 'Property Details | Nimrod Property Estates'} />
-  <meta
-    property="og:description"
-    content={property
-      ? `${property.title} located in ${property.location}. Check images, details, and investment opportunities.`
-      : 'Explore detailed property listings including features, images, pricing, and investment opportunities at Nimrod Property Estates.'}
-  />
-  <meta property="og:type" content="website" />
-  {property?.images?.[0] && <meta property="og:image" content={property.images[0]} />}
+      {/* SEO Metadata */}
+      <Helmet>
+        <title>{property ? `${property.title} | Nimrod Property Estates` : 'Property Details | Nimrod Property Estates'}</title>
+        <meta
+          name="description"
+          content={property
+            ? `${property.title} in ${property.location}. ${property.description.slice(0, 160)}`
+            : 'Explore detailed property listings including features, images, pricing, and investment opportunities at Nimrod Property Estates.'}
+        />
+        <meta
+          name="keywords"
+          content={property
+            ? `property for rent, property to buy, real estate investments, luxury properties, ${property.location}, Nimrod Property Estates`
+            : 'property for rent, property to buy, real estate investments, luxury properties, Nimrod Property Estates'}
+        />
+        <meta property="og:title" content={property ? `${property.title} | Nimrod Property Estates` : 'Property Details | Nimrod Property Estates'} />
+        <meta
+          property="og:description"
+          content={property
+            ? `${property.title} located in ${property.location}. Check images, details, and investment opportunities.`
+            : 'Explore detailed property listings including features, images, pricing, and investment opportunities at Nimrod Property Estates.'}
+        />
+        <meta property="og:type" content="website" />
+        {property?.images?.[0] && <meta property="og:image" content={property.images[0]} />}
 
-  {/* JSON-LD Structured Data */}
-  {property && (
-    <script type="application/ld+json">
-      {JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "SingleFamilyResidence",
-        "name": property.title,
-        "description": property.description,
-        "image": property.images || property.imageLinks || [],
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": property.location,
-          "addressCountry": "South Africa" // adjust dynamically if needed
-        },
-        "floorSize": {
-          "@type": "QuantitativeValue",
-          "value": property.area,
-          "unitText": "m²"
-        },
-        "numberOfRooms": property.bedrooms,
-        "numberOfBathroomsTotal": property.bathrooms,
-        "offers": {
-          "@type": "Offer",
-          "price": Number(property.price.replace(/[^0-9.-]+/g, "")) || 0,
-          "priceCurrency": "USD",
-          "availability": property.property_type === 'rental' ? "https://schema.org/ForRent" : "https://schema.org/ForSale",
-          "url": window.location.href
-        },
-        "seller": {
-          "@type": "RealEstateAgent",
-          "name": "Nimrod Property Estates",
-          "url": "https://www.nimrodpropertyestates.com"
-        }
-      })}
-    </script>
-  )}
-</Helmet>
+        {/* JSON-LD Structured Data */}
+        {property && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SingleFamilyResidence",
+              "name": property.title,
+              "description": property.description,
+              "image": property.images || property.imageLinks || [],
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": property.location,
+                "addressCountry": "South Africa"
+              },
+              "floorSize": {
+                "@type": "QuantitativeValue",
+                "value": property.area,
+                "unitText": "m²"
+              },
+              "numberOfRooms": property.bedrooms,
+              "numberOfBathroomsTotal": property.bathrooms,
+              "offers": {
+                "@type": "Offer",
+                "price": Number(property.price.replace(/[^0-9.-]+/g, "")) || 0,
+                "priceCurrency": property.listing_currency || "USD", // Updated to use listing_currency
+                "availability": property.property_type === 'rental' ? "https://schema.org/ForRent" : "https://schema.org/ForSale",
+                "url": window.location.href
+              },
+              "seller": {
+                "@type": "RealEstateAgent",
+                "name": "Nimrod Property Estates",
+                "url": "https://www.nimrodpropertyestates.com"
+              }
+            })}
+          </script>
+        )}
+      </Helmet>
+      
       <Navbar />
       
       <section className="pt-24 pb-16 bg-background">
@@ -384,7 +393,7 @@ const PropertyDetails = () => {
                   {/* Price Section */}
                   <div className="mb-4">
                     <div className="text-3xl font-extrabold text-foreground">
-                      {formatPrice(property.price)}
+                      {formatPrice(property.price, property.listing_currency)} {/* Updated */}
                       {property.property_type === 'rental' && property.rental_period && (
                         <span className="text-lg font-normal ml-1 text-muted-foreground">
                           {getRentalPeriodText(property.rental_period)}
@@ -396,7 +405,7 @@ const PropertyDetails = () => {
                     {property.property_type === 'rental' && property.security_deposit && (
                       <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
                         <Shield className="h-4 w-4" />
-                        <span>Security Deposit: {formatPrice(property.security_deposit)}</span>
+                        <span>Security Deposit: {formatPrice(property.security_deposit, property.listing_currency)}</span> {/* Updated */}
                       </div>
                     )}
                   </div>
@@ -479,9 +488,13 @@ const PropertyDetails = () => {
                     )}
                     {property.property_type === 'rental' && property.security_deposit && (
                       <div><span className="text-muted-foreground">Security Deposit: </span>
-                        <span className="font-medium">{formatPrice(property.security_deposit)}</span>
+                        <span className="font-medium">{formatPrice(property.security_deposit, property.listing_currency)}</span> {/* Updated */}
                       </div>
                     )}
+                    {/* Currency Display */}
+                    <div><span className="text-muted-foreground">Currency: </span>
+                      <span className="font-medium">{property.listing_currency || 'USD'}</span> {/* Updated */}
+                    </div>
                   </div>
                 </div>
 

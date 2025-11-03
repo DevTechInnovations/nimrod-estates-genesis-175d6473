@@ -43,6 +43,7 @@ interface Property {
   security_deposit?: string | null;
   year_built?: number;
   parking_spaces?: number;
+  listing_currency?: 'USD' | 'ZAR' | 'AED'; // ✅ ADD THIS
 }
 
 interface Filters {
@@ -82,8 +83,6 @@ const countryCurrencyMap: { [key: string]: 'USD' | 'ZAR' | 'AED' | 'EUR' | 'GBP'
   'UK': 'GBP',
   // Add more country codes as needed
 };
-
-
 
 const Properties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -280,7 +279,7 @@ const Properties = () => {
     try {
       const { data, error } = await supabase
         .from('properties')
-        .select('*')
+        .select('*, listing_currency') // ✅ ADD listing_currency here
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -419,60 +418,25 @@ const Properties = () => {
       <Navbar />
       {/* SEO Section */}
       <Helmet>
-  <title>Luxury Properties | Global Property Listings | Nimrod Property Estates</title>
-  <meta 
-    name="description" 
-    content="Discover premium properties for rent and investment in South Africa, Dubai, and Monaco. Explore luxury real estate opportunities with Nimrod Property Estates — your trusted global property partner." 
-  />
-  <meta 
-    name="keywords" 
-    content="Property for rent, Property investment in South Africa, Property investment in Dubai, Property investment in Monaco, Property development, Property to buy, Real estate investments, Luxury properties, Nimrod Property Estates" 
-  />
-  <meta property="og:title" content="Luxury Properties | Nimrod Property Estates" />
-  <meta 
-    property="og:description" 
-    content="Browse exclusive properties and investment opportunities around the world with Nimrod Property Estates." 
-  />
-  <meta property="og:image" content="https://nimrodestates.com/logo.png" />
-  <meta property="og:url" content="https://nimrodestates.com/properties" />
-  <meta property="og:type" content="website" />
-  <link rel="canonical" href="https://nimrodestates.com/properties" />
-  </Helmet>
-
-      {/* ADD: Test Currency Selector
-      <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg border z-50 max-w-xs">
-        <h4 className="font-semibold mb-2 text-sm">🧪 Test Currencies</h4>
-        <div className="flex flex-wrap gap-1 mb-2">
-          {[
-            { code: 'US', name: 'USA', currency: 'USD' },
-            { code: 'ZA', name: 'South Africa', currency: 'ZAR' },
-            { code: 'AE', name: 'UAE', currency: 'AED' },
-            { code: 'DE', name: 'Germany', currency: 'EUR' },
-            { code: 'GB', name: 'UK', currency: 'GBP' }
-          ].map((country) => (
-            <button
-              key={country.code}
-              onClick={() => setCurrencyManual(country.currency as any)}
-              className="px-2 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded border transition-colors"
-            >
-              {country.code}
-            </button>
-          ))}
-        </div>
-        <div className="text-xs space-y-1">
-          <div><strong>Current:</strong> {currency} ({getCurrencySymbol()})</div>
-          <div><strong>Mode:</strong> {isManualCurrency ? 'Manual' : 'Auto'}</div>
-          <button 
-            onClick={() => {
-              setIsManualCurrency(false);
-              detectUserLocation();
-            }}
-            className="text-blue-500 hover:text-blue-700 underline text-xs"
-          >
-            Reset to Auto-detect
-          </button>
-        </div>
-      </div> */}
+        <title>Luxury Properties | Global Property Listings | Nimrod Property Estates</title>
+        <meta 
+          name="description" 
+          content="Discover premium properties for rent and investment in South Africa, Dubai, and Monaco. Explore luxury real estate opportunities with Nimrod Property Estates — your trusted global property partner." 
+        />
+        <meta 
+          name="keywords" 
+          content="Property for rent, Property investment in South Africa, Property investment in Dubai, Property investment in Monaco, Property development, Property to buy, Real estate investments, Luxury properties, Nimrod Property Estates" 
+        />
+        <meta property="og:title" content="Luxury Properties | Nimrod Property Estates" />
+        <meta 
+          property="og:description" 
+          content="Browse exclusive properties and investment opportunities around the world with Nimrod Property Estates." 
+        />
+        <meta property="og:image" content="https://nimrodestates.com/logo.png" />
+        <meta property="og:url" content="https://nimrodestates.com/properties" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://nimrodestates.com/properties" />
+      </Helmet>
 
       {/* Hero Section */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
@@ -800,8 +764,7 @@ const Properties = () => {
                   roi={property.roi}
                   investmentOpportunity={property.investmentOpportunity || false}
                   exclusive={property.exclusive || false}
-                  currency={currency}
-                  exchangeRates={exchangeRates}
+                  listing_currency={property.listing_currency || 'USD'} // ✅ CORRECT - Individual property currency
                   isAuthenticated={isAuthenticated}
                   propertyType={property.property_type || 'sale'}
                   rentalPeriod={property.rental_period || ''}

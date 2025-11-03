@@ -355,8 +355,7 @@ interface PropertyCardProps {
   roi: string | null;
   investmentOpportunity: boolean; 
   exclusive: boolean;
-  currency: 'USD' | 'ZAR' | 'AED';
-  exchangeRates: { USD: number; ZAR: number; AED: number };
+  listing_currency: 'USD' | 'ZAR' | 'AED'; // CHANGED: currency → listing_currency
   isAuthenticated: boolean;
   allImages?: string[];
   propertyType?: 'sale' | 'rental';
@@ -377,8 +376,7 @@ const PropertyCard = ({
   roi,
   investmentOpportunity = false,
   exclusive = false,
-  currency = 'USD',
-  exchangeRates = { USD: 1, ZAR: 18.5, AED: 3.67 },
+  listing_currency = 'USD', // CHANGED: currency → listing_currency
   isAuthenticated = false,
   propertyType = 'sale',
   rentalPeriod = '',
@@ -561,7 +559,7 @@ const PropertyCard = ({
               <div className="flex items-center text-white/90 text-sm">
                 <Shield size={16} className="mr-2 text-white" />
                 <span className="font-medium">Security Deposit: </span>
-                <span className="ml-1 font-semibold">{formatPrice(securityDeposit, currency)}</span>
+                <span className="ml-1 font-semibold">{formatPrice(securityDeposit, listing_currency)}</span> {/* CHANGED */}
               </div>
             </div>
           )}
@@ -570,7 +568,7 @@ const PropertyCard = ({
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline gap-1 min-h-[2.5rem]">
                 <p className="text-2xl font-heading font-bold text-white truncate">
-                  {formatPrice(price, currency)}
+                  {formatPrice(price, listing_currency)} {/* CHANGED */}
                 </p>
                 {propertyType === 'rental' && rentalPeriod && (
                   <span className="text-lg font-normal text-white/80 whitespace-nowrap flex-shrink-0">
@@ -633,7 +631,7 @@ const PropertyCard = ({
               <div className="flex items-center text-white text-xs">
                 <Shield size={12} className="mr-1.5 flex-shrink-0" />
                 <span className="font-medium">Deposit: </span>
-                <span className="ml-1 font-semibold">{formatPrice(securityDeposit, currency)}</span>
+                <span className="ml-1 font-semibold">{formatPrice(securityDeposit, listing_currency)}</span> {/* CHANGED */}
               </div>
             </div>
           ) : (
@@ -646,7 +644,7 @@ const PropertyCard = ({
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-1">
               <p className="text-2xl font-heading font-bold text-foreground truncate">
-                {formatPrice(price, currency)}
+                {formatPrice(price, listing_currency)} {/* CHANGED */}
               </p>
               {propertyType === 'rental' && rentalPeriod && (
                 <span className="text-lg font-normal text-muted-foreground whitespace-nowrap flex-shrink-0">

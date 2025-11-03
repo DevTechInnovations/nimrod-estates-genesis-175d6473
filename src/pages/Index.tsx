@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-luxury-estate.jpg';
 import { Helmet } from 'react-helmet-async';
 
+
 interface Property {
   id: string;
   title: string;
@@ -26,6 +27,7 @@ interface Property {
   investmentOpportunity: boolean;
   exclusive: boolean;
   imageLinks: string[];
+  listing_currency?: 'USD' | 'ZAR' | 'AED'; // ✅ ADD THIS
 }
 
 interface ExchangeRates {
@@ -69,23 +71,23 @@ const Index = () => {
   const detectionCompleted = useRef(false);
 
   useEffect(() => {
-    const fetchFeaturedProperties = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('properties')
-          .select('*')
-          .eq('featured', true)
-          .order('created_at', { ascending: false })
-          .limit(3);
+   const fetchFeaturedProperties = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*, listing_currency') // ✅ ADD listing_currency here
+      .eq('featured', true)
+      .order('created_at', { ascending: false })
+      .limit(3);
 
-        if (error) throw error;
-        setFeaturedProperties(data || []);
-      } catch (error) {
-        console.error('Error fetching featured properties:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (error) throw error;
+    setFeaturedProperties(data || []);
+  } catch (error) {
+    console.error('Error fetching featured properties:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
     const checkAuth = async () => {
       try {
@@ -464,28 +466,28 @@ const Index = () => {
               </div>
             ) : (
               featuredProperties.map((property) => (
-                <PropertyCard
-                  key={property.id}
-                  id={property.id}
-                  image={property.images?.[0] || ''}
-                  imageLinks={property.imageLinks || []}
-                  title={property.title}
-                  location={property.location}
-                  price={property.price}
-                  bedrooms={property.bedrooms}
-                  bathrooms={property.bathrooms}
-                  area={property.area}
-                  roi={property.roi}
-                  investmentOpportunity={property.investmentOpportunity || false}
-                  exclusive={property.exclusive || false}
-                  currency={currency}
-                  exchangeRates={exchangeRates}
-                  isAuthenticated={isAuthenticated}
-                  propertyType={property.property_type || 'sale'}
-                  rentalPeriod={property.rental_period || ''}
-                  securityDeposit={property.security_deposit || ''}
-                />
-              ))
+  <PropertyCard
+    key={property.id}
+    id={property.id}
+    image={property.images?.[0] || ''}
+    imageLinks={property.imageLinks || []}
+    title={property.title}
+    location={property.location}
+    price={property.price}
+    bedrooms={property.bedrooms}
+    bathrooms={property.bathrooms}
+    area={property.area}
+    roi={property.roi}
+    investmentOpportunity={property.investmentOpportunity || false}
+    exclusive={property.exclusive || false}
+    listing_currency={property.listing_currency || 'USD'} // ✅ CORRECT - Individual property currency
+    isAuthenticated={isAuthenticated}
+    propertyType={property.property_type || 'sale'}
+    rentalPeriod={property.rental_period || ''}
+    securityDeposit={property.security_deposit || ''}
+  />
+))
+              
             )}
           </div>
 
