@@ -492,7 +492,7 @@ const Properties = () => {
       </section>
 
       {/* Search and Filters */}
-      <section className="py-8 bg-white border-b border-gray-200 sticky top-20 z-40 shadow-sm">
+      <section className="py-8 bg-white border-b border-gray-200  top-20 z-40 shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
             {/* Search */}
