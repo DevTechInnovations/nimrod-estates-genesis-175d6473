@@ -339,6 +339,7 @@ const Contact = () => {
                       <strong className="text-primary">South Africa:</strong> +27 63 730 1255<br />
                       <strong className="text-primary">South Africa (Alt):</strong> +27 79 354 3708<br />
                       <strong className="text-primary">Telephone:</strong> +27 10 745 0361
+
                     </p>
                   </div>
                 </div>
