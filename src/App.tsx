@@ -23,7 +23,7 @@ import BusinessConsulting from './pages/BusinessConsulting';
 import BusinessSetup from './pages/BusinessSetup';
 import PropertyDevelopment from './pages/PropertyDevelopment';
 import DevelopmentForm from "./pages/DevelopmentForm";
-
+import ThankYou from './pages/ThankYou';
 import ScrollToTop from '@/components/ScrollToTop';
 
 const queryClient = new QueryClient();
@@ -57,6 +57,7 @@ const App = () => (
             <Route path="/services/property-development" element={<PropertyDevelopment />} />
             <Route path="/DevelopmentForm" element={<DevelopmentForm />} />
             <Route path="*" element={<NotFound />} />
+             <Route path="/thank-you" element={<ThankYou />} />
             {/* Remove the incorrect scroll route */}
           </Routes>
         </AuthProvider>
