@@ -9,8 +9,7 @@ import team1 from "@/assets/Nomfundo-Msiza.png";
 import team2 from "@/assets/Nontokozo-Gumede.png";
 import team3 from "@/assets/Nomzamo-Gumede.png";
 import team4 from "@/assets/Zilingene-Mkhwanazi.png";
-
-const visionImage = "@/assets/3d-house-model-with-modern-architecture-about.jpg";
+import visionImage from "@/assets/3d-house-model-with-modern-architecture-about.jpg";
 
 
 
