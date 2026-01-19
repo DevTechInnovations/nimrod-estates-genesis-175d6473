@@ -5,9 +5,14 @@ import Footer from "@/components/Footer";
 
 import heroImage from "@/assets/3d-electric-car-building.jpg";
 import davidImage from "@/assets/david-nimrod.jpg";
-import visionImage from "@/assets/3d-house-model-with-modern-architecture-about.jpg";
+import team1 from "@/assets/Nomfundo-Msiza.png";
+import team2 from "@/assets/Nontokozo-Gumede.png";
+import team3 from "@/assets/Nomzamo-Gumede.png";
+import team4 from "@/assets/Zilingene-Mkhwanazi.png";
 
-// ---- Extracted components for cleaner structure ---- //
+const visionImage = "@/assets/3d-house-model-with-modern-architecture-about.jpg";
+
+
 
 const StatCard = ({ icon: Icon, value, label }) => (
   <div className="bg-secondary p-6 rounded-lg border-2 border-gray-100 shadow-lg hover-lift transition-all">
@@ -17,7 +22,8 @@ const StatCard = ({ icon: Icon, value, label }) => (
   </div>
 );
 
-const TeamCard = ({ name, title, image, description }) => (
+// make description optional with a default empty string to avoid TS errors when some members don't provide it
+const TeamCard = ({ name, title, image, description = "" }) => (
   <div className="group bg-white border-2 border-gray-100 shadow-lg overflow-hidden relative hover-lift">
     <div className="relative h-96 overflow-hidden">
       <img
@@ -55,6 +61,26 @@ const About = () => {
       description:
         "Nimrod Gumede is the Founder and Chief Executive Officer of Nimrod Estates. He holds an MBA Credential of Readiness, Financial Accounting, and Electrical Engineering qualifications from Harvard University, Harvard Business School, and Berea Technical College. With international experience leading multi-sector firms, he brings expertise across luxury real estate, finance, and engineering.",
     },
+      {
+      name: "Zilingene Mkhwanazi",
+      title: "International Acquisition Agent",
+      image: team4,
+    },
+      {
+      name: "Nontokozo Gumede",
+      title: "International Acquisition Agent",
+      image: team2,
+    },
+      {
+      name: "Nomfundo Msiza",
+      title: "International Financial Strategist",
+      image: team1,
+    },
+      {
+      name: "Nomzamo Gumede ",
+      title: "International Financial Strategist",
+      image: team3,
+    }
   ];
 
   return (
