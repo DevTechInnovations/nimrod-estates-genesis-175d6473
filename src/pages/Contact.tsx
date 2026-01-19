@@ -129,6 +129,12 @@ const Contact = () => {
               "streetAddress": "96 Rivonia Road, Sandton",
               "addressLocality": "Gauteng",
               "addressCountry": "South Africa"
+            },
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "Building 10, Thornhill Office Park, 94 Bekker Rd, Vorna Valley, Midrand, 1686",
+              "addressLocality": "Midrand",
+              "addressCountry": "South Africa"
             }
           ]
         }
@@ -321,7 +327,8 @@ const Contact = () => {
                     <p className="text-gray-300 text-sm">
                       <strong className="text-primary">Monaco:</strong> Monte Carlo Sun, Bd d'Italie 74, 98000 Monaco<br />
                       <strong className="text-primary">Dubai:</strong> Emirates Towers, Dubai, UAE<br />
-                      <strong className="text-primary">South Africa:</strong> 96 Rivonia Road, Sandton, Gauteng
+                      <strong className="text-primary">South Africa (Sandton):</strong> 96 Rivonia Road, Sandton, Gauteng<br />
+                      <strong className="text-primary">South Africa (Midrand):</strong> Building 10, Thornhill Office Park, 94 Bekker Rd, Vorna Valley, Midrand, 1686
                     </p>
                   </div>
                 </div>

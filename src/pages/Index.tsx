@@ -363,7 +363,7 @@ const Index = () => {
 
         <div className="relative z-10 container mx-auto px-4 text-center text-white">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in leading-tight">
-            <span className="text-gradient-gold">Luxury Real Estate</span> Investments
+            <span className="text-gradient-gold">International Real Estate</span> And Consulting
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in text-white/90 leading-relaxed">
             Invest with confidence in exclusive properties worldwide.

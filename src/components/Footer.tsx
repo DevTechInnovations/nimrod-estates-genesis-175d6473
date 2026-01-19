@@ -125,6 +125,15 @@ const Footer = () => {
                   96 Rivonia Road, Sandton, Gauteng
                 </p>
               </div>
+               <div>
+                <div className="flex items-center space-x-2 mb-1">
+                  <MapPin size={14} className="text-primary flex-shrink-0" />
+                  <span className="font-semibold">South Africa (Midrand)</span>
+                </div>
+                <p className="text-muted-foreground">
+                 Building 10, Thornhill Office Park, 94 Bekker Rd, Vorna Valley, Midrand, 1686
+                </p>
+              </div>
             </div>
           </div>
 
