@@ -326,7 +326,7 @@ const Contact = () => {
                     </h3>
                     <p className="text-gray-300 text-sm">
                       <strong className="text-primary">Monaco:</strong> Monte Carlo Sun, Bd d'Italie 74, 98000 Monaco<br />
-                      <strong className="text-primary">Dubai:</strong> Emirates Towers, Dubai, UAE<br />
+                      {/* <strong className="text-primary">Dubai:</strong> Emirates Towers, Dubai, UAE<br /> */}
                       <strong className="text-primary">South Africa (Sandton):</strong> 96 Rivonia Road, Sandton, Gauteng<br />
                       <strong className="text-primary">South Africa (Midrand):</strong> Building 10, Thornhill Office Park, 94 Bekker Rd, Vorna Valley, Midrand, 1686
                     </p>
@@ -342,7 +342,7 @@ const Contact = () => {
                       Phone Numbers
                     </h3>
                     <p className="text-gray-300 text-sm">
-                      <strong className="text-primary">Dubai:</strong> +971 58 305 1460<br />
+                      {/* <strong className="text-primary">Dubai:</strong> +971 58 305 1460<br /> */}
                       <strong className="text-primary">South Africa:</strong> +27 63 730 1255<br />
                       <strong className="text-primary">South Africa (Alt):</strong> +27 79 354 3708<br />
                       <strong className="text-primary">Telephone:</strong> +27 10 745 0361

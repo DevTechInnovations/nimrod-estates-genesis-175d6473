@@ -105,7 +105,7 @@ const Footer = () => {
               </div>
 
               {/* Dubai */}
-              <div>
+              {/* <div>
                 <div className="flex items-center space-x-2 mb-1">
                   <MapPin size={14} className="text-primary flex-shrink-0" />
                   <span className="font-semibold">Dubai</span>
@@ -113,7 +113,7 @@ const Footer = () => {
                 <p className="text-muted-foreground">
                   Emirates Towers, Dubai, United Arab Emirates
                 </p>
-              </div>
+              </div> */}
 
               {/* South Africa */}
               <div>
@@ -143,11 +143,11 @@ const Footer = () => {
   <div className="space-y-3 text-sm">
     <div className="space-y-4">
       <div className="flex flex-col">
-        <span className="text-primary font-semibold">Dubai:</span>
+        {/* <span className="text-primary font-semibold">Dubai:</span>
         <div className="flex items-center space-x-2">
           <Phone size={14} className="text-primary flex-shrink-0" />
           <span className="text-white">+971 58 305 1460</span>
-        </div>
+        </div> */}
       </div>
 
       <div className="flex flex-col">
