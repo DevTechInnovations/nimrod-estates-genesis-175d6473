@@ -394,7 +394,7 @@ const Contact = () => {
                     <MapPin size={48} className="mx-auto mb-2 text-primary/50" />
                     <p className="font-medium">Our Global Offices</p>
                     <p className="text-sm">
-                      Monaco • Dubai • South Africa
+                      Monaco • South Africa
                     </p>
                   </div>
                 </div>
